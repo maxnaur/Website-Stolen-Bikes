@@ -5,3 +5,9 @@ document.querySelectorAll('form').forEach(form => {
         alert('Login attempted');
     });
 });
+
+// Login
+
+
+// Regester
+
