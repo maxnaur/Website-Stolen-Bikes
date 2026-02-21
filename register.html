@@ -12,88 +12,91 @@
 
 <body>
   <div class="container py-5"> <!add container-->
-    <div class="card bg-light text-dark" style="border-radius: 3rem;"> <!add the box with test collour-->
-      <div class="card-body p-5 text-center"> <!test centered-->
-        <h1 class="mb-3">Register</h1>
-        <p class="text-50 mb-5">
-          Please fill out your persinal information bellow to create an account.
-          Any items marked with a * are required.
-        </p> <!test size with gap bellow-->
-        <form>
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-4">
-            <input type="text" id="username" name="username" placeholder=""
-              class="form-control form-control-lg" required />
-            <label class="form-label" for="surname">Username*</label>
-          </div>
+    <div class="row d-flex justify-content-center align-items-center"> <!center the box in the midle-->
+      <div class="col-12 col-lg-7"> <!the size of the box in the midle-->
+        <div class="card bg-light text-dark" style="border-radius: 3rem;"> <!add the box with test collour-->
+          <div class="card-body p-5 text-center"> <!test centered-->
+            <h1 class="mb-3">Register</h1>
+            <p class="text-50 mb-5">
+              Please fill out your persinal information bellow to create an account.
+              Any items marked with a * are required.
+            </p> <!test size with gap bellow-->
+            <form>
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-4">
+                <input type="text" id="username" name="username" placeholder=""
+                  class="form-control form-control-lg" required />
+                <label class="form-label" for="surname">Username*</label>
+              </div>
 
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
-            <input type="text" id="forename" name="forename" placeholder=""
-              class="form-control form-control-lg" required />
-            <label class="form-label" for="forename">Forename*</label>
-          </div> <!input look gap bellow, inputs-->
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-4">
-            <input type="text" id="surname" name="surname" placeholder=""
-              class="form-control form-control-lg" required />
-            <label class="form-label" for="surname">Surname*</label>
-          </div>
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
+                <input type="text" id="forename" name="forename" placeholder=""
+                  class="form-control form-control-lg" required />
+                <label class="form-label" for="forename">Forename*</label>
+              </div> <!input look gap bellow, inputs-->
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-4">
+                <input type="text" id="surname" name="surname" placeholder=""
+                  class="form-control form-control-lg" required />
+                <label class="form-label" for="surname">Surname*</label>
+              </div>
 
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
-            <input type="text" id="email" name="email" placeholder="" class="form-control form-control-lg"
-              required />
-            <label class="form-label" for="email">Email*</label>
-          </div>
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
-            <input type="text" id="confirm_email" name="confirm_email" placeholder=""
-              class="form-control form-control-lg" required />
-            <label class="form-label" for="confirm_email">Confirm Email*</label>
-          </div>
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-4">
-            <input type="tel" id="phone" name="phone" placeholder="" class="form-control form-control-lg"
-              required />
-            <label class="form-label" for="phone">Phone Number</label>
-          </div>
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
+                <input type="text" id="email" name="email" placeholder="" class="form-control form-control-lg"
+                  required />
+                <label class="form-label" for="email">Email*</label>
+              </div>
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
+                <input type="text" id="confirm_email" name="confirm_email" placeholder=""
+                  class="form-control form-control-lg" required />
+                <label class="form-label" for="confirm_email">Confirm Email*</label>
+              </div>
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-4">
+                <input type="tel" id="phone" name="phone" placeholder="" class="form-control form-control-lg" />
+                <label class="form-label" for="phone">Phone Number</label>
+              </div>
 
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
-            <input type="text" id="address_line_1" name="address_line_1" placeholder=""
-              class="form-control form-control-lg" required />
-            <label class="form-label" for="address_line_1">Address Line 1*</label>
-          </div>
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
-            <input type="text" id="address_line_2" name="address_line_2" placeholder=""
-              class="form-control form-control-lg" />
-            <label class="form-label" for="address_line_2">Address Line 2</label>
-          </div>
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
-            <input type="text" id="postcode" name="postcode" placeholder=""
-              class="form-control form-control-lg" required />
-            <label class="form-label" for="postcode">Postcode*</label>
-          </div>
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
-            <input type="text" id="county" name="county" placeholder="" class="form-control form-control-lg"
-              required />
-            <label class="form-label" for="county">County*</label>
-          </div>
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-4">
-            <input type="text" id="town_city" name="town_city" placeholder=""
-              class="form-control form-control-lg" required />
-            <label class="form-label" for="town_city">Town/City*</label>
-          </div>
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
-            <input type="text" id="password" name="password" placeholder=""
-              class="form-control form-control-lg" required />
-            <label class="form-label" for="password">Password*</label>
-          </div>
-          <div data-mdb-input-init class="form-outline form-floating form-dark mb-4">
-            <input type="text" id="confirm_password" name="confirm_password" placeholder=""
-              class="form-control form-control-lg" required />
-            <label class="form-label" for="confirm_password">Confirm Password*</label>
-          </div>
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
+                <input type="text" id="address_line_1" name="address_line_1" placeholder=""
+                  class="form-control form-control-lg" required />
+                <label class="form-label" for="address_line_1">Address Line 1*</label>
+              </div>
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
+                <input type="text" id="address_line_2" name="address_line_2" placeholder=""
+                  class="form-control form-control-lg" />
+                <label class="form-label" for="address_line_2">Address Line 2</label>
+              </div>
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
+                <input type="text" id="postcode" name="postcode" placeholder=""
+                  class="form-control form-control-lg" required />
+                <label class="form-label" for="postcode">Postcode*</label>
+              </div>
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
+                <input type="text" id="county" name="county" placeholder="" class="form-control form-control-lg"
+                  required />
+                <label class="form-label" for="county">County*</label>
+              </div>
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-4">
+                <input type="text" id="town_city" name="town_city" placeholder=""
+                  class="form-control form-control-lg" required />
+                <label class="form-label" for="town_city">Town/City*</label>
+              </div>
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-2">
+                <input type="text" id="password" name="password" placeholder=""
+                  class="form-control form-control-lg" required />
+                <label class="form-label" for="password">Password*</label>
+              </div>
+              <div data-mdb-input-init class="form-outline form-floating form-dark mb-4">
+                <input type="text" id="confirm_password" name="confirm_password" placeholder=""
+                  class="form-control form-control-lg" required />
+                <label class="form-label" for="confirm_password">Confirm Password*</label>
+              </div>
 
-          <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary mt-2 mb-3 btn-lg px-5"
-            type="submit">Register</button>
+              <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary mt-2 mb-3 btn-lg px-5"
+                type="submit">Register</button>
 
-          <p class="small pb-lg-2"><a class="text-dark" href="index.html">Back to Login</a></p>
-        </form>
+              <p class="small pb-lg-2"><a class="text-dark" href="index.html">Back to Login</a></p>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </div>  
