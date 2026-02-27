@@ -9,7 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate input
     if (empty($email) || empty($password)) {
-        die("Error: Please fill in all fields");
+        header("Location: index.html?error=" . urlencode("Please fill in all fields"));
+        exit();
     }
 
     // Check if user exists
@@ -19,7 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $stmt->get_result();
 
     if ($result->num_rows === 0) {
-        die("Error: Email not found");
+        header("Location: index.html?error=" . urlencode("Email not found"));
+        exit();
     }
 
     $user = $result->fetch_assoc();
@@ -33,7 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: dashboard.php");
         exit();
     } else {
-        die("Error: Invalid password");
+        header("Location: index.html?error=" . urlencode("Invalid password"));
+        exit();
     }
 }
 ?>

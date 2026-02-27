@@ -19,12 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate email and confirmation
     if ($email !== $confirmEmail) {
-        die("Error: Email and Confirm Email do not match");
+        header("Location: register.html?error=" . urlencode("Emails do not match"));
+        exit();
     }
 
     // Validate password match
     if ($password !== $confirmPassword) {
-        die("Error: Passwords do not match");
+        header("Location: register.html?error=" . urlencode("Passwords do not match"));
+        exit();
     }
 
     // Check if email already exists
@@ -34,7 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $stmt->get_result();
     
     if ($result->num_rows > 0) {
-        die("Error: Email is already registered");
+        header("Location: register.html?error=" . urlencode("Email is already registered"));
+        exit();
     }
 
     // Hash password
@@ -42,11 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Insert into database
     $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, password, phone, address_line1, address_line2, postcode, county, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssssss", $firstName, $lastName, $email, $password_hash, $phone, $addressLine1, $addressLine2, $postcode, $county, $city);
+    // ten strings: first name, last name, email, hash, phone, address1, address2, postcode, county, city
+    $stmt->bind_param("ssssssssss", $firstName, $lastName, $email, $password_hash, $phone, $addressLine1, $addressLine2, $postcode, $county, $city);
     $stmt->execute();
 
-    // Redirect to login
-    header("Location: login.php");
+    // Redirect to login page (index.html is the login form)
+    header("Location: index.html");
     exit();
 }
 ?>

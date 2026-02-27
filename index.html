@@ -11,24 +11,32 @@
   <link rel="stylesheet" href="form-base.css">
 </head>
 <body>
+  <script>
+    // show error from query string if present
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('error')) {
+      alert(params.get('error'));
+    }
+  </script>
   <div class="container py-1">
     <div class="row justify-content-center">
       <div class="col-md-10">
         <div class="card shadow-sm">
           <div class="card-body">
             <h1 class="text-center mb-4">Log In</h1>
-            <form id="registerForm">
+            <!-- login form posts to backend script -->
+            <form id="loginForm" method="POST" action="create_Login.php">
               <div class="row g-3">
                 <!-- Email -->
                 <div class="col-md-12">
                   <label for="email" class="form-label">Email*</label>
-                  <input type="email" class="form-control" id="email" placeholder="Email" required>
+                  <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
                 </div>
                 
                 <!-- Password -->
                 <div class="col-md-12">
                   <label for="password" class="form-label">Password*</label>
-                  <input type="password" class="form-control" id="password" placeholder="Password" required>
+                  <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
                 </div>
               </div>
 
@@ -40,7 +48,7 @@
                 <a href="register.html" class="text-decoration-none text-muted">Create Account</a>
               </div>
               <div class="mt-6 text-center">
-                <a href="forgot password.html" class="text-decoration-none text-muted">Forgot Password</a>
+                <a href="forgot_password.php" class="text-decoration-none text-muted">Forgot Password</a>
               </div>
             </form>
           </div>
