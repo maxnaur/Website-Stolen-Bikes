@@ -1,14 +1,14 @@
 <?php
-if($_POST['phpFunction'] == "createUser"){
-    creatUser();
+if($_POST['phpfunction'] == "createUser"){
+    createUser();
 }
 
 function createUser(){
-    $userFistNmae = $_POST["firstName"];
-    $userLastNmae = $_POST["lastName"];
+    $userFirstName = $_POST["firstName"];
+    $userLastName = $_POST["lastName"];
     $userEmail = $_POST["email"];
     $userPassword = $_POST["password"];
 
-    echo "Thanks, " . $userFistNmae ." ". $userLastNmae . " for sighning in";
-    echo $userEmail ." email";
+    echo "Thanks, " . $userFirstName ." ". $userLastName . " for signing up";
+    echo " with email ". $userEmail;
 }
