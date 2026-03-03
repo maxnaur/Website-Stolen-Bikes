@@ -13,5 +13,7 @@ function createUser(){
     echo " with email ". $userEmail;
 
     $hashedPassword = password_hash($userPassword, PASSWORD_DEFAULT);
+    $saltPassword = password_hash($userPassword, PASSWORD_DEFAULT, [""=> $saltPassword]);
     echo "hashed password ". $hashedPassword ."";
+    echo "Salt password ". $saltPassword ."";
 }
