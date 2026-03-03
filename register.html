@@ -41,11 +41,13 @@
               <div class="col-md-6">
                 <label for="email" class="form-label">Email*</label>
                 <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
+                <div class="email-error text-danger small mt-1" style="display:none;"></div>
               </div>
               
               <div class="col-md-6">
                 <label for="confirmEmail" class="form-label">Confirm Email*</label>
                 <input type="email" name="confirmEmail" class="form-control" id="confirmEmail" placeholder="Confirm Email" required>
+                <div class="email-error text-danger small mt-1" style="display:none;"></div>
               </div>
               
               <!-- Phone Number -->
@@ -84,11 +86,19 @@
               <div class="col-md-6">
                 <label for="password" class="form-label">Password*</label>
                 <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                <label class="form-check-label">
+                  <input type="checkbox" class="toggle-password form-check-input" data-target="#password">
+                  Show password
+                </label>
               </div>
               
               <div class="col-md-6">
                 <label for="confirmPassword" class="form-label">Confirm Password*</label>
                 <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
+                <label class="form-check-label">
+                  <input type="checkbox" class="toggle-password form-check-input" data-target="#confirmPassword">
+                  Show password
+                </label>
               </div>
             </div>
             
@@ -108,13 +118,15 @@
 
   <!-- Bootstrap JS (optional but recommended for form validation) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- registration script (placeholder) -->
   <script>
     document.getElementById('registerForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      // Add your registration logic here
       alert('Registration successful! Welcome to Bike\'s Safty!');
       this.reset();
     });
   </script>
+  <!-- shared utilities -->
+  <script src="form-utils.js"></script>
 </body>
 </html>

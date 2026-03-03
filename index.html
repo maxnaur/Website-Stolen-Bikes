@@ -31,12 +31,21 @@
                 <div class="col-md-12">
                   <label for="email" class="form-label">Email*</label>
                   <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
+                  <div id="error-message" class="text-danger small mt-1" style="display:none;"></div>
                 </div>
                 
                 <!-- Password -->
                 <div class="col-md-12">
                   <label for="password" class="form-label">Password*</label>
                   <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                </div>
+
+                <!-- Show password checkbox -->
+                <div class="col-md-10 form-check mt-2">
+                  <input class="form-check-input" type="checkbox" value="" id="showPasswordCheck">
+                  <label class="form-check-label" for="showPasswordCheck">
+                    Show password
+                  </label>
                 </div>
               </div>
 
@@ -48,7 +57,11 @@
                 <a href="register.html" class="text-decoration-none text-muted">Create Account</a>
               </div>
               <div class="mt-6 text-center">
-                <a href="forgot_password.php" class="text-decoration-none text-muted">Forgot Password</a>
+                <a href="forgot_password.html" class="text-decoration-none text-muted">Forgot Password</a>
+              </div>
+              
+              <div class="mt-6 text-center py-1">
+                <a href="Registration.html" class="text-decoration-none text-muted">Regester Account</a>
               </div>
             </form>
           </div>
@@ -59,13 +72,7 @@
 
   <!-- Bootstrap JS (optional but recommended for form validation) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      // Add your registration logic here
-      alert('Registration successful! Welcome to Bike\'s Safty!');
-      this.reset();
-    });
-  </script>
+  <!-- shared utilities: password toggle + email validation -->
+  <script src="form-utils.js"></script>
 </body>
 </html>

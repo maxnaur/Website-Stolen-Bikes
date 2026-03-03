@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title> Flogger - Buy and sell your Item Online - Registration </title>
+    	<link href="../css/styles.css" type="text/css" rel = "stylesheet"/>
+		
+		<script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+
+	</head>
+	<body>
+		
+			<header>
+				
+				<nav>
+					<ul>
+						<li><a href="../LoginPage/Login.html">LOGIN</a></li>
+						<li><a href="../RegistrationPage/Registration.html" class="current">REGISTRATION</a></li>
+						</a></li>
+					</ul>
+				</nav>
+			</header>
+			<section>
+				<div id="divMessage"></div>
+				<form id="formUserRegistration" >
+				
+					<h2> To register, fill out the form below and click the Submit button </h2> <br> <br>
+					
+					<label> First name: </label>
+					<input type="text" id = "txtFirstName" name="firstName" required="required"> <br> <br>
+					
+
+					<label> Last name: </label>
+					<input type="text" id = "txtLastName" name="lastName" required="required"> <br> <br>
+
+					<label> Email: </label>
+					<input type="email" id = "txtEmail" name="email" required="required"> <br> <br>
+
+					<label> Password: </label>
+					<input type="password" id = "txtPassword" name="password" required="required"> <br> <br>
+
+					<label> Confirm Password: </label>
+					<input type="password" id = "txtConfirmPassword" name="confirmPassword" required="required"> <br> <br>
+
+					<input type="submit" id = "btnRegister" value="Register">
+
+					
+				</form>  
+			</section>
+			
+			<footer>
+				&copy; 2017 Flogger
+			</footer>
+			
+			<script src="./Registration.js"></script>
+			
+	</body>
+</html>

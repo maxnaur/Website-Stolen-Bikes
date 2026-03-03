@@ -39,6 +39,17 @@ h2 {
   font-size: large;
 }
 
+.col-md-12 label {
+  margin-left: 10px;
+}
+.col-md-6 label {
+  margin-left: 10px;
+}
+
+.form-check {
+  margin-left: 9px;
+}
+
 .form-label {
   font-weight: 500;
   margin-bottom: 0.25rem;

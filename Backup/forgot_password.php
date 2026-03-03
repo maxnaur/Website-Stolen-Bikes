@@ -95,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   <div class="col-md-12">
                     <label for="email" class="form-label">Email*</label>
                     <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
+                    <div class="email-error text-danger small mt-1" style="display:none;"></div>
                   </div>
                 </div>
                 <div class="mt-4 text-center">
@@ -115,10 +116,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   <div class="col-md-12">
                     <label for="password" class="form-label">New Password*</label>
                     <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                    <label class="form-check-label">
+                      <input type="checkbox" class="toggle-password form-check-input" data-target="#password">
+                      Show password
+                    </label>
                   </div>
                   <div class="col-md-12">
                     <label for="confirmPassword" class="form-label">Confirm Password*</label>
                     <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
+                    <label class="form-check-label">
+                      <input type="checkbox" class="toggle-password form-check-input" data-target="#confirmPassword">
+                      Show password
+                    </label>
                   </div>
                 </div>
                 <div class="mt-4 text-center">
@@ -140,5 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <!-- Bootstrap JS (optional but recommended for form validation) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- shared utilities -->
+  <script src="form-utils.js"></script>
 </body>
 </html>
