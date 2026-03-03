@@ -11,4 +11,7 @@ function createUser(){
 
     echo "Thanks, " . $userFirstName ." ". $userLastName . " for signing up";
     echo " with email ". $userEmail;
+
+    $hashedPassword = password_hash($userPassword, PASSWORD_DEFAULT);
+    echo "hashed password ". $hashedPassword ."";
 }
