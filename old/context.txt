@@ -1,0 +1,188 @@
+CT4034 Assignment 001
+Completion requirements
+Due: Friday, 15 May 2026, 3:00 PM
+This assignment is an individual project and 2000 word report. 
+
+This assignment requires you to develop a Web Site using HTML, CSS, Javascript/ JQuery, PHP and MySQL. The scenario for your project is given below.
+
+Project Implementation Instructions
+Scenario: Web Site for Gloucestershire Constabulary to reduce bicycle theft
+The purpose of the project is to implement a website that will help Gloucestershire Constabulary to reduce bicycle theft. The website will also help Gloucestershire Constabulary to reduce number of Police Officers currently involved in investigating these crimes. Using the proposed system End-Users will register their bicycle to keep a record of frame number, bicycle image and other relevant manufacturers’ details of the bicycle.  End-User will also report a stolen bicycle using the system.
+
+User Classes and Characteristics
+There are mainly two types of user: 
+
+Public
+Police
+Public can do the following using the website:
+
+Public must register personal and login details
+Public can login to the system
+Public can register one or more bikes. Table 1 below shows a list of bicycle attributes that can be used for registering bikes.
+Public can report a previously registered bicycle stolen
+Public can check progress / status of investigation of a reported bike
+Police can do the following using the website:
+
+An Admin Police can enrol other police officers, and create login details (user name and password) for them
+Police officers can login to the system
+Police officers can view a list of stolen bicycles reported in a specific week/ month/ year
+Police officers can update investigation status of reported bicycles 
+Table 1: The following bicycle attributes can be used for registering bikes
+
+Attribute
+
+Example Data
+
+Manufacturer part number (MPN)
+
+EGBIKE01/ KUSH2 etc
+
+Brand
+
+Raleigh/ Diamondback/ Mafiabikes etc
+
+Model
+
+Motus/ S10/ Madmain etc
+
+Type
+
+Electric Bike/ Mountain Bike/ BMX etc
+
+Wheel Size
+
+14”/20”/26” etc
+
+Colour
+
+White/Black/Red etc
+
+Number of Gears
+
+6/7/8/14 etc
+
+Brake Type
+
+Direct-Linear Pull (V-Brakes) / Hydraulic Rim Brakes etc
+
+Suspension
+
+Front/Full/None etc
+
+Gender
+
+Male/Female/Unisex
+
+Age group
+
+Adult/Child/8-10/10-12 etc
+
+Images
+
+  
+
+ 
+
+You must write comment (programmer-readable explanation or annotation) in the source code.
+
+Report Instructions
+Although practical, this assignment requires you to submit full documentation and provide evidence of reflective review.  Your documentation must explain all that you have done and confirm your technical competence.  If you do not provide documented evidence and explanation for any aspect of your system, we will not be able to consider it when marking. 
+
+We will, however, randomly inspect various parts of your developed system to verify that what you discuss in your documentation has actually been implemented. Please ensure that we can access all aspects of your system. You will lose marks if we cannot verify that all developments are as discussed in your documentation.
+
+The written report should include the following:
+
+The URL of your hosted web site. (LO1)
+The URL, user name and password of your control panel (plesk). (LO1)
+A table containing the list of functional and non-functional pages.
+Evidence that you have understood web technologies by showing interesting examples of HTML, CSS, Javascript, PHP, MySQL and Google map code used in implemented pages. (LO2, LO3)
+Documented evidence of the testing strategy you used to test the web site’s functionality throughout its development. (LO2, LO3)
+Outline what security measures you have taken to implement the website. (LO2, LO3)
+Create project plan, focusing on your capacity to independently formulate and articulate a comprehensive plan, showcasing adeptness in task negotiation, and effective communication skills, highlighting your ability to excel in collaborative settings. (LO4)
+Reference List. Don’t forget that all code and ideas that are not your own must be fully acknowledged and used in accordance with any applicable restrictions. Use Harvard referencing. (LO 1-4)
+Appendix 1: Screenshot of all implemented web pages
+Appendix 2: All Source code (HTML, CSS, Javascript, PHP, MySQL database build code).
+The report must be written in third person.
+
+You should carefully consider the following when writing your report:
+
+Style – suitable to be quickly read and comprehended.
+Content – relevant, clearly explained, logically organised.
+Authority – discussed concepts and ideas will need evidence in support.
+Practical understanding – your own practical examples, advice and demonstrations should be included.
+Special instructions
+Submit your project source files on Web Server (student sites). The root folder should be named according to the convention
+
+CT4034 2025-26 001 StudentNumber SubmissionDeadline
+
+      e.g. CT4034 2025-26 001 1608131 18 May 2026
+
+Submit report (just one Word document) via Moodle named according to the convention
+
+CT4034 2025-26 001 StudentNumber
+
+      e.g. CT4034 2025-26 001 1608131
+
+Assessment 1 criteria
+You need to achieve at least 40% to pass this assessment. Below a guide to the level of practical content and report required for the assignment.
+
+Grade
+Content
+To achieve <30
+
+Some requirements met, but very limited and not recoverable. Copyright violation.
+
+To achieve <40
+
+Deliverables partially complete, e.g. no implementation or no report.
+
+To achieve 40+
+
+Project
+Implementation of 9 features using HTML, CSS and JavaScript (some static web pages)
+PHP and MySQL were attempted
+Limited documentation (comments) in source code
+Report
+Report contains explanation of implemented web pages
+Basic project plan with limited depth in understanding web development concepts, minimal planning evident, communication lacks clarity, showcasing a fundamental grasp of the task but falls short in comprehensive detailing.
+To achieve 50+
+
+Project
+Implementation of 5 features using HTML, CSS, JavaScript, PHP and MySQL
+Good documentation (comments) in source code
+Report
+Report contains explanation of implemented web pages
+Competent project plan reflects a satisfactory understanding of web development, with a clear outline of tasks, basic planning, and acceptable communication, demonstrating a functional approach to the given web project.
+Harvard referencing has been used
+To achieve 60+
+Project
+Implementation of 7 features using HTML, CSS, JavaScript, PHP and MySQL
+Very Good documentation (comments) in source code
+Report
+Report contains explanation of implemented web pages
+Security measures discussed
+Proficient project plan showcases a solid grasp of web development principles, demonstrates adequate planning and organisation, effective communication, and a thoughtful approach to project implementation.
+Harvard referencing has been used
+To achieve 70+
+
+Project
+Implementation of 9 features using HTML, CSS, JavaScript, PHP and MySQL
+Excellent documentation (comments) in source code
+Report
+Report contains explanation of implemented web pages
+Security measures discussed
+Documented evidence of the testing strategy
+Exceptional project plan demonstrates a thorough understanding of web development concepts, meticulous attention to detail, strategic planning, and effective communication, showcasing a comprehensive and well-structured approach
+Appendix contains Screenshot of web pages and source code
+Harvard referencing has been used
+ 
+
+Assesses learning outcomes (1), (2), (3) and (4)
+
+Note that the overall grade will be determined by the application of the School of Business & Technology Assessment Criteria Grid.
+
+This assessment will be marked anonymously. This means Moodle will hide student identities from the marker during the marking process. To protect this anonymity, please do not incorporate your personal details, including your name, email and student number anywhere within the actual assignment or its file name. 
+
+Please also be aware that if you take an extension, it may not be possible for your work to be marked anonymously. This is because the technology reveals all student identities to the marker on the standard feedback return date, but your assignment might be marked after this.  
+
+If you have any questions about anonymous assessment, please contact your Module Tutor. 
