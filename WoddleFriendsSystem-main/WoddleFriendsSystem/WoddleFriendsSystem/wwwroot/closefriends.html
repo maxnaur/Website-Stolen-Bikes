@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+
+<html lang="en-gb">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Friends</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="js/retrievedata.js"></script>
+
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+ 
+
+    <!-- Page Content -->
+    <div id="closefriends">
+        <div id="closeFriendsTab" class="card-colums">
+        </div>
+    </div>
+
+    <script>
+        refresh();
+
+        function refresh() {
+            var retriveUserSelect = JSON.parse(localStorage.getItem("userNameSelect"));
+            var retrieveUser = JSON.parse(localStorage.getItem(retriveUserSelect));
+            var userCloseFriends = retrieveUser.closefriends;
+
+            for (let i = 0; i < userCloseFriends.length; i++) {
+                var userName = userCloseFriends[i];
+                for (let j = 0; j < NumOfUsers; j++) {
+                    if (userName === JSON.parse(localStorage.getItem("user" + j)).name[0]) {
+                        var userBio = JSON.parse(localStorage.getItem("user" + j)).name[1];
+                        AddFriend(userName, userBio);
+                    }
+                }
+            }
+
+            function AddFriend(userName, userBio) {
+                var tab = document.createElement('div');
+                tab.classList.add('card', 'bg-light');
+                tab.setAttribute('id', 'tab');
+
+                var tabBody = document.createElement('div');
+                tabBody.classList.add('card-body');
+                tabBody.setAttribute('id', 'tabBody');
+
+                var userImg = document.createElement('img');
+                userImg.src = '/img/user.jpg';
+                userImg.alt = 'user image';
+                userImg.className = 'card-img-top';
+                userImg.setAttribute('style', 'width:200px');
+                userImg.setAttribute('id', 'userImg');
+
+                var userNameTag = document.createElement('h2');
+                userNameTag.textContent = userName;
+                userNameTag.className = 'card-title';
+
+                var userBioTag = document.createElement('p');
+                userBioTag.className = 'card-text';
+                userBioTag.textContent = userBio;
+
+                var removeCloseFriendBtn = document.createElement('button');
+                removeCloseFriendBtn.textContent = 'Remove Close Friend';
+                removeCloseFriendBtn.className = 'btn btn-light';
+                removeCloseFriendBtn.addEventListener('click', function () {
+                    removeCloseFriend(userName);
+                });
+
+                tabBody.appendChild(userImg);
+                tabBody.appendChild(userNameTag);
+                tabBody.appendChild(userBioTag);
+                tabBody.appendChild(removeCloseFriendBtn);
+
+                tab.appendChild(tabBody);
+
+                var closeFriendsTab = document.getElementById('closeFriendsTab');
+                closeFriendsTab.appendChild(tab);
+            }
+        }
+
+        function removeCloseFriend(userNameCF) {
+            if (getConfirmation()) {
+                var retriveUserSelect = JSON.parse(localStorage.getItem("userNameSelect"));
+                var retrieveUser = JSON.parse(localStorage.getItem(retriveUserSelect));
+                var userCloseFriends = retrieveUser.closefriends;
+
+                for (let j = 0; j < userCloseFriends.length; j++) {
+                    if (userNameCF === userCloseFriends[j]) {
+                        userCloseFriends.splice(j, 1); // Remove friend from friend list
+                        localStorage.setItem(retriveUserSelect, JSON.stringify(retrieveUser));
+                        var closefriendTabs = document.getElementById('closeFriendsTab');
+                        var closeFriendCards = closefriendTabs.getElementsByClassName('card');
+
+                        for (let i = 0; i < closeFriendCards.length; i++) {
+                            var userNameTag = closeFriendCards[i].querySelector('.card-title');
+                            if (userNameTag.textContent === userNameCF) {
+                                closeFriendCards[i].remove();
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        function getConfirmation() {
+            var validation = confirm("Are you sure you want to remove friend?");
+            if (validation == true) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>

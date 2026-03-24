@@ -1,3 +1,39 @@
+<?php
+if (submit_button("","","") == "") {
+  
+}
+
+function createUser(){
+  $userFirstName = $_POST["firstName"];
+  $userLastName = $_POST["lastName"];
+
+  $userEmail1 = $_POST["email"];
+  $userEmail2 = $_POST["confirmEmail"];
+  $userPhone = $_POST["phone"];
+
+  $userBirth = $_POST["DOB"];
+
+  $userAddressLine1 = $_POST["addressLine1"];
+  $userAddressLine2 = $_POST["addressLine2"];
+  $userPostcode = $_POST["postcode"];
+  $userCounty = $_POST["county"];
+  $userCity = $_POST["city"];
+
+  $userPassword1 = $_POST["password"];
+  $userPassword2 = $_POST["confirmPassword"];
+  
+
+  echo "Thanks, " . $userFirstName ." ". $userLastName . " for signing up";
+  echo " with email ". $userEmail;
+
+  $hashedPassword = password_hash($userPassword, PASSWORD_DEFAULT);
+  $saltPassword = password_hash($userPassword, PASSWORD_DEFAULT, [""=> $saltPassword]);
+  echo "hashed password ". $hashedPassword ."";
+  echo "Salt password ". $saltPassword ."";
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +42,7 @@
   <title>Register - Bike's Safty</title>
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Custom Catppuccin CSS -->
+  <!-- ressize and colours CSS -->
   <link rel="stylesheet" href="form-base.css">
 </head>
 <body>
@@ -23,19 +59,18 @@
           <div class="card-body">
             <h1 class="text-center mb-4">Register</h1>
             <!-- registration form posts to backend script -->
-            <form id="registerForm" method="POST" action="auth.php">
-            <input type="hidden" name="action" value="register">
+            <form id="registerForm" method="POST" action="create_register.php">
             <div class="row g-3">
               <!-- First Name -->
               <div class="col-md-6">
                 <label for="firstName" class="form-label">First Name*</label>
-                <input type="text" name="first_name" class="form-control" id="firstName" placeholder="First Name" required>
+                <input type="text" name="firstName" class="form-control" id="firstName" placeholder="First Name" required>
               </div>
               
               <!-- Last Name -->
               <div class="col-md-6">
                 <label for="lastName" class="form-label">Last Name*</label>
-                <input type="text" name="last_name" class="form-control" id="lastName" placeholder="Last Name" required>
+                <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Last Name" required>
               </div>
               
               <!-- Email Section Section -->
@@ -47,7 +82,7 @@
               
               <div class="col-md-6">
                 <label for="confirmEmail" class="form-label">Confirm Email*</label>
-                <input type="email" name="confirm_email" class="form-control" id="confirmEmail" placeholder="Confirm Email" required>
+                <input type="email" name="confirmEmail" class="form-control" id="confirmEmail" placeholder="Confirm Email" required>
                 <div class="email-error text-danger small mt-1" style="display:none;"></div>
               </div>
               
@@ -56,16 +91,22 @@
                 <label for="phone" class="form-label">Phone Number</label>
                 <input type="tel" name="phone" class="form-control" id="phone" placeholder="Phone Number">
               </div>
+
+              <!-- Date of Birth -->
+              <div class="col-md-12">
+                <label for="birth" class="form-label">Date of Birth</label>
+                <input type="date" name="DOB" class="form-control" id="DOB" placeholder="Date of Birth">
+              </div>
               
               <!-- Address Section -->
               <div class="col-md-6">
                 <label for="addressLine1" class="form-label">Address Line 1*</label>
-                <input type="text" name="address1" class="form-control" id="addressLine1" placeholder="Address Line 1" required>
+                <input type="text" name="addressLine1" class="form-control" id="addressLine1" placeholder="Address Line 1" required>
               </div>
               
               <div class="col-md-6">
                 <label for="addressLine2" class="form-label">Address Line 2</label>
-                <input type="text" name="address2" class="form-control" id="addressLine2" placeholder="Address Line 2">
+                <input type="text" name="addressLine2" class="form-control" id="addressLine2" placeholder="Address Line 2">
               </div>
               
               <div class="col-md-6">
@@ -95,7 +136,7 @@
               
               <div class="col-md-6">
                 <label for="confirmPassword" class="form-label">Confirm Password*</label>
-                <input type="password" name="confirm_password" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
+                <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
                 <label class="form-check-label">
                   <input type="checkbox" class="toggle-password form-check-input" data-target="#confirmPassword">
                   Show password
@@ -108,7 +149,7 @@
             </div>
             
             <div class="mt-3 text-center">
-              <a href="login.php" class="text-decoration-none text-muted">Sign In</a>
+              <a href="login.html" class="text-decoration-none text-muted">Sign In</a>
             </div>
             </form>
           </div>
@@ -119,6 +160,14 @@
 
   <!-- Bootstrap JS (optional but recommended for form validation) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- registration script (placeholder) -->
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Registration successful! Welcome to Bike\'s Safty!');
+      this.reset();
+    });
+  </script>
   <!-- shared utilities -->
   <script src="form-utils.js"></script>
 </body>
