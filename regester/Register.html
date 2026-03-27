@@ -1,38 +1,3 @@
-<?php
-if (submit_button("","","") == "") {
-  
-}
-
-function createUser(){
-  $userFirstName = $_POST["firstName"];
-  $userLastName = $_POST["lastName"];
-
-  $userEmail1 = $_POST["email"];
-  $userEmail2 = $_POST["confirmEmail"];
-  $userPhone = $_POST["phone"];
-
-  $userBirth = $_POST["DOB"];
-
-  $userAddressLine1 = $_POST["addressLine1"];
-  $userAddressLine2 = $_POST["addressLine2"];
-  $userPostcode = $_POST["postcode"];
-  $userCounty = $_POST["county"];
-  $userCity = $_POST["city"];
-
-  $userPassword1 = $_POST["password"];
-  $userPassword2 = $_POST["confirmPassword"];
-  
-
-  echo "Thanks, " . $userFirstName ." ". $userLastName . " for signing up";
-  echo " with email ". $userEmail;
-
-  $hashedPassword = password_hash($userPassword, PASSWORD_DEFAULT);
-  $saltPassword = password_hash($userPassword, PASSWORD_DEFAULT, [""=> $saltPassword]);
-  echo "hashed password ". $hashedPassword ."";
-  echo "Salt password ". $saltPassword ."";
-}
-?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,7 +8,7 @@ function createUser(){
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- ressize and colours CSS -->
-  <link rel="stylesheet" href="form-base.css">
+  <link rel="stylesheet" href="../style/form-base.css">
 </head>
 <body>
   <script>
@@ -169,6 +134,8 @@ function createUser(){
     });
   </script>
   <!-- shared utilities -->
-  <script src="form-utils.js"></script>
+  <script src="../style/form-utils.js"></script>
+  <!-- enter password -->
+   <script src="Registration.js"></script>
 </body>
 </html>
