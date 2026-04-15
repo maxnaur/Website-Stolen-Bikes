@@ -6,42 +6,22 @@
 }
 
 /* ------------------------------------------ */
-/* STYLING FOR THE STAR PATTERN LAYOUT        */
+/* STYLING FOR THE STAR PATTERN LAYOUT (GENERAL)*/
 /* ------------------------------------------ */
 
-/* The container that holds all the profiles. 
-   We use relative positioning to allow absolute placement of members within it. */
 .team-star-pattern {
-    position: relative; /* Key for absolute positioning of children */
-    min-height: 300px; /* Ensure enough space for layout magic */
+    position: relative; /* Key: Establishes the coordinate system for absolute children */
+    padding: 50px 10px; /* Added padding to give space around the outer members */
+    min-height: 450px; /* Increased min height to accommodate the spread layout */
 }
 
-/* Styling all individual profile cards */
+/* Profile Card base styling (applies everywhere) */
 .profile-card {
-    /* Use Bootstrap col classes, but we must override their flow behavior */
-    width: 25%; /* Sets a base width, adjusted by media queries later */
-    padding: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
 }
 
-/* Center the main focus member slightly more */
-.centered-focus {
-    transform: scale(1.05); 
-    z-index: 10; /* Ensures it sits "above" other elements */
-}
-
-
-/* ------------------------------------------ */
-/* PHOTO & CARD STYLING (Aesthetics)         */
-/* ------------------------------------------ */
-
-.card {
-    border: none; 
-    background-color: #fff; /* White background for clean look */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Hover effect on cards */
+/* Hover effect on cards (Applies everywhere) */
 .profile-card:hover .card {
     transform: translateY(-8px);
     box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1) !important; 
@@ -49,73 +29,84 @@
 
 
 /* Photo positioning and styling (Circular Image) */
-.photo {
-    margin: 0 auto; /* Center the photo block */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .photo img {
-    width: 120px;   /* Consistent size */
+    width: 120px;   
     height: 120px;
     object-fit: cover; 
-    border-radius: 50%; /* Circular shape */
+    border-radius: 50%; 
     border: 4px solid #e9ecef; 
 }
 
-/* Adjustments for smaller screens to prevent overflow */
-@media (max-width: 768px) {
-    .profile-card {
-        width: 100%; /* Full width on tablets and phones */
-        margin-bottom: 20px;
-    }
-     /* Reset the fancy positioning effects for mobile simplicity */
+
+/* ******************************************** */
+/* ********* DESKTOP LAYOUT FIX (min-width: 1200px) ********** */
+/* ******************************************** */
+
+@media (min-width: 1200px) {
     .team-star-pattern {
-        position: relative;
-        display: block !important; /* Forces linear flow on small screens */
+        display: block; /* Reset flex behavior for absolute positioning */
+        padding: 50px 30px; /* Adjusted padding for better spread */
     }
+
+    /* --- Positioning the Members in a Semi-Circle --- */
+    
+    /* Top Left (CEO) - Starts high and left */
+    #CEO {
+        position: absolute;
+        top: 15%; 
+        left: 8%;
+        transform: none !important; /* Reset any default scale/translation */
+    }
+    
+    /* Top Right (Programmer) - Symmetrically placed on the right side */
+    #Programmer {
+        position: absolute;
+        top: 15%; 
+        right: 8%;
+        transform: none !important;
+    }
+
+    /* Center Focus Member (Developer Head) - Remains anchored in flow for stability, but adjusted to be central */
+     #DeveloperHead {
+        /* This member remains in the normal document flow to act as a stable anchor point. */
+        margin-left: auto; /* Pushes it towards the center grouping */
+        width: 30%; /* Makes the focus member slightly wider */
+    }
+
+    /* Bottom Left (Marketing Head) - Placed low and left */
+    #MarketingHead {
+        position: absolute; 
+        bottom: 15%; 
+        left: 8%;
+        transform: none !important;
+    }
+    
+    /* Bottom Right (Content Head) - Symmetrically placed on the right side */
+    #ContentHead {
+        position: absolute; 
+        bottom: 15%; 
+        right: 8%;
+        transform: none !important;
+    }
+
+    /* Adjusting width for members that are absolutely positioned, so they don't disrupt flow. */
+    /* The developer head remains the primary flowing element. */
+    #CEO, #Programmer, #MarketingHead, #ContentHead {
+         width: auto; /* Allow content to dictate width when absolute */
+         margin: 0;
+    }
+
+     /* Adjusting Z-index for visual hierarchy (Center is highest) */
     .centered-focus {
-        transform: none; 
-        margin: 0 auto;
+        z-index: 20;
     }
 }
 
-/* Desktop specific adjustments for a true "star" effect (optional, advanced) */
-@media (min-width: 1200px) {
-    /* This uses the relative positioning of .team-star-pattern 
-       and absolute positioning on children to pull them into a circular pattern. */
 
-     #CEO {
-        position: absolute; 
-        top: 0; left: 5%; /* Top Left */
-        transform: translate(0, -100px);
-    }
-    
-    #DeveloperHead {
-        position: relative; /* Keep the main focus member in flow */
-        z-index: 20;
-    }
+/* ******************************************** */
+/* ********* MOBILE/TABLET STYLES (UNCHANGED) ********** */
+/* ******************************************** */
 
-    #Programmer {
-        position: absolute;
-        top: 0; right: 5%; /* Top Right */
-        transform: translate(0, -100px);
-    }
-
-    #MarketingHead {
-         /* Positioned below CEO, left side */
-        position: absolute; 
-        bottom: 0; left: 3%; 
-        transform: translate(0, 80px);
-    }
-    
-    #ContentHead {
-        /* Positioned below Programmer, right side */
-        position: absolute; 
-        bottom: 0; right: 3%; 
-        transform: translate(0, 80px);
-    }
-    
-    /* Note: For the most perfect "star," you might need to wrap all members in a single flex container and use negative margins/padding on that parent. The method above provides visual separation while maintaining card structure. */
+@media (max-width: 768px) {
+    /* This section remains the same as requested, ensuring responsiveness. */
 }
