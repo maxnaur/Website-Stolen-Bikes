@@ -5,22 +5,24 @@ DROP TABLE IF EXISTS report;
 
 -- Create users table (with corrected column names)
 CREATE TABLE users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
-    role TEXT DEFAULT 'public',
-    phone TEXT,
-    address_line1 TEXT NOT NULL,
-    address_line2 TEXT,
-    postcode TEXT NOT NULL,
-    county TEXT NOT NULL,
-    city TEXT NOT NULL,
-    date_of_birth TEXT,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  phone VARCHAR(20),
+  date_of_birth DATE,
+  address_line1 VARCHAR(100) NOT NULL,
+  address_line2 VARCHAR(100),
+  postcode VARCHAR(10) NOT NULL,
+  county VARCHAR(50) NOT NULL,
+  city VARCHAR(50) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  salt VARCHAR(64) NOT NULL,  -- 16 bytes * 2 (hex) = 32 characters
+  role TEXT DEFAULT 'public',
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
+/*
 -- Create bicycles table (with corrected column names and defaults)
 CREATE TABLE bicycles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,3 +65,4 @@ VALUES ('Admin', 'User', 'admin@police.uk', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa
 -- Important fix for SQLite: 
 -- The original upload had typos like "dicycles_id" and "pastcode" 
 -- We've corrected these to proper SQLite names
+*/

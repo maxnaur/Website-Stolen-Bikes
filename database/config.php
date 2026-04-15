@@ -1,12 +1,15 @@
 <?php
-	$servername = "localhost";
-	$username = "ENTER_DATABASE_USER_NAME_HERE";
-	$password = "ENTER_DATABASE_PASSWORD_HERE";
-	$dbname = "ENTER_DATABASE_NAME_HERE";
+// Database configuration
+$servername = "localhost";
+$username = "YOUR_DATABASE_USER";
+$password = "YOUR_DATABASE_PASSWORD";
+$dbname = "YOUR_DATABASE_NAME";
 
-	$connection = new mysqli($servername, $username, $password, $dbname);
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-	if($connection->connect_error) {
-		echo $connection->connect_error;
-	}
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 ?>
