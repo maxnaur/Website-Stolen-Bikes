@@ -5,6 +5,8 @@ ul {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    background: linear-gradient(to right, #1e3c72 0%, #2a5298 100%);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* make the list horizotal */
@@ -19,11 +21,20 @@ li a {
     height: 50px;
     text-align: center;
     line-height: 50px;
-    color:white;
-    background: #2f3036;
+    color: white;
+    background: #1e3c72;
     text-decoration: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
 }
-/*section*/
+
+/* first item no border */
+li:first-child a {
+    border-left: none;
+}
+
+/* hover effect - lighter blue/grey */
 li:hover a {
-    background-color: #19c589;
+    background: linear-gradient(to bottom, #2a5298, #1e3c72);
+    color: #e8f0f7;
 }
