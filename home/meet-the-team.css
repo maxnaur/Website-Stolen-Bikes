@@ -1,78 +1,49 @@
 /* Whole html box designing */
-        html {
-            box-sizing: border-box;
-        }
+html {
+  box-sizing: border-box;
+}
 
-        /* Body width fixing */
-        body {
-            max-width: 100%
-        }
+/* Body width fixing */
+body {
+  max-width: 100%;
+}
 
-        /* Box sizing depending on parent */
-        *,
-        *:before,
-        *:after {
-            box-sizing: inherit;
-        }
+/* Box sizing depending on parent */
+*, *:before, *:after {
+  box-sizing: inherit;
+}
 
-        /* Styling column */
-        .column {
-            float: left;
-            width: 33%;
-            margin-bottom: 16px;
-            padding: 5px 10px;
-        }
+/* Card styling */
+.card {
+  background-color: gray;
+  border: 1px solid black;
+  border-radius: 0.5rem;
+  height: 100%;
+  transition: transform 0.2s;
+}
 
+.card:hover {
+  transform: translateY(-5px);
+}
 
-        /* Column width change depends on screen size */
-        @media screen and (max-width: 670px) {
-            .column {
-                width: 100%;
-                text-align: none;
-            }
-        }
+.card-body {
+  padding: 1rem;
+}
 
-        /* Card designing */
-        .card {
-            background-color: gray;
-            border: 1px solid black;
-        }
-        .container {
-            padding: 0 16px;
-        }
+/* Image styling */
+.photo img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: block;
+  max-height: 150px;
+  object-fit: cover;
+}
 
-        /* Icon styling */
-        .photo {
-            margin: 10px;
-            display: inline-block;
-        }
-        .photo img {
-            width: 40px !important;
-            height: 60px !important;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .photo img:hover {
-            transform: rotateY(180deg);
-            transition: transform 0.8s;
-        }
-
-        .container::after,
-        .row::after {
-            content: "";
-            clear: both;
-            display: table;
-        }
-
-        /* Margining first member of team */
-        #CEO {
-            float: none;
-            margin: auto;
-        }
-
-        /* Margining first member of team */
-        #Developer {
-            float: none;
-            margin: auto;
-        }
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card {
+    margin-bottom: 1rem;
+  }
+}
