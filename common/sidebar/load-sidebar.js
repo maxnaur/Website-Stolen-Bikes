@@ -1,7 +1,7 @@
 // Load sidebar dynamically into the page
 document.addEventListener('DOMContentLoaded', function() {
     // Try to determine the correct path - use lowercase to match server URL
-    const sidebarPath = '/sidebar.html';
+    const sidebarPath = '../common/sidebar/sidebar.html';
     
     fetch(sidebarPath)
         .then(response => {
