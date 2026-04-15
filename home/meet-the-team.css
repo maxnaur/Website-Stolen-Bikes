@@ -1,28 +1,17 @@
-/* ========================================
-   GLOBAL RESET & BOX SIZING
-==========================================*/
 *,
 *:before,
 *:after {
     box-sizing: inherit;
 }
 
-
-/* ========================================
-   STAR PATTERN LAYOUT CONTAINER
-   The wrapper for the circular layout
-==========================================*/
-
+/* star pattern layout container*/
 .team-star-pattern {
     position: relative; /* Key: Establishes the coordinate system */
     min-height: 350px;  /* Adjusted height for the new + shape */
 }
 
 
-/* ========================================
-   INDIVIDUAL PROFILE CARDS
-==========================================*/
-
+/* each card*/
 .profile-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
@@ -33,11 +22,7 @@
     z-index: 20; /* Ensures this member sits visually "above" others */
 }
 
-
-/* ========================================
-   PHOTO & CARD STYLING (AESTHETICS)
-==========================================*/
-
+/* the card*/
 .card {
     border: none; 
     background-color: #fff;     /* Clean white background */
@@ -67,11 +52,9 @@
 }
 
 
-/* ========================================
-   RESPONSIVE DESIGN - MEDIA QUERIES
-   ==========================================*/
+/* ressize */
 
-/* --- Tablet/Mobile View (Unchanged) --- */
+/* tablet/mobile view*/
 @media (max-width: 768px) {
     .profile-card {
         width: 100%; /* Full width on tablets and phones */
@@ -87,6 +70,3 @@
         margin: 0 auto;
     }
 }
-
-
-
