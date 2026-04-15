@@ -42,8 +42,8 @@ CREATE TABLE `bicycles` (
 );-- ENGINE=InnoDB;
 
 -- Add foreign key constraint for bicycles
---ALTER TABLE `bicycles`
---ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`);
+-- ALTER TABLE `bicycles`
+-- ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`);
 
 -- Report table
 CREATE TABLE `report` (
@@ -57,8 +57,8 @@ CREATE TABLE `report` (
 );-- ENGINE=InnoDB;
 
 -- Add foreign key constraint for report
---ALTER TABLE `report`
---ADD FOREIGN KEY (`bicycle_id`) REFERENCES `bicycles`(`id`);
+-- ALTER TABLE `report`
+-- ADD FOREIGN KEY (`bicycle_id`) REFERENCES `bicycles`(`id`);
 
 -- Insert default admin user (password: admin123)
 INSERT INTO `users` (
