@@ -1,121 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Meet The Teem</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="meet-the-team.css">
-  <link rel="stylesheet" href="../common/sidebar/sidebar.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet The Team</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles (for non-Bootstrap elements) -->
+    <link rel="stylesheet" href="meet-the-team.css"> 
+    <!-- Assuming sidebar CSS is necessary -->
+    <link rel="stylesheet" href="../common/sidebar/sidebar.css">
 </head>
+
 <body>
-  <div id="sidebar-container"></div>
-  <script src="../common/sidebar/load-sidebar.js"></script>
-  
-  <h1>Meet The Teem</h1>
-  <hr>
+    <!-- Sidebar setup remains the same -->
+    <div id="sidebar-container"></div>
+    <script src="../common/sidebar/load-sidebar.js"></script>
 
-  <div class="container">
-    <div class="row g-4">
-      <!-- CEO Card -->
-      <div class="col-md-4" id="CEO">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="photo">
-              <img src="71a58e8c_output_0.jpg" 
-                   alt="Oliver Hansen - CEO" 
-                   class="img-fluid rounded-circle"
-                   style="width: 100%; height: auto;">
-            </div>
-            <h2 class="card-title">Oliver Hansen</h2>
-            <p class="card-text">CEO & Founder</p>
-            <p class="card-text">
-              Catching Pedofiles since 2004<br>
-              was stoped in 2021
-            </p>
-          </div>
-        </div>
-      </div>
+    <!-- Main Content Wrapper -->
+    <main class="container mt-4 mb-5"> 
+        <h1 class="mb-4">Meet The Team</h1>
+        <hr>
 
-      <!-- Developer Head Card -->
-      <div class="col-md-4">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="photo">
-              <img src="71a58e8c_output_0.jpg" 
-                   alt="Oliver Ching Lee - Developer Head" 
-                   class="img-fluid rounded-circle"
-                   style="width: 100%; height: auto;">
+        <!-- First Row of Team Members (CEO, Developer Head) -->
+        <div class="row g-4 justify-content-center">
+            
+            <!-- CEO (Oliver Hansen) - col-md-4 ensures 3 columns on medium screens -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card team-member p-3 shadow-sm">
+                    <i class="photo text-center my-3">
+                        <!-- Added Bootstrap img classes for better control if needed -->
+                        <img src="71a58e8c_output_0.jpg" alt="Oliver Hansen Photo" class="rounded-circle photo-image">
+                    </i>
+                    <div class="card-body p-0 pt-3">
+                        <h2 class="card-title text-center mb-1">Oliver Hansen</h2>
+                        <p class="text-primary lead fw-bold">CEO & Founder</p>
+                        <p class="card-text small mt-3">
+                            Catching Pedofiles since 2004 was stoped in 2021.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <h2 class="card-title">Oliver Ching Lee</h2>
-            <p class="card-text">Developer Head</p>
-            <p class="card-text">
-              A website should be un-friendly<br>
-              and un-attractive
-            </p>
-          </div>
-        </div>
-      </div>
 
-      <!-- Content Head Card -->
-      <div class="col-md-4">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="photo">
-              <img src="71a58e8c_output_0.jpg" 
-                   alt="Oliver Ahmed - Content Head" 
-                   class="img-fluid rounded-circle"
-                   style="width: 100%; height: auto;">
+             <!-- Developer Head (Oliver Ching Lee) -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card team-member p-3 shadow-sm">
+                    <i class="photo text-center my-3">
+                        <img src="71a58e8c_output_0.jpg" alt="Oliver Ching Lee Photo" class="rounded-circle photo-image">
+                    </i>
+                    <div class="card-body p-0 pt-3">
+                        <h2 class="card-title text-center mb-1">Oliver Ching Lee</h2>
+                        <p class="text-primary lead fw-bold">Developer Head</p>
+                        <p class="card-text small mt-3">
+                            A website should be un-friendly and un-attractive.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <h2 class="card-title">Oliver Ahmed</h2>
-            <p class="card-text">Content Head</p>
-            <p class="card-text">
-              Content should be popular<br>
-              and trending 🇮🇱
-            </p>
-          </div>
-        </div>
-      </div>
 
-      <!-- Marketing Head Card -->
-      <div class="col-md-4">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="photo">
-              <img src="71a58e8c_output_0.jpg" 
-                   alt="Oliver Rihana - Marketing Head" 
-                   class="img-fluid rounded-circle"
-                   style="width: 100%; height: auto;">
-            </div>
-            <h2 class="card-title">Oliver Rihana</h2>
-            <p class="card-text">Marketing Head</p>
-            <p class="card-text">
-              Sell the product like<br>
-              Greatest Mary Kay Ash
-            </p>
-          </div>
-        </div>
-      </div>
+        </div> <!-- End of First Row -->
 
-      <!-- Programmer Card -->
-      <div class="col-md-4" id="Developer">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="photo">
-              <img src="71a58e8c_output_0.jpg" 
-                   alt="Oliver Ai - Programmer" 
-                   class="img-fluid rounded-circle"
-                   style="width: 100%; height: auto;">
+
+        <!-- Second Row (Remaining Members) -->
+        <div class="row g-4 justify-content-center mt-3">
+             
+            <!-- Content Head (Oliver Ahmed) -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card team-member p-3 shadow-sm">
+                    <i class="photo text-center my-3">
+                        <img src="71a58e8c_output_0.jpg" alt="Oliver Ahmed Photo" class="rounded-circle photo-image">
+                    </i>
+                    <div class="card-body p-0 pt-3">
+                        <h2 class="card-title text-center mb-1">Oliver Ahmed</h2>
+                        <p class="text-primary lead fw-bold">Content Head</p>
+                        <p class="card-text small mt-3">
+                            Content should be popular and trending 🇮🇱.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <h2 class="card-title">Oliver Ai</h2>
-            <p class="card-text">Programer</p>
-            <p class="card-text">
-              Catching Pedofiles since 2004<br>
-              was stoped in 2021
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+
+            <!-- Marketing Head (Oliver Rihana) -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card team-member p-3 shadow-sm">
+                    <i class="photo text-center my-3">
+                        <img src="71a58e8c_output_0.jpg" alt="Oliver Rihana Photo" class="rounded-circle photo-image">
+                    </i>
+                    <div class="card-body p-0 pt-3">
+                        <h2 class="card-title text-center mb-1">Oliver Rihana</h2>
+                        <p class="text-primary lead fw-bold">Marketing Head</p>
+                        <p class="card-text small mt-3">
+                            Sell the product like Greatest Mary Kay Ash.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+             <!-- Programmer (Oliver Ai) -->
+            <div class="col-lg-4 col-md-6">
+                 <div class="card team-member p-3 shadow-sm">
+                     <i class="photo text-center my-3">
+                        <img src="71a58e8c_output_0.jpg" alt="Oliver Ai Photo" class="rounded-circle photo-image">
+                    </i>
+                    <div class="card-body p-0 pt-3">
+                         <h2 class="card-title text-center mb-1">Oliver Ai</h2>
+                        <p class="text-primary lead fw-bold">Programmer</p>
+                        <p class="card-text small mt-3">
+                            Catching Pedofiles since 2004 was stoped in 2021.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- End of Second Row -->
+
+
+    </main>
+
+<!-- Bootstrap JS Bundle (required for components, good practice to include) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
