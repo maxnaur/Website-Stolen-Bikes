@@ -1,112 +1,140 @@
-/* Global Reset & Box Sizing */
+/* ========================================
+   GLOBAL RESET & BOX SIZING
+==========================================*/
 *,
 *:before,
 *:after {
     box-sizing: inherit;
 }
 
-/* ------------------------------------------ */
-/* STYLING FOR THE STAR PATTERN LAYOUT (GENERAL)*/
-/* ------------------------------------------ */
+
+/* ========================================
+   STAR PATTERN LAYOUT CONTAINER
+   The wrapper for the circular layout
+==========================================*/
 
 .team-star-pattern {
-    position: relative; /* Key: Establishes the coordinate system for absolute children */
-    padding: 50px 10px; /* Added padding to give space around the outer members */
-    min-height: 450px; /* Increased min height to accommodate the spread layout */
+    position: relative; /* Key: Establishes the coordinate system */
+    min-height: 350px;  /* Adjusted height for the new + shape */
 }
 
-/* Profile Card base styling (applies everywhere) */
+
+/* ========================================
+   INDIVIDUAL PROFILE CARDS
+==========================================*/
+
 .profile-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
 }
 
-/* Hover effect on cards (Applies everywhere) */
+.centered-focus {
+    transform: scale(1.05);
+    z-index: 20; /* Ensures this member sits visually "above" others */
+}
+
+
+/* ========================================
+   PHOTO & CARD STYLING (AESTHETICS)
+==========================================*/
+
+.card {
+    border: none; 
+    background-color: #fff;     /* Clean white background */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
 .profile-card:hover .card {
     transform: translateY(-8px);
-    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1) !important; 
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1) !important;
 }
 
 
-/* Photo positioning and styling (Circular Image) */
+/* Photo Positioning Wrapper */
+.photo {
+    margin: 0 auto;       /* Centers the photo block horizontally */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .photo img {
-    width: 120px;   
+    width: 120px;         /* Consistent image size */
     height: 120px;
-    object-fit: cover; 
-    border-radius: 50%; 
-    border: 4px solid #e9ecef; 
+    object-fit: cover;
+    border-radius: 50%;   /* Circular shape */
+    border: 4px solid #e9ecef;
 }
 
 
-/* ******************************************** */
-/* ********* DESKTOP LAYOUT FIX (min-width: 1200px) ********** */
-/* ******************************************** */
+/* ========================================
+   RESPONSIVE DESIGN - MEDIA QUERIES
+   ==========================================*/
 
+/* --- Tablet/Mobile View (Unchanged) --- */
+@media (max-width: 768px) {
+    .profile-card {
+        width: 100%; /* Full width on tablets and phones */
+        margin-bottom: 20px;
+    }
+    /* Reset the fancy positioning effects for mobile simplicity */
+    .team-star-pattern {
+        position: relative;
+        display: block !important; /* Forces linear flow on small screens */
+    }
+    .centered-focus {
+        transform: none; 
+        margin: 0 auto;
+    }
+}
+
+
+/* --- Desktop Layout (The '+' Cross Pattern) --- */
 @media (min-width: 1200px) {
     .team-star-pattern {
         display: block; /* Reset flex behavior for absolute positioning */
-        padding: 50px 30px; /* Adjusted padding for better spread */
+        padding: 50px 30px;
     }
 
-    /* --- Positioning the Members in a Semi-Circle --- */
-    
-    /* Top Left (CEO) - Starts high and left */
+    /* The central, anchor point remains in the flow */
+     #DeveloperHead {
+        position: relative;
+        width: auto !important; /* Let content define width */
+        margin-top: 100px; /* Push it down slightly from the top edge */
+        text-align: center;
+    }
+
+    /* --- Positioning using absolute coordinates for '+' shape --- */
+
+    /* Top (CEO) */
     #CEO {
-        position: absolute;
-        top: 15%; 
-        left: 8%;
-        transform: none !important; /* Reset any default scale/translation */
+        position: absolute; 
+        top: -30px;   /* Positioned above the central developer member */
+        left: 15%; 
+        transform: none !important;
     }
     
-    /* Top Right (Programmer) - Symmetrically placed on the right side */
+    /* Right (Programmer) */
     #Programmer {
         position: absolute;
-        top: 15%; 
-        right: 8%;
+        top: 20%;          /* Aligned with CEO's vertical height */
+        right: 8%;         /* Placed far right */
         transform: none !important;
     }
 
-    /* Center Focus Member (Developer Head) - Remains anchored in flow for stability, but adjusted to be central */
-     #DeveloperHead {
-        /* This member remains in the normal document flow to act as a stable anchor point. */
-        margin-left: auto; /* Pushes it towards the center grouping */
-        width: 30%; /* Makes the focus member slightly wider */
-    }
-
-    /* Bottom Left (Marketing Head) - Placed low and left */
+    /* Top Left (Marketing Head) - If we needed a corner element */
     #MarketingHead {
         position: absolute; 
-        bottom: 15%; 
-        left: 8%;
+        top: 20%;          /* Aligned with Programmer */
+        left: 8%;          /* Placed far left */
         transform: none !important;
     }
-    
-    /* Bottom Right (Content Head) - Symmetrically placed on the right side */
+
+    /* Bottom Right (Content Head) */
     #ContentHead {
         position: absolute; 
-        bottom: 15%; 
-        right: 8%;
+        bottom: -50px; /* Positioned below the developer member */
+        right: 15%; 
         transform: none !important;
     }
-
-    /* Adjusting width for members that are absolutely positioned, so they don't disrupt flow. */
-    /* The developer head remains the primary flowing element. */
-    #CEO, #Programmer, #MarketingHead, #ContentHead {
-         width: auto; /* Allow content to dictate width when absolute */
-         margin: 0;
-    }
-
-     /* Adjusting Z-index for visual hierarchy (Center is highest) */
-    .centered-focus {
-        z-index: 20;
-    }
-}
-
-
-/* ******************************************** */
-/* ********* MOBILE/TABLET STYLES (UNCHANGED) ********** */
-/* ******************************************** */
-
-@media (max-width: 768px) {
-    /* This section remains the same as requested, ensuring responsiveness. */
 }
