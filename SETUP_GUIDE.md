@@ -58,34 +58,34 @@ To verify everything is working:
 ```
 project/
 ├── database/
-│   ├── config.php           # Database connection
-│   ├── setup.php            # Run this once to initialize
+│   ├── config.php       # Database connection
+│   ├── setup.php      # Run this once to initialize
 │   ├── test-connection.php  # Test connectivity
 │   └── database_setup.sql   # SQL schema
 ├── api/
-│   ├── bicycles.php         # Bicycle REST API
-│   └── reports.php          # Reports REST API
+│   ├── bicycles.php     # Bicycle REST API
+│   └── reports.php      # Reports REST API
 ├── common/
-│   ├── auth-check.php       # Session validation
+│   ├── auth-check.php     # Session validation
 │   ├── style/
 │   ├── sidebar/
 │   └── common.php
 ├── login/
-│   ├── Login.html           # Login page
-│   ├── login.php            # Login backend
-│   └── logout.php           # Logout handler
-├── regester/
-│   ├── Register.html        # Registration page
+│   ├── Login.html       # Login page
+│   ├── login.php      # Login backend
+│   └── logout.php       # Logout handler
+├── register/
+│   ├── register.html    # Registration page
 │   └── create_register.php  # Registration backend
 ├── public/
 │   ├── public-dashboard.php # Public user dashboard
-│   └── Public.html          # Old template
+│   └── Public.html      # Old template
 ├── police/
 │   ├── police-dashboard.php # Police dashboard
-│   └── Police.html          # Old template
+│   └── Police.html      # Old template
 └── admin/
-    ├── admin-dashboard.php  # Admin dashboard
-    └── Admin.html           # Old template
+  ├── admin-dashboard.php  # Admin dashboard
+  └── Admin.html       # Old template
 ```
 
 ---

@@ -1,4 +1,2 @@
 https://getbootstrap.com/docs/5.3/getting-started/introduction/
-used ai to crate layout
-
-
+used ai to create layout

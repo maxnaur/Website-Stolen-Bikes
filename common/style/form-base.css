@@ -92,10 +92,10 @@ h2 {
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .container {
-    padding: 1rem;
+  padding: 1rem;
   }
   
   .card {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
   }
 }
