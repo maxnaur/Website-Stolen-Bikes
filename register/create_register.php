@@ -24,7 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
   // Validate required fields
   if (empty($firstName) || empty($lastName) || empty($email) || empty($addressLine1) || 
-  empty($postcode) || empty($county) || empty($city) || empty($password)) {
+  empty($postcode) || empty($county) || empty($city) || empty($password) || empty($dob)) {
+  http_response_code(400);
   $response['message'] = "Please fill in all required fields";
   echo json_encode($response);
   exit;
@@ -32,6 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
   // Validate email format
   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+  http_response_code(400);
   $response['message'] = "Please enter a valid email address";
   echo json_encode($response);
   exit;
@@ -39,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
   // Validate email match
   if ($email !== $confirmEmail) {
+  http_response_code(400);
   $response['message'] = "Email addresses do not match";
   echo json_encode($response);
   exit;
@@ -46,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
   // Validate password requirements
   if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/', $password)) {
+  http_response_code(400);
   $response['message'] = "Password must be 8+ characters with uppercase, lowercase, number and special character";
   echo json_encode($response);
   exit;
@@ -53,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
   // Validate phone number (optional but if provided, must be valid)
   if (!empty($phone) && !preg_match('/^[\d\s\-+()]{7,20}$/', $phone)) {
+  http_response_code(400);
   $response['message'] = "Please enter a valid phone number";
   echo json_encode($response);
   exit;
@@ -60,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
   // Validate DOB format
   if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dob)) {
+  http_response_code(400);
   $response['message'] = "Please enter a valid date of birth (YYYY-MM-DD)";
   echo json_encode($response);
   exit;
@@ -74,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $checkStmt->execute([$email]);
   
   if ($checkStmt->rowCount() > 0) {
+    http_response_code(400);
     $response['message'] = "Email address already registered";
     echo json_encode($response);
     exit;

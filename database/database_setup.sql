@@ -66,11 +66,21 @@ INSERT INTO `users` (
   last_name, 
   email, 
   password, 
-  role
+  role,
+  address_line1,
+  postcode,
+  county,
+  city,
+  date_of_birth
 ) VALUES (
   'Admin', 
   'User', 
   'admin@police.uk', 
   '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
-  'admin'
+  'admin',
+  '123 Police Station',
+  'PO1 1AA',
+  'Hampshire',
+  'Portsmouth',
+  '1980-01-01'
 ) ON DUPLICATE KEY UPDATE email = email;

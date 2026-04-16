@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register - Bike's Safety</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom Catppuccin CSS -->
+  <link rel="stylesheet" href="form-base.css">
+</head>
+<body>
+  <script>
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('error')) {
+  alert(params.get('error'));
+  }
+  </script>
+  <div class="container py-1">
+  <div class="row justify-content-center">
+  <div class="col-md-10">
+  <div class="card shadow-sm">
+    <div class="card-body">
+    <h1 class="text-center mb-4">Register</h1>
+    <!-- registration form posts to backend script -->
+    <form id="registerForm" method="POST" action="auth.php">
+    <input type="hidden" name="action" value="register">
+    <div class="row g-3">
+    <!-- First Name -->
+    <div class="col-md-6">
+    <label for="firstName" class="form-label">First Name*</label>
+    <input type="text" name="first_name" class="form-control" id="firstName" placeholder="First Name" required>
+    </div>
+    
+    <!-- Last Name -->
+    <div class="col-md-6">
+    <label for="lastName" class="form-label">Last Name*</label>
+    <input type="text" name="last_name" class="form-control" id="lastName" placeholder="Last Name" required>
+    </div>
+    
+    <!-- Email Section Section -->
+    <div class="col-md-6">
+    <label for="email" class="form-label">Email*</label>
+    <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
+    <div class="email-error text-danger small mt-1" style="display:none;"></div>
+    </div>
+    
+    <div class="col-md-6">
+    <label for="confirmEmail" class="form-label">Confirm Email*</label>
+    <input type="email" name="confirm_email" class="form-control" id="confirmEmail" placeholder="Confirm Email" required>
+    <div class="email-error text-danger small mt-1" style="display:none;"></div>
+    </div>
+    
+    <!-- Phone Number -->
+    <div class="col-md-12">
+    <label for="phone" class="form-label">Phone Number</label>
+    <input type="tel" name="phone" class="form-control" id="phone" placeholder="Phone Number">
+    </div>
+    
+    <!-- Address Section -->
+    <div class="col-md-6">
+    <label for="addressLine1" class="form-label">Address Line 1*</label>
+    <input type="text" name="address1" class="form-control" id="addressLine1" placeholder="Address Line 1" required>
+    </div>
+    
+    <div class="col-md-6">
+    <label for="addressLine2" class="form-label">Address Line 2</label>
+    <input type="text" name="address2" class="form-control" id="addressLine2" placeholder="Address Line 2">
+    </div>
+    
+    <div class="col-md-6">
+    <label for="postcode" class="form-label">Postcode*</label>
+    <input type="text" name="postcode" class="form-control" id="postcode" placeholder="Postcode" required>
+    </div>
+    
+    <div class="col-md-6">
+    <label for="county" class="form-label">County*</label>
+    <input type="text" name="county" class="form-control" id="county" placeholder="County" required>
+    </div>
+    
+    <div class="col-md-12">
+    <label for="city" class="form-label">Town/City*</label>
+    <input type="text" name="city" class="form-control" id="city" placeholder="Town/City" required>
+    </div>
+    
+    <!-- Password Section -->
+    <div class="col-md-6">
+    <label for="password" class="form-label">Password*</label>
+    <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+    <label class="form-check-label">
+      <input type="checkbox" class="toggle-password form-check-input" data-target="#password">
+      Show password
+    </label>
+    </div>
+    
+    <div class="col-md-6">
+    <label for="confirmPassword" class="form-label">Confirm Password*</label>
+    <input type="password" name="confirm_password" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
+    <label class="form-check-label">
+      <input type="checkbox" class="toggle-password form-check-input" data-target="#confirmPassword">
+      Show password
+    </label>
+    </div>
+    </div>
+    
+    <div class="mt-4 text-center">
+    <button type="submit" class="btn btn-primary btn-lg px-5">Create Account</button>
+    </div>
+    
+    <div class="mt-3 text-center">
+    <a href="login.php" class="text-decoration-none text-muted">Sign In</a>
+    </div>
+    </form>
+    </div>
+  </div>
+  </div>
+  </div>
+  </div>
+
+  <!-- Bootstrap JS (optional but recommended for form validation) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- shared utilities -->
+  <script src="form-utils.js"></script>
+</body>
+</html>

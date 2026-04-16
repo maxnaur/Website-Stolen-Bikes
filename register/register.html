@@ -105,7 +105,8 @@
     <div class="col-md-6">
       <label for="password" class="form-label">Password*</label>
       <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
-      <label class="form-check-label">
+      <div id="passwordError" class="text-danger small mt-1" style="display:none;"></div>
+      <label class="form-check-label mt-1">
       <input type="checkbox" class="toggle-password form-check-input" data-target="#password">
       Show password
       </label>
@@ -114,7 +115,8 @@
     <div class="col-md-6">
       <label for="confirmPassword" class="form-label">Confirm Password*</label>
       <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
-      <label class="form-check-label">
+      <div id="confirmPasswordError" class="text-danger small mt-1" style="display:none;"></div>
+      <label class="form-check-label mt-1">
       <input type="checkbox" class="toggle-password form-check-input" data-target="#confirmPassword">
       Show password
       </label>

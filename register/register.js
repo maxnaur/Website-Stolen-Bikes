@@ -97,8 +97,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const confirmPassword = document.getElementById('confirmPassword').value.trim();
   
   // Check if all required fields are filled
-  if (!firstName || !lastName || !email || !confirmEmail || !addressLine1 || !postcode || !county || !city) {
-  alert("Please fill in all required fields");
+  if (!firstName || !lastName || !email || !confirmEmail || !addressLine1 || !postcode || !county || !city || !DOB) {
+  alert("Please fill in all required fields including Date of Birth");
   return;
   }
   
@@ -117,8 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Validate DOB format
   const dobRegex = /^\d{4}-\d{2}-\d{2}$/;
-  if (DOB && !dobRegex.test(DOB)) {
-  alert("Please enter a valid date of birth");
+  if (!dobRegex.test(DOB)) {
+  alert("Please enter a valid date of birth (YYYY-MM-DD)");
   return;
   }
   
@@ -130,19 +130,13 @@ document.addEventListener('DOMContentLoaded', function() {
   method: 'POST',
   body: formData
   })
-  .then(response => {
-  if (response.ok) {
-  window.location.href = 'login.html?success=Account created successfully!';
-  } else {
-  return response.text();
-  }
-  })
+  .then(response => response.json())
   .then(data => {
-  if (data.includes('error')) {
-  alert(`Registration failed: ${data}`);
-  } else {
+  if (data.success) {
   alert('Registration successful! Welcome to Bike\'s Safety!');
-  window.location.href = 'login.html';
+  window.location.href = '../login/Login.html?success=' + encodeURIComponent(data.message);
+  } else {
+  alert('Registration failed: ' + data.message);
   }
   })
   .catch(error => {
@@ -155,8 +149,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const passwordToggleElements = document.querySelectorAll('.toggle-password');
   passwordToggleElements.forEach(toggle => {
   toggle.addEventListener('change', () => {
-  const target = document.querySelector(`[data-target="${toggle.dataset.target}"]`);
-  togglePasswordVisibility(target.id);
+  const targetId = toggle.dataset.target.replace('#', '');
+  togglePasswordVisibility(targetId);
   });
   });
 });
