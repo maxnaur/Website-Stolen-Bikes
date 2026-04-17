@@ -25,6 +25,8 @@ try {
         listUsers();
       } elseif ($action === 'detail') {
         getUserDetail();
+      } elseif ($action === 'export') {
+        exportUsers();
       } else {
         listUsers();
       }
@@ -253,10 +255,40 @@ function deleteUser() {
   try {
   $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
   $stmt->execute([$id]);
+  
+  logActivity($pdo, 'USER_DELETED', 'users', $id, "Deleted by Admin");
+  
   echo json_encode(['success' => true, 'message' => 'User deleted successfully']);
   } catch (PDOException $e) {
   http_response_code(500);
   echo json_encode(['success' => false, 'message' => 'Database error']);
+  }
+}
+
+function exportUsers() {
+  global $pdo;
+  try {
+    $stmt = $pdo->query("SELECT id, first_name, last_name, email, role, phone, city, county, postcode, created_at FROM users");
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    if (empty($users)) {
+      echo "No data to export.";
+      exit;
+    }
+
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="users_export_' . date('Y-m-d') . '.csv"');
+    
+    $output = fopen('php://output', 'w');
+    fputcsv($output, array_keys($users[0]));
+    foreach ($users as $row) {
+      fputcsv($output, $row);
+    }
+    fclose($output);
+    exit;
+  } catch (PDOException $e) {
+    http_response_code(500);
+    echo "Error exporting data.";
   }
 }
 ?>

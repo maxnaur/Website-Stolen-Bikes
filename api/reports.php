@@ -14,7 +14,11 @@ $action = $_GET['action'] ?? '';
 try {
   switch ($method) {
   case 'GET':
-    listReports($user);
+    if ($action === 'export') {
+      exportReports($user);
+    } else {
+      listReports($user);
+    }
     break;
 
   case 'POST':
@@ -219,6 +223,45 @@ function updateReport($user) {
   } catch (PDOException $e) {
   http_response_code(500);
   echo json_encode(['success' => false, 'message' => 'Failed to update report']);
+  }
+}
+?>
+
+    http_response_code(403);
+    echo "Unauthorized access.";
+    return;
+  }
+  
+  try {
+    $stmt = $pdo->query("
+      SELECT r.id, r.report_date, r.investigation_status, r.investigation_notes, r.bike_status, r.incident_location, r.closed_at,
+             b.brand, b.model, b.colour, b.mpn,
+             u.first_name, u.last_name, u.email
+      FROM report r
+      JOIN bicycles b ON r.bicycle_id = b.id
+      JOIN users u ON b.user_id = u.id
+      ORDER BY r.report_date DESC
+    ");
+    $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    if (empty($reports)) {
+      echo "No report data to export.";
+      return;
+    }
+
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="reports_export_' . date('Y-m-d') . '.csv"');
+    
+    $output = fopen('php://output', 'w');
+    fputcsv($output, array_keys($reports[0]));
+    foreach ($reports as $row) {
+      fputcsv($output, $row);
+    }
+    fclose($output);
+    exit;
+  } catch (PDOException $e) {
+    http_response_code(500);
+    echo "Error exporting data: " . $e->getMessage();
   }
 }
 ?>

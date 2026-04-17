@@ -73,6 +73,21 @@ function listBikes($user) {
   }
   
   $bikes = $stmt->fetchAll();
+  
+  // Handle duplicate names by appending ID to make them distinct
+  $name_counts = [];
+  foreach ($bikes as $bike) {
+    $full_name = "{$bike['brand']} {$bike['model']}";
+    $name_counts[$full_name] = ($name_counts[$full_name] ?? 0) + 1;
+  }
+  
+  foreach ($bikes as &$bike) {
+    $full_name = "{$bike['brand']} {$bike['model']}";
+    if ($name_counts[$full_name] > 1) {
+      $bike['model'] .= " (#{$bike['id']})";
+    }
+  }
+  
   echo json_encode(['success' => true, 'data' => $bikes]);
   } catch (PDOException $e) {
   error_log("List Bikes Error: " . $e->getMessage());
@@ -229,7 +244,11 @@ function addBike($user) {
   } catch (PDOException $e) {
   error_log("Add Bike Error: " . $e->getMessage());
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Failed to add bike']);
+  $msg = 'Failed to add bike to database.';
+  if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
+    $msg = 'A bike with this serial number already exists.';
+  }
+  echo json_encode(['success' => false, 'message' => $msg, 'error_detail' => $e->getMessage()]);
   }
 }
 

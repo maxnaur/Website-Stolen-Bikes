@@ -159,7 +159,10 @@ $user = getCurrentUser();
 
     <!-- Reports Tab -->
     <div class="tab-pane fade" id="reports">
-      <h5 class="mb-3">All Reports</h5>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">All Reports</h5>
+        <button class="btn btn-sm btn-danger" onclick="exportReports()">📥 Export Reports</button>
+      </div>
       <div class="table-responsive">
       <table class="table table-striped table-hover">
         <thead class="table-light">

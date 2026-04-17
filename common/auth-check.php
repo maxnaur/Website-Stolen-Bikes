@@ -1,5 +1,7 @@
 <?php
 // auth-check.php - Verify user is logged in
+require_once __DIR__ . '/common.php';
+
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }

@@ -412,6 +412,20 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
     e.preventDefault();
     const formData = new FormData(e.target);
     
+    // Client-side GUI validation
+    const brand = formData.get('brand').trim();
+    const model = formData.get('model').trim();
+    if (brand.length < 2 || model.length < 2) {
+      alert('Brand and Model must be at least 2 characters long.');
+      return;
+    }
+
+    const file = formData.get('bike_image');
+    if (file && file.size > 5 * 1024 * 1024) { // 5MB limit
+      alert('Image file is too large. Max size is 5MB.');
+      return;
+    }
+
     try {
     const response = await fetch('../api/bicycles.php?action=add', {
       method: 'POST',
@@ -423,10 +437,15 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
       e.target.reset();
       loadBikes();
     } else {
-      alert('Error: ' + result.message);
+      // Show detailed error message from backend
+      let errorMsg = result.message || 'Registration failed.';
+      if (result.error_detail) {
+        errorMsg += '\n\nTechnical details: ' + result.error_detail;
+      }
+      alert('Error: ' + errorMsg);
     }
     } catch (error) {
-    alert('An error occurred. Please try again.');
+    alert('An error occurred while connecting to the server. Please try again.');
     }
   });
 

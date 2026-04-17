@@ -4,3 +4,23 @@ bike image
 http://vecteezy.com/vector-art/4852977-bike-bicycle-line-icon-vector-illustration-logo-template-suitable-for-many-purposes
 named then thing favicon.ico
 
+
+add sections for the admin to view the logs and export the full data of each database lkie in bikes
+
+create a section to allow the admin to add new police officers
+
+add GUI endor checking to Register New Bicycle
+
+
+where error occers when interacting with the database tell the user
+when trying to enter data Register New Bicycle get the error
+"An error occurred. Please try again." add explenation 
+in the backen the logs are
+2026-04-17 16:18:02	Warning	195.195.4.135		mod_fcgid: stderr: Stack trace:, referer: https://s4512742-ctxxxx.uogs.co.uk/public/public-dashboard.php				Apache error
+2026-04-17 16:18:02	Warning	195.195.4.135		mod_fcgid: stderr: #0 /var/www/vhosts/s4512742-ctxxxx.uogs.co.uk/httpdocs/api/bicycles.php(31): addBike(), referer: https://s4512742-ctxxxx.uogs.co.uk/public/public-dashboard.php				Apache error
+2026-04-17 16:18:02	Warning	195.195.4.135		mod_fcgid: stderr: #1 {main}, referer: https://s4512742-ctxxxx.uogs.co.uk/public/public-dashboard.php				Apache error
+2026-04-17 16:18:02	Warning	195.195.4.135		mod_fcgid: stderr: thrown in /var/www/vhosts/s4512742-ctxxxx.uogs.co.uk/httpdocs/api/bicycles.php on line 226, referer: https://s4512742-ctxxxx.uogs.co.uk/public/public-dashboard.php				Apache error
+
+if there are multiple bikes with the same combined name add the id to the name to make them distinct
+
+
