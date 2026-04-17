@@ -14,6 +14,13 @@ $user = getCurrentUser();
   <style>
   body { background-color: #f8f9fa; }
   .navbar { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .bike-thumbnail-details { 
+    max-height: 300px; 
+    width: 100%; 
+    object-fit: contain; 
+    border-radius: 8px;
+    background-color: #f8f9fa;
+  }
   </style>
 </head>
 <body>
@@ -27,9 +34,13 @@ $user = getCurrentUser();
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ms-auto">
+      <?php if ($user['role'] === 'admin'): ?>
+        <li class="nav-item"><a class="nav-link fw-bold text-danger" href="../admin/admin-dashboard.php">⚙️ Admin View</a></li>
+        <li class="nav-item me-3"><a class="nav-link fw-bold text-warning" href="../police/police-dashboard.php">🚔 Police View</a></li>
+      <?php endif; ?>
       <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-        <?php echo htmlspecialchars($user['username']); ?> (Public)
+        <?php echo htmlspecialchars($user['username']); ?> (<?php echo ucfirst($user['role']); ?>)
       </a>
       <ul class="dropdown-menu dropdown-menu-end">
         <li><a class="dropdown-item" href="#" onclick="showProfile()">Profile</a></li>
@@ -145,7 +156,6 @@ $user = getCurrentUser();
       <table class="table table-hover align-middle mb-0">
         <thead class="table-light">
         <tr>
-          <th>Image</th>
           <th>Bike Info</th>
           <th>Status</th>
           <th>Registered</th>
@@ -234,6 +244,23 @@ $user = getCurrentUser();
     </div>
   </div>
 
+  <!-- Bike Details Modal -->
+  <div class="modal fade" id="bikeDetailsModal" tabindex="-1" aria-labelledby="bikeDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+      <h5 class="modal-title" id="bikeDetailsModalLabel">🚲 Bicycle Details</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="bikeDetailsContent">
+      <div class="text-center p-4">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
@@ -251,7 +278,6 @@ $user = getCurrentUser();
     
     if (result.success) {
       tableBody.innerHTML = '';
-      // Keep the first default option
       bikeSelect.innerHTML = '<option value="">Choose a registered bike...</option>';
       
       if (result.data.length === 0) {
@@ -261,13 +287,9 @@ $user = getCurrentUser();
       
       result.data.forEach(bike => {
       const statusClass = bike.status === 'safe' ? 'bg-success' : 'bg-danger';
-      const imageHtml = bike.image_path 
-        ? `<img src="../${bike.image_path}" class="bike-thumbnail" alt="Bike Image">`
-        : `<div class="no-image-placeholder">🚲</div>`;
-
+      
       tableBody.innerHTML += `
         <tr>
-        <td>${imageHtml}</td>
         <td>
           <strong>${bike.brand} ${bike.model}</strong><br>
           <small class="text-muted">${bike.colour} • ${bike.type}</small>
@@ -280,7 +302,6 @@ $user = getCurrentUser();
         </tr>
       `;
       
-      // Add to report select if not already stolen/lost
       if (bike.status === 'safe') {
         bikeSelect.innerHTML += `<option value="${bike.id}">${bike.brand} ${bike.model} (${bike.colour})</option>`;
       }
@@ -333,7 +354,7 @@ $user = getCurrentUser();
     try {
     const response = await fetch('../api/bicycles.php?action=add', {
       method: 'POST',
-      body: formData // Use FormData directly
+      body: formData
     });
     const result = await response.json();
     if (result.success) {
@@ -355,7 +376,7 @@ $user = getCurrentUser();
     try {
     const response = await fetch('../api/reports.php?action=create', {
       method: 'POST',
-      body: formData // Use FormData directly
+      body: formData
     });
     const result = await response.json();
     if (result.success) {
@@ -404,7 +425,6 @@ $user = getCurrentUser();
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
     
-    // Basic phone validation matching backend
     if (data.phone && !/^[\d\s\-+()]{7,20}$/.test(data.phone)) {
       alert('Invalid phone number format. Please use numbers, spaces, and +() only (7-20 chars).');
       return;
@@ -430,18 +450,46 @@ $user = getCurrentUser();
     }
   });
   
-  function viewBike(id) {
-    alert('Viewing bike #' + id + ' details (Mockup)');
-  }
-  </script>
-</body>
-</html>
-d ...
-    alert('Profile view (Mockup)');
-  }
-  
-  function viewBike(id) {
-    alert('Viewing bike #' + id + ' details (Mockup)');
+  async function viewBike(id) {
+    const content = document.getElementById('bikeDetailsContent');
+    content.innerHTML = '<div class="text-center p-4"><div class="spinner-border text-primary"></div></div>';
+    
+    const modal = new bootstrap.Modal(document.getElementById('bikeDetailsModal'));
+    modal.show();
+
+    try {
+      const response = await fetch(`../api/bicycles.php?action=detail&id=${id}`);
+      const result = await response.json();
+      
+      if (result.success) {
+        const bike = result.data;
+        const statusClass = bike.status === 'safe' ? 'bg-success' : 'bg-danger';
+        const imageHtml = bike.image_path 
+          ? `<img src="../${bike.image_path}" class="bike-thumbnail-details shadow-sm mb-3 d-block mx-auto" alt="Bike Image">`
+          : `<div class="bg-light text-center p-5 rounded mb-3" style="font-size: 4rem;">🚲</div>`;
+
+        content.innerHTML = `
+          ${imageHtml}
+          <div class="row g-2">
+            <div class="col-6"><strong>Brand:</strong> ${bike.brand}</div>
+            <div class="col-6"><strong>Model:</strong> ${bike.model}</div>
+            <div class="col-6"><strong>Type:</strong> ${bike.type}</div>
+            <div class="col-6"><strong>Colour:</strong> ${bike.colour}</div>
+            <div class="col-6"><strong>MPN/Serial:</strong> ${bike.mpn || 'N/A'}</div>
+            <div class="col-6"><strong>Status:</strong> <span class="badge ${statusClass}">${bike.status.toUpperCase()}</span></div>
+            <div class="col-12 mt-2"><hr></div>
+            <div class="col-12"><strong>Registered To:</strong> ${bike.first_name} ${bike.last_name}</div>
+            <div class="col-12"><strong>Contact:</strong> ${bike.email}</div>
+            <div class="col-12 small text-muted"><strong>Registered On:</strong> ${new Date(bike.created_at).toLocaleString()}</div>
+          </div>
+        `;
+      } else {
+        content.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      content.innerHTML = `<div class="alert alert-danger">Failed to load bike details.</div>`;
+    }
   }
   </script>
 </body>

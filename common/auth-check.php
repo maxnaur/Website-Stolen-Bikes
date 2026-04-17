@@ -13,6 +13,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
 // Optional: Check for specific role
 function checkRole($required_role) {
+  // Admin can access anything
+  if ($_SESSION['role'] === 'admin') {
+    return;
+  }
+  
   if ($_SESSION['role'] !== $required_role) {
   http_response_code(403);
   echo json_encode(['success' => false, 'message' => 'Access denied: Required role ' . $required_role]);

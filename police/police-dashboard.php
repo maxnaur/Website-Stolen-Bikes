@@ -30,6 +30,10 @@ $user = getCurrentUser();
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ms-auto">
+      <?php if ($user['role'] === 'admin'): ?>
+        <li class="nav-item"><a class="nav-link fw-bold text-warning" href="../admin/admin-dashboard.php">⚙️ Admin View</a></li>
+        <li class="nav-item me-3"><a class="nav-link fw-bold text-info" href="../public/public-dashboard.php">👤 Public View</a></li>
+      <?php endif; ?>
       <li class="nav-item"><a class="nav-link" href="#" onclick="loadReports()">Reports</a></li>
       <li class="nav-item"><a class="nav-link" href="#" onclick="loadBikes()">All Bikes</a></li>
       <li class="nav-item dropdown">

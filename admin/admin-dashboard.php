@@ -28,6 +28,8 @@ $user = getCurrentUser();
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link fw-bold text-warning" href="../police/police-dashboard.php">🚔 Police View</a></li>
+      <li class="nav-item me-3"><a class="nav-link fw-bold text-info" href="../public/public-dashboard.php">👤 Public View</a></li>
       <li class="nav-item"><a class="nav-link" href="#" onclick="loadDashboard()">Dashboard</a></li>
       <li class="nav-item"><a class="nav-link" href="#" onclick="loadUsers()">Users</a></li>
       <li class="nav-item"><a class="nav-link" href="#" onclick="loadBikes()">Bikes</a></li>

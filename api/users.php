@@ -92,10 +92,21 @@ function updateOwnProfile($user) {
   
   // Validation
   $phone = trim($data['phone'] ?? '');
-  if (!empty($phone) && !preg_match('/^[\d\s\-+()]{7,20}$/', $phone)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Invalid phone number format']);
-    return;
+  if (!empty($phone)) {
+    // Check format (numbers, spaces, dashes, +, parentheses)
+    if (!preg_match('/^[\d\s\-+()]{7,20}$/', $phone)) {
+      http_response_code(400);
+      echo json_encode(['success' => false, 'message' => 'Invalid phone number format']);
+      return;
+    }
+    
+    // Check digit length specifically (usually 10-15 digits globally)
+    $digitCount = strlen(preg_replace('/[^\d]/', '', $phone));
+    if ($digitCount < 10 || $digitCount > 15) {
+      http_response_code(400);
+      echo json_encode(['success' => false, 'message' => 'Phone number must contain between 10 and 15 digits']);
+      return;
+    }
   }
 
   $allowed_fields = ['phone', 'address_line1', 'address_line2', 'postcode', 'county', 'city'];
