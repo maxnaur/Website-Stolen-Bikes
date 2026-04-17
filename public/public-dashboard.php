@@ -145,6 +145,7 @@ $user = getCurrentUser();
       <table class="table table-hover align-middle mb-0">
         <thead class="table-light">
         <tr>
+          <th>Image</th>
           <th>Bike Info</th>
           <th>Status</th>
           <th>Registered</th>
@@ -170,6 +171,67 @@ $user = getCurrentUser();
     </div>
     </div>
   </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+      <h5 class="modal-title" id="profileModalLabel">👤 Your Profile Information</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form id="profileUpdateForm">
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">First Name</label>
+          <input type="text" class="form-control" id="profile_first_name" readonly>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Last Name</label>
+          <input type="text" class="form-control" id="profile_last_name" readonly>
+        </div>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Email Address</label>
+        <input type="email" class="form-control" id="profile_email" readonly>
+        </div>
+        <hr>
+        <div class="mb-3">
+        <label class="form-label fw-bold small text-primary">Phone Number (Editable)</label>
+        <input type="text" class="form-control" name="phone" id="profile_phone" placeholder="Enter phone number">
+        <div class="text-muted small mt-1">Format: numbers, spaces, and +() symbols.</div>
+        </div>
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small text-primary">Address Line 1 (Editable)</label>
+          <input type="text" class="form-control" name="address_line1" id="profile_address_line1">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small text-primary">Address Line 2 (Editable)</label>
+          <input type="text" class="form-control" name="address_line2" id="profile_address_line2">
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small text-primary">City (Editable)</label>
+          <input type="text" class="form-control" name="city" id="profile_city">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small text-primary">County (Editable)</label>
+          <input type="text" class="form-control" name="county" id="profile_county">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small text-primary">Postcode (Editable)</label>
+          <input type="text" class="form-control" name="postcode" id="profile_postcode">
+        </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Update Profile Details</button>
+      </form>
+      </div>
+    </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -199,8 +261,13 @@ $user = getCurrentUser();
       
       result.data.forEach(bike => {
       const statusClass = bike.status === 'safe' ? 'bg-success' : 'bg-danger';
+      const imageHtml = bike.image_path 
+        ? `<img src="../${bike.image_path}" class="bike-thumbnail" alt="Bike Image">`
+        : `<div class="no-image-placeholder">🚲</div>`;
+
       tableBody.innerHTML += `
         <tr>
+        <td>${imageHtml}</td>
         <td>
           <strong>${bike.brand} ${bike.model}</strong><br>
           <small class="text-muted">${bike.colour} • ${bike.type}</small>
@@ -304,8 +371,72 @@ $user = getCurrentUser();
     }
   });
 
-  function showProfile() {
-    // ... already implemented or can be expanded ...
+  async function showProfile() {
+    try {
+      const response = await fetch('../api/users.php?action=profile');
+      const result = await response.json();
+      
+      if (result.success) {
+        const user = result.data;
+        document.getElementById('profile_first_name').value = user.first_name;
+        document.getElementById('profile_last_name').value = user.last_name;
+        document.getElementById('profile_email').value = user.email;
+        document.getElementById('profile_phone').value = user.phone || '';
+        document.getElementById('profile_address_line1').value = user.address_line1 || '';
+        document.getElementById('profile_address_line2').value = user.address_line2 || '';
+        document.getElementById('profile_city').value = user.city || '';
+        document.getElementById('profile_county').value = user.county || '';
+        document.getElementById('profile_postcode').value = user.postcode || '';
+        
+        const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+        modal.show();
+      } else {
+        alert('Error loading profile: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to load profile details.');
+    }
+  }
+
+  document.getElementById('profileUpdateForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Basic phone validation matching backend
+    if (data.phone && !/^[\d\s\-+()]{7,20}$/.test(data.phone)) {
+      alert('Invalid phone number format. Please use numbers, spaces, and +() only (7-20 chars).');
+      return;
+    }
+
+    try {
+      const response = await fetch('../api/users.php?action=update_profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('Profile updated successfully!');
+        bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
+      } else {
+        alert('Update failed: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while updating profile.');
+    }
+  });
+  
+  function viewBike(id) {
+    alert('Viewing bike #' + id + ' details (Mockup)');
+  }
+  </script>
+</body>
+</html>
+d ...
     alert('Profile view (Mockup)');
   }
   

@@ -5,38 +5,62 @@ require_once '../database/config.php';
 
 session_start();
 
-if (!isset($_SESSION['loggedin']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['loggedin'])) {
   http_response_code(401);
   echo json_encode(['success' => false, 'message' => 'Unauthorized']);
   exit;
 }
 
+$user = $_SESSION;
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
 
 try {
   switch ($method) {
   case 'GET':
-    if ($action === 'list') {
-    listUsers();
-    } elseif ($action === 'detail') {
-    getUserDetail();
+    if ($action === 'profile') {
+      getOwnProfile($user);
+    } elseif ($user['role'] === 'admin') {
+      if ($action === 'list') {
+        listUsers();
+      } elseif ($action === 'detail') {
+        getUserDetail();
+      } else {
+        listUsers();
+      }
     } else {
-    listUsers();
+      http_response_code(403);
+      echo json_encode(['success' => false, 'message' => 'Forbidden']);
     }
     break;
 
   case 'POST':
-    // Registration already handles adding users, but admin might need a special create
-    createUser();
+    if ($user['role'] === 'admin') {
+      createUser();
+    } else {
+      http_response_code(403);
+      echo json_encode(['success' => false, 'message' => 'Forbidden']);
+    }
     break;
 
   case 'PUT':
-    updateUser();
+    if ($action === 'update_profile') {
+      updateOwnProfile($user);
+    } elseif ($user['role'] === 'admin') {
+      updateUser();
+    } else {
+      http_response_code(403);
+      echo json_encode(['success' => false, 'message' => 'Forbidden']);
+    }
     break;
 
   case 'DELETE':
-    deleteUser();
+    if ($user['role'] === 'admin') {
+      deleteUser();
+    } else {
+      http_response_code(403);
+      echo json_encode(['success' => false, 'message' => 'Forbidden']);
+    }
     break;
 
   default:
@@ -47,6 +71,58 @@ try {
   error_log("User API Error: " . $e->getMessage());
   http_response_code(500);
   echo json_encode(['success' => false, 'message' => 'Server error']);
+}
+
+function getOwnProfile($user) {
+  global $pdo;
+  try {
+    $stmt = $pdo->prepare("SELECT id, first_name, last_name, email, role, phone, address_line1, address_line2, postcode, county, city, date_of_birth, created_at FROM users WHERE id = ?");
+    $stmt->execute([$user['user_id']]);
+    $data = $stmt->fetch();
+    echo json_encode(['success' => true, 'data' => $data]);
+  } catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Database error']);
+  }
+}
+
+function updateOwnProfile($user) {
+  global $pdo;
+  $data = json_decode(file_get_contents("php://input"), true);
+  
+  // Validation
+  $phone = trim($data['phone'] ?? '');
+  if (!empty($phone) && !preg_match('/^[\d\s\-+()]{7,20}$/', $phone)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Invalid phone number format']);
+    return;
+  }
+
+  $allowed_fields = ['phone', 'address_line1', 'address_line2', 'postcode', 'county', 'city'];
+  $update_parts = [];
+  $params = [];
+
+  foreach ($allowed_fields as $field) {
+    if (isset($data[$field])) {
+      $update_parts[] = "$field = ?";
+      $params[] = trim($data[$field]);
+    }
+  }
+
+  if (empty($update_parts)) {
+    echo json_encode(['success' => true, 'message' => 'No changes made']);
+    return;
+  }
+
+  $params[] = $user['user_id'];
+  try {
+    $stmt = $pdo->prepare("UPDATE users SET " . implode(", ", $update_parts) . " WHERE id = ?");
+    $stmt->execute($params);
+    echo json_encode(['success' => true, 'message' => 'Profile updated successfully']);
+  } catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Database error']);
+  }
 }
 
 function listUsers() {

@@ -53,7 +53,8 @@ CREATE TABLE `report` (
   closed_at DATETIME DEFAULT NULL
 );
 
--- Insert default admin user (password: admin123)
+-- Insert default admin users (password: admin)
+-- Public admin@public.uk
 INSERT INTO `users` (
   first_name, 
   last_name, 
@@ -66,10 +67,60 @@ INSERT INTO `users` (
   city,
   date_of_birth
 ) VALUES (
-  'Admin', 
+  'Test public', 
+  'User', 
+  'admin@public.uk', 
+  '$2a$12$kuoOxc9DHB/hXwALmFyygeD5khB3ivd.Nt.gyBNXzyK/yFvVLpPWG', 
+  'public',
+  '123 Police Station',
+  'PO1 1AA',
+  'Hampshire',
+  'Portsmouth',
+  '1980-01-01'
+) ON DUPLICATE KEY UPDATE email = email;
+
+-- Police admin@police.uk
+INSERT INTO `users` (
+  first_name, 
+  last_name, 
+  email, 
+  password, 
+  role,
+  address_line1,
+  postcode,
+  county,
+  city,
+  date_of_birth
+) VALUES (
+  'Test Police', 
   'User', 
   'admin@police.uk', 
-  '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
+  '$2a$12$kuoOxc9DHB/hXwALmFyygeD5khB3ivd.Nt.gyBNXzyK/yFvVLpPWG', 
+  'police',
+  '123 Police Station',
+  'PO1 1AA',
+  'Hampshire',
+  'Portsmouth',
+  '1980-01-01'
+) ON DUPLICATE KEY UPDATE email = email;
+
+-- Police admin@admin.uk
+INSERT INTO `users` (
+  first_name, 
+  last_name, 
+  email, 
+  password, 
+  role,
+  address_line1,
+  postcode,
+  county,
+  city,
+  date_of_birth
+) VALUES (
+  'Test Admin', 
+  'User', 
+  'admin@admin.uk', 
+  '$2a$12$kuoOxc9DHB/hXwALmFyygeD5khB3ivd.Nt.gyBNXzyK/yFvVLpPWG', 
   'admin',
   '123 Police Station',
   'PO1 1AA',
