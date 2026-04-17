@@ -1,0 +1,72 @@
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+/* star pattern layout container*/
+.team-star-pattern {
+  position: relative; /* Key: Establishes the coordinate system */
+  min-height: 350px;  /* Adjusted height for the new + shape */
+}
+
+
+/* each card*/
+.profile-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.centered-focus {
+  transform: scale(1.05);
+  z-index: 20; /* Ensures this member sits visually "above" others */
+}
+
+/* the card*/
+.card {
+  border: none; 
+  background-color: #fff;   /* Clean white background */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover .card {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+
+/* Photo Positioning Wrapper */
+.photo {
+  margin: 0 auto;   /* Centers the photo block horizontally */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.photo img {
+  width: 120px;   /* Consistent image size */
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;   /* Circular shape */
+  border: 4px solid #e9ecef;
+}
+
+
+/* ressize */
+
+/* tablet/mobile view*/
+@media (max-width: 768px) {
+  .profile-card {
+  width: 100%; /* Full width on tablets and phones */
+  margin-bottom: 20px;
+  }
+  /* Reset the fancy positioning effects for mobile simplicity */
+  .team-star-pattern {
+  position: relative;
+  display: block !important; /* Forces linear flow on small screens */
+  }
+  .centered-focus {
+  transform: none; 
+  margin: 0 auto;
+  }
+}

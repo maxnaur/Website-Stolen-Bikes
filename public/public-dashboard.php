@@ -92,6 +92,10 @@ $user = getCurrentUser();
         <label class="form-label fw-bold small">Serial Number / MPN</label>
         <input type="text" class="form-control" name="mpn" placeholder="Optional but recommended">
         </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Bike Image</label>
+        <input type="file" class="form-control" name="bike_image" accept="image/*">
+        </div>
         <button type="submit" class="btn btn-success w-100">Register Bike</button>
       </form>
       </div>
@@ -117,8 +121,12 @@ $user = getCurrentUser();
         </select>
         </div>
         <div class="mb-3">
-        <label class="form-label fw-bold small">Notes / Location Details</label>
-        <textarea class="form-control" name="investigation_notes" rows="2" placeholder="Where and when?"></textarea>
+        <label class="form-label fw-bold small">Incident Location *</label>
+        <input type="text" class="form-control" name="incident_location" placeholder="e.g. Central London Station" required>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Additional Notes</label>
+        <textarea class="form-control" name="investigation_notes" rows="2" placeholder="Any other details?"></textarea>
         </div>
         <button type="submit" class="btn btn-danger w-100">Submit Police Report</button>
       </form>
@@ -237,7 +245,10 @@ $user = getCurrentUser();
           <h6 class="mb-1">${report.brand} ${report.model} reported ${report.bike_status}</h6>
           <small>${new Date(report.report_date).toLocaleDateString()}</small>
         </div>
-        <p class="mb-1 text-muted small">${report.investigation_notes || 'No details provided'}</p>
+        <p class="mb-1 text-muted small">
+          <strong>Location:</strong> ${report.incident_location || 'Not specified'}<br>
+          ${report.investigation_notes || 'No additional notes provided'}
+        </p>
         <small class="${statusColor} fw-bold">Status: ${report.investigation_status.replace('_', ' ').toUpperCase()}</small>
         </li>
       `;
@@ -251,13 +262,11 @@ $user = getCurrentUser();
   document.getElementById('registerBikeForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
     
     try {
     const response = await fetch('../api/bicycles.php?action=add', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      body: formData // Use FormData directly
     });
     const result = await response.json();
     if (result.success) {
@@ -275,13 +284,11 @@ $user = getCurrentUser();
   document.getElementById('reportTheftForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
     
     try {
     const response = await fetch('../api/reports.php?action=create', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      body: formData // Use FormData directly
     });
     const result = await response.json();
     if (result.success) {

@@ -121,6 +121,7 @@ function createReport($user) {
   $investigation_status = $data['investigation_status'] ?? 'open';
   $investigation_notes = $data['investigation_notes'] ?? '';
   $bike_status = $data['bike_status'] ?? 'stolen';
+  $incident_location = $data['incident_location'] ?? '';
   
   if (empty($bike_id)) {
   http_response_code(400);
@@ -144,11 +145,11 @@ function createReport($user) {
   
   // Create report
   $stmt = $pdo->prepare("
-    INSERT INTO report (bicycle_id, investigation_status, investigation_notes, bike_status)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO report (bicycle_id, investigation_status, investigation_notes, bike_status, incident_location)
+    VALUES (?, ?, ?, ?, ?)
   ");
   
-  $stmt->execute([$bike_id, $investigation_status, $investigation_notes, $bike_status]);
+  $stmt->execute([$bike_id, $investigation_status, $investigation_notes, $bike_status, $incident_location]);
   
   // Update bike status
   $updateStmt = $pdo->prepare("UPDATE bicycles SET status = ? WHERE id = ?");

@@ -39,7 +39,48 @@
   <!-- Main Content Container -->
   <div class="container mt-5 mb-5">
 
-  <!-- Section 1: Reporting Dashboard (Based on the image sketch) -->
+  <!-- Section 0: Register Bicycle -->
+  <div class="card shadow p-4 mb-5 border-0 bg-light">
+    <h2 class="mb-4 text-success fw-bold">🚲 Register Your Bicycle</h2>
+    <form id="registerBikeForm" enctype="multipart/form-data">
+    <div class="row">
+      <div class="col-md-3 mb-3">
+      <label class="form-label fw-bold">Brand *</label>
+      <input type="text" class="form-control" name="brand" required>
+      </div>
+      <div class="col-md-3 mb-3">
+      <label class="form-label fw-bold">Model *</label>
+      <input type="text" class="form-control" name="model" required>
+      </div>
+      <div class="col-md-3 mb-3">
+      <label class="form-label fw-bold">Type *</label>
+      <select class="form-select" name="type" required>
+        <option value="Road">Road</option>
+        <option value="Mountain">Mountain</option>
+        <option value="Hybrid">Hybrid</option>
+        <option value="Electric">Electric</option>
+      </select>
+      </div>
+      <div class="col-md-3 mb-3">
+      <label class="form-label fw-bold">Colour *</label>
+      <input type="text" class="form-control" name="colour" required>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 mb-3">
+      <label class="form-label fw-bold">Serial Number / MPN</label>
+      <input type="text" class="form-control" name="mpn">
+      </div>
+      <div class="col-md-6 mb-3">
+      <label class="form-label fw-bold">Bike Image *</label>
+      <input type="file" class="form-control" name="bike_image" accept="image/*" required>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-success px-5">Register Bicycle</button>
+    </form>
+  </div>
+
+  <!-- Section 1: Reporting Dashboard -->
   <h2 class="mb-4 text-primary fw-bold">Report Lost or Stolen Bicycle</h2>
   <p class="lead mb-4">Use the form below to log new incidents and investigate reported bikes.</p>
 

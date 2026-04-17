@@ -170,7 +170,11 @@ function addBike($user) {
   exit;
   }
   
-  $data = json_decode(file_get_contents("php://input"), true);
+  // Handle both JSON and Multipart/Form-Data
+  $data = $_POST;
+  if (empty($data)) {
+    $data = json_decode(file_get_contents("php://input"), true) ?: [];
+  }
   
   // Validate required fields
   if (empty($data['brand']) || empty($data['model']) || empty($data['colour']) || empty($data['type'])) {
@@ -179,10 +183,26 @@ function addBike($user) {
   exit;
   }
   
+  $image_path = null;
+  if (isset($_FILES['bike_image']) && $_FILES['bike_image']['error'] === UPLOAD_ERR_OK) {
+    $upload_dir = '../uploads/bikes/';
+    if (!is_dir($upload_dir)) {
+      mkdir($upload_dir, 0777, true);
+    }
+    
+    $file_extension = pathinfo($_FILES['bike_image']['name'], PATHINFO_EXTENSION);
+    $file_name = uniqid('bike_') . '.' . $file_extension;
+    $target_file = $upload_dir . $file_name;
+    
+    if (move_uploaded_file($_FILES['bike_image']['tmp_name'], $target_file)) {
+      $image_path = 'uploads/bikes/' . $file_name;
+    }
+  }
+  
   try {
   $stmt = $pdo->prepare("
-    INSERT INTO bicycles (user_id, brand, model, type, colour, wheel_size, gears, brake_type, suspension, gender, age_group, mpn, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO bicycles (user_id, brand, model, type, colour, wheel_size, gears, brake_type, suspension, gender, age_group, mpn, image_path, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   ");
   
   $stmt->execute([
@@ -198,10 +218,11 @@ function addBike($user) {
     $data['gender'] ?? 'Unisex',
     $data['age_group'] ?? 'Adult',
     $data['mpn'] ?? null,
+    $image_path,
     'safe'
   ]);
   
-  echo json_encode(['success' => true, 'message' => 'Bike added successfully']);
+  echo json_encode(['success' => true, 'message' => 'Bike added successfully', 'image_path' => $image_path]);
   } catch (PDOException $e) {
   error_log("Add Bike Error: " . $e->getMessage());
   http_response_code(500);

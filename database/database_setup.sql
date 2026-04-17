@@ -50,6 +50,7 @@ CREATE TABLE `report` (
   id INT AUTO_INCREMENT PRIMARY KEY,
   bicycle_id INT NOT NULL,
   report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  incident_location VARCHAR(255),
   investigation_status ENUM('open', 'closed', 'in_progress') DEFAULT 'open',
   investigation_notes TEXT,
   bike_status ENUM('stolen', 'captured', 'returned') DEFAULT 'stolen',  -- Fixed: 'safe' not in ENUM
