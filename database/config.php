@@ -1,9 +1,9 @@
 <?php
 // Database configuration
 define('DB_SERVER', 'localhost');
-define('DB_USERNAME', 'root');
-define('DB_PASSWORD', '');
-define('DB_NAME', 'bike_police_system');
+define('DB_USERNAME', 'bikesafety');
+define('DB_PASSWORD', '0kztCN@fZAb4@R^pRYz@');
+define('DB_NAME', 's4512742_');
 
 // Create PDO connection
 try {
