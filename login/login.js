@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   try {
     // 2. Send credentials to the PHP backend via fetch API
-    const response = await fetch('create_Login.php', {
+    const response = await fetch('login.php', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -35,9 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 3. Handle the server response
     if (result.success) {
     // If successful, redirect the user based on their role
-    window.location.href = `dashboard/${result.redirect_url}.html`; 
-    // NOTE: I'm assuming your dashboard pages are in a subdirectory named 'dashboard'. Adjust this path as necessary.
-
+    window.location.href = result.redirect_url;
     } else {
     // Display specific error messages from the server
     errorDiv.textContent = result.message || "An unknown login error occurred.";
