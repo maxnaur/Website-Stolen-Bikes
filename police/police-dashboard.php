@@ -34,11 +34,9 @@ $user = getCurrentUser();
         <li class="nav-item"><a class="nav-link fw-bold text-warning" href="../admin/admin-dashboard.php">⚙️ Admin View</a></li>
         <li class="nav-item me-3"><a class="nav-link fw-bold text-info" href="../public/public-dashboard.php">👤 Public View</a></li>
       <?php endif; ?>
-      <li class="nav-item"><a class="nav-link" href="#" onclick="loadReports()">Reports</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" onclick="loadBikes()">All Bikes</a></li>
       <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-        <?php echo htmlspecialchars($user['username']); ?>
+        <?php echo htmlspecialchars($user['first_name']); ?>
       </a>
       <ul class="dropdown-menu dropdown-menu-end">
         <li><a class="dropdown-item" href="#" onclick="showProfile()">Profile</a></li>
@@ -161,20 +159,63 @@ $user = getCurrentUser();
   </div>
 
   <!-- Profile Modal -->
-  <div class="modal fade" id="profileModal" tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
     <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title">Police Officer Profile</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <div class="modal-header bg-success text-white">
+      <h5 class="modal-title" id="profileModalLabel">👤 Police Officer Profile Information</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">First Name</label>
+          <input type="text" class="form-control bg-light" id="profile_first_name" readonly>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Last Name</label>
+          <input type="text" class="form-control bg-light" id="profile_last_name" readonly>
+        </div>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Email Address</label>
+        <input type="email" class="form-control bg-light" id="profile_email" readonly>
+        </div>
+        <hr>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Phone Number</label>
+        <input type="text" class="form-control bg-light" id="profile_phone" readonly>
+        </div>
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Address Line 1</label>
+          <input type="text" class="form-control bg-light" id="profile_address_line1" readonly>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Address Line 2</label>
+          <input type="text" class="form-control bg-light" id="profile_address_line2" readonly>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small">City</label>
+          <input type="text" class="form-control bg-light" id="profile_city" readonly>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small">County</label>
+          <input type="text" class="form-control bg-light" id="profile_county" readonly>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small">Postcode</label>
+          <input type="text" class="form-control bg-light" id="profile_postcode" readonly>
+        </div>
+        </div>
+        <div class="alert alert-info py-2 small mb-0">
+          <i class="bi bi-info-circle me-2"></i> Police profiles are managed by department administration and cannot be edited here.
+        </div>
+      </div>
     </div>
-    <div class="modal-body">
-      <p><strong>Name:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
-      <p><strong>Role:</strong> Police Officer</p>
-      <p><strong>ID:</strong> <?php echo htmlspecialchars($user['id']); ?></p>
     </div>
-    </div>
-  </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -183,6 +224,34 @@ $user = getCurrentUser();
     loadReports();
     loadStats();
   });
+
+  async function showProfile() {
+    try {
+      const response = await fetch('../api/users.php?action=profile');
+      const result = await response.json();
+      
+      if (result.success) {
+        const user = result.data;
+        document.getElementById('profile_first_name').value = user.first_name;
+        document.getElementById('profile_last_name').value = user.last_name;
+        document.getElementById('profile_email').value = user.email;
+        document.getElementById('profile_phone').value = user.phone || 'Not set';
+        document.getElementById('profile_address_line1').value = user.address_line1 || 'Not set';
+        document.getElementById('profile_address_line2').value = user.address_line2 || '';
+        document.getElementById('profile_city').value = user.city || 'Not set';
+        document.getElementById('profile_county').value = user.county || 'Not set';
+        document.getElementById('profile_postcode').value = user.postcode || 'Not set';
+        
+        const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+        modal.show();
+      } else {
+        alert('Error loading profile: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to load profile details.');
+    }
+  }
 
   async function loadStats() {
     try {

@@ -2,6 +2,7 @@
 // login.php - Secure login processing script
 session_start();
 require_once '../database/config.php';
+require_once '../common/common.php';
 
 // Check if form was submitted via POST method
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -33,6 +34,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['username'] = $user['first_name'] . ' ' . $user['last_name'];
       $_SESSION['role'] = $user['role'];
+      
+      logActivity($pdo, 'LOGIN', 'users', $user['id'], "User $email logged in successfully");
 
       // 5. Determine Redirect URL based on role
       $role = strtolower($user['role'] ?? 'public');
@@ -51,6 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       exit();
     } else {
       // User not found or password incorrect (Generic message for security)
+      logActivity($pdo, 'LOGIN_FAILED', 'users', null, "Failed login attempt for email: $email");
       header('Location: Login.html?error=Incorrect login or password');
       exit();
     }

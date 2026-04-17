@@ -129,6 +129,9 @@ function updateOwnProfile($user) {
   try {
     $stmt = $pdo->prepare("UPDATE users SET " . implode(", ", $update_parts) . " WHERE id = ?");
     $stmt->execute($params);
+    
+    logActivity($pdo, 'PROFILE_UPDATED', 'users', $user['user_id'], "Fields changed: " . implode(", ", $update_parts));
+    
     echo json_encode(['success' => true, 'message' => 'Profile updated successfully']);
   } catch (PDOException $e) {
     http_response_code(500);

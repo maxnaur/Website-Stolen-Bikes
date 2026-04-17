@@ -151,9 +151,11 @@ function createReport($user) {
   
   $stmt->execute([$bike_id, $investigation_status, $investigation_notes, $bike_status, $incident_location]);
   
-  // Update bike status
   $updateStmt = $pdo->prepare("UPDATE bicycles SET status = ? WHERE id = ?");
   $updateStmt->execute([$bike_status, $bike_id]);
+  
+  $report_id = $pdo->lastInsertId();
+  logActivity($pdo, 'REPORT_CREATED', 'report', $report_id, "Report for bike ID $bike_id created as $bike_status");
   
   echo json_encode(['success' => true, 'message' => 'Report created successfully']);
   

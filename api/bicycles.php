@@ -211,16 +211,19 @@ function addBike($user) {
     $data['model'],
     $data['type'],
     $data['colour'],
-    $data['wheel_size'] ?? null,
-    $data['gears'] ?? null,
-    $data['brake_type'] ?? null,
-    $data['suspension'] ?? null,
+    $data['wheel_size'] ?: null,
+    $data['gears'] ?: null,
+    $data['brake_type'] ?: null,
+    $data['suspension'] ?: 'None',
     $data['gender'] ?? 'Unisex',
     $data['age_group'] ?? 'Adult',
-    $data['mpn'] ?? null,
+    $data['mpn'] ?: null,
     $image_path,
     'safe'
   ]);
+  
+  $bike_id = $pdo->lastInsertId();
+  logActivity($pdo, 'BICYCLE_ADDED', 'bicycles', $bike_id, "Added {$data['brand']} {$data['model']}");
   
   echo json_encode(['success' => true, 'message' => 'Bike added successfully', 'image_path' => $image_path]);
   } catch (PDOException $e) {

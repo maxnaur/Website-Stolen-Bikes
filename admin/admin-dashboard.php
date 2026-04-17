@@ -30,17 +30,12 @@ $user = getCurrentUser();
     <ul class="navbar-nav ms-auto">
       <li class="nav-item"><a class="nav-link fw-bold text-warning" href="../police/police-dashboard.php">🚔 Police View</a></li>
       <li class="nav-item me-3"><a class="nav-link fw-bold text-info" href="../public/public-dashboard.php">👤 Public View</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" onclick="loadDashboard()">Dashboard</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" onclick="loadUsers()">Users</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" onclick="loadBikes()">Bikes</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" onclick="loadReports()">Reports</a></li>
       <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-        <?php echo htmlspecialchars($user['username']); ?>
+        <?php echo htmlspecialchars($user['first_name']); ?>
       </a>
       <ul class="dropdown-menu dropdown-menu-end">
         <li><a class="dropdown-item" href="#" onclick="showProfile()">Profile</a></li>
-        <li><a class="dropdown-item" href="#" onclick="showSettings()">Settings</a></li>
         <li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item text-danger" href="../login/logout.php">Logout</a></li>
       </ul>
@@ -109,6 +104,9 @@ $user = getCurrentUser();
       </li>
       <li class="nav-item">
       <a class="nav-link" href="#system" data-bs-toggle="tab">⚙️ System</a>
+      </li>
+      <li class="nav-item">
+      <a class="nav-link" href="#logs" data-bs-toggle="tab">📜 Activity Logs</a>
       </li>
     </ul>
     </div>
@@ -187,11 +185,10 @@ $user = getCurrentUser();
       <div class="row">
       <div class="col-md-6">
         <button class="btn btn-danger w-100 mb-2" onclick="backupDatabase()">💾 Backup Database</button>
-        <button class="btn btn-warning w-100 mb-2" onclick="clearLogs()">🗑️ Clear Logs</button>
+        <button class="btn btn-warning w-100 mb-2" onclick="confirmClearLogs()">🗑️ Clear Logs</button>
       </div>
       <div class="col-md-6">
         <button class="btn btn-info w-100 mb-2" onclick="systemStatus()">📊 System Status</button>
-        <button class="btn btn-secondary w-100 mb-2" onclick="userGuide()">📖 User Guide</button>
       </div>
       </div>
       <hr>
@@ -203,26 +200,93 @@ $user = getCurrentUser();
       <li><strong>Last Backup:</strong> <span id="lastBackup">Never</span></li>
       </ul>
     </div>
+
+    <!-- Logs Tab -->
+    <div class="tab-pane fade" id="logs">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">System Activity Logs</h5>
+        <button class="btn btn-sm btn-outline-danger" onclick="loadLogs()">🔄 Refresh Logs</button>
+      </div>
+      <div class="table-responsive">
+      <table class="table table-sm table-striped table-hover small">
+        <thead class="table-light">
+        <tr>
+          <th>Timestamp</th>
+          <th>User</th>
+          <th>Action</th>
+          <th>Target</th>
+          <th>Details</th>
+          <th>IP Address</th>
+        </tr>
+        </thead>
+        <tbody id="logsTable">
+        <tr><td colspan="6" class="text-center text-muted">Loading logs...</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
     </div>
   </div>
   </div>
 
   <!-- Profile Modal -->
-  <div class="modal fade" id="profileModal" tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
     <div class="modal-content">
-    <div class="modal-header">
-      <h5 class="modal-title">Administrator Profile</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <div class="modal-header bg-danger text-white">
+      <h5 class="modal-title" id="profileModalLabel">👤 Administrator Profile Information</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">First Name</label>
+          <input type="text" class="form-control bg-light" id="profile_first_name" readonly>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Last Name</label>
+          <input type="text" class="form-control bg-light" id="profile_last_name" readonly>
+        </div>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Email Address</label>
+        <input type="email" class="form-control bg-light" id="profile_email" readonly>
+        </div>
+        <hr>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Phone Number</label>
+        <input type="text" class="form-control bg-light" id="profile_phone" readonly>
+        </div>
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Address Line 1</label>
+          <input type="text" class="form-control bg-light" id="profile_address_line1" readonly>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Address Line 2</label>
+          <input type="text" class="form-control bg-light" id="profile_address_line2" readonly>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small">City</label>
+          <input type="text" class="form-control bg-light" id="profile_city" readonly>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small">County</label>
+          <input type="text" class="form-control bg-light" id="profile_county" readonly>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small">Postcode</label>
+          <input type="text" class="form-control bg-light" id="profile_postcode" readonly>
+        </div>
+        </div>
+        <div class="alert alert-warning py-2 small mb-0">
+          <i class="bi bi-info-circle me-2"></i> Administrator profiles are managed by system configuration and cannot be edited here.
+        </div>
+      </div>
     </div>
-    <div class="modal-body">
-      <p><strong>Name:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
-      <p><strong>Role:</strong> Administrator</p>
-      <p><strong>ID:</strong> <?php echo htmlspecialchars($user['id']); ?></p>
-      <p><strong>Access Level:</strong> Full System Access</p>
     </div>
-    </div>
-  </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -232,6 +296,7 @@ $user = getCurrentUser();
     loadUsers();
     loadBikes();
     loadReports();
+    loadLogs();
   });
 
   async function loadStats() {
@@ -339,8 +404,65 @@ $user = getCurrentUser();
     }
   }
 
+  async function loadLogs() {
+    const tableBody = document.getElementById('logsTable');
+    try {
+      const response = await fetch('../api/logs.php?action=list');
+      const result = await response.json();
+      if (result.success) {
+        tableBody.innerHTML = '';
+        if (result.data.length === 0) {
+          tableBody.innerHTML = '<tr><td colspan="6" class="text-center p-3">No activity logs found.</td></tr>';
+          return;
+        }
+        result.data.forEach(log => {
+          tableBody.innerHTML += `
+            <tr>
+              <td>${new Date(log.created_at).toLocaleString()}</td>
+              <td>${log.user_email || 'Anonymous'}</td>
+              <td><strong>${log.action}</strong></td>
+              <td>${log.table_name || '-'}${log.record_id ? ' (#' + log.record_id + ')' : ''}</td>
+              <td class="text-wrap">${log.details || ''}</td>
+              <td>${log.ip_address || ''}</td>
+            </tr>
+          `;
+        });
+      }
+    } catch (error) {
+      tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading logs.</td></tr>';
+    }
+  }
+
   function exportBikes() {
     window.location.href = '../api/bicycles.php?action=export';
+  }
+
+  async function showProfile() {
+    try {
+      const response = await fetch('../api/users.php?action=profile');
+      const result = await response.json();
+      
+      if (result.success) {
+        const user = result.data;
+        document.getElementById('profile_first_name').value = user.first_name;
+        document.getElementById('profile_last_name').value = user.last_name;
+        document.getElementById('profile_email').value = user.email;
+        document.getElementById('profile_phone').value = user.phone || 'Not set';
+        document.getElementById('profile_address_line1').value = user.address_line1 || 'Not set';
+        document.getElementById('profile_address_line2').value = user.address_line2 || '';
+        document.getElementById('profile_city').value = user.city || 'Not set';
+        document.getElementById('profile_county').value = user.county || 'Not set';
+        document.getElementById('profile_postcode').value = user.postcode || 'Not set';
+        
+        const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+        modal.show();
+      } else {
+        alert('Error loading profile: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to load profile details.');
+    }
   }
 
   function editUser(id) {
@@ -360,9 +482,20 @@ $user = getCurrentUser();
     document.getElementById('lastBackup').innerText = new Date().toLocaleString();
   }
 
-  function clearLogs() {
-    if (confirm('Are you sure you want to clear system logs?')) {
-    alert('System logs cleared.');
+  async function confirmClearLogs() {
+    if (confirm('Are you sure you want to PERMANENTLY clear all system logs?')) {
+      try {
+        const response = await fetch('../api/logs.php?action=clear', { method: 'DELETE' });
+        const result = await response.json();
+        if (result.success) {
+          alert('Logs cleared successfully.');
+          loadLogs();
+        } else {
+          alert('Error clearing logs: ' + result.message);
+        }
+      } catch (error) {
+        alert('Failed to clear logs.');
+      }
     }
   }
 

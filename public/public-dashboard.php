@@ -1,7 +1,17 @@
 <?php
 require_once '../common/auth-check.php';
+require_once '../database/config.php';
 checkRole('public');
 $user = getCurrentUser();
+
+// Fetch full user data for age calculation
+$stmt = $pdo->prepare("SELECT date_of_birth FROM users WHERE id = ?");
+$stmt->execute([$user['id']]);
+$fullUser = $stmt->fetch();
+$dob = new DateTime($fullUser['date_of_birth']);
+$now = new DateTime();
+$age = $now->diff($dob)->y;
+$defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,7 +50,7 @@ $user = getCurrentUser();
       <?php endif; ?>
       <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-        <?php echo htmlspecialchars($user['username']); ?> (<?php echo ucfirst($user['role']); ?>)
+        <?php echo htmlspecialchars($user['first_name']); ?> (<?php echo ucfirst($user['role']); ?>)
       </a>
       <ul class="dropdown-menu dropdown-menu-end">
         <li><a class="dropdown-item" href="#" onclick="showProfile()">Profile</a></li>
@@ -99,6 +109,57 @@ $user = getCurrentUser();
           <input type="text" class="form-control" name="colour" placeholder="e.g. Blue" required>
         </div>
         </div>
+
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Wheel Size (Inches)</label>
+          <input type="number" class="form-control" name="wheel_size" placeholder="e.g. 26">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Number of Gears</label>
+          <input type="number" class="form-control" name="gears" placeholder="e.g. 21">
+        </div>
+        </div>
+
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Brake Type</label>
+          <select class="form-select" name="brake_type">
+          <option value="">Select...</option>
+          <option value="Rim">Rim Brakes</option>
+          <option value="Disc-Mechanical">Mechanical Disc</option>
+          <option value="Disc-Hydraulic">Hydraulic Disc</option>
+          <option value="V-Brake">V-Brakes</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Suspension</label>
+          <select class="form-select" name="suspension">
+          <option value="None">None (Rigid)</option>
+          <option value="Front">Front (Hardtail)</option>
+          <option value="Full">Full Suspension</option>
+          </select>
+        </div>
+        </div>
+
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Gender *</label>
+          <select class="form-select" name="gender" required>
+          <option value="Unisex" selected>Unisex</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Age Group *</label>
+          <select class="form-select" name="age_group" required>
+          <option value="Adult" <?php echo ($defaultAgeGroup === 'Adult') ? 'selected' : ''; ?>>Adult</option>
+          <option value="Child" <?php echo ($defaultAgeGroup === 'Child') ? 'selected' : ''; ?>>Child</option>
+          </select>
+        </div>
+        </div>
+
         <div class="mb-3">
         <label class="form-label fw-bold small">Serial Number / MPN</label>
         <input type="text" class="form-control" name="mpn" placeholder="Optional but recommended">
@@ -475,6 +536,12 @@ $user = getCurrentUser();
             <div class="col-6"><strong>Model:</strong> ${bike.model}</div>
             <div class="col-6"><strong>Type:</strong> ${bike.type}</div>
             <div class="col-6"><strong>Colour:</strong> ${bike.colour}</div>
+            <div class="col-6"><strong>Wheel Size:</strong> ${bike.wheel_size ? bike.wheel_size + '"' : 'N/A'}</div>
+            <div class="col-6"><strong>Gears:</strong> ${bike.gears || 'N/A'}</div>
+            <div class="col-6"><strong>Brakes:</strong> ${bike.brake_type || 'N/A'}</div>
+            <div class="col-6"><strong>Suspension:</strong> ${bike.suspension || 'None'}</div>
+            <div class="col-6"><strong>Gender:</strong> ${bike.gender}</div>
+            <div class="col-6"><strong>Age Group:</strong> ${bike.age_group}</div>
             <div class="col-6"><strong>MPN/Serial:</strong> ${bike.mpn || 'N/A'}</div>
             <div class="col-6"><strong>Status:</strong> <span class="badge ${statusClass}">${bike.status.toUpperCase()}</span></div>
             <div class="col-12 mt-2"><hr></div>

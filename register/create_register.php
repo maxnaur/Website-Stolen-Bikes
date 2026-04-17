@@ -119,6 +119,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     'public'
   ]);
   
+  $user_id = $pdo->lastInsertId();
+  logActivity($pdo, 'REGISTER', 'users', $user_id, "New account registered: $email");
+  
   $response['success'] = true;
   $response['message'] = "Account created successfully! Please log in.";
   echo json_encode($response);
