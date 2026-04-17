@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   exit;
   }
   
-  // Hash password using password_hash (recommended)
+  // Hash password using password_hash
   $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
   
   // Check if email already exists

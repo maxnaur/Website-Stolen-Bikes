@@ -48,14 +48,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $role = strtolower($user['role']);
     switch ($role) {
       case 'police':
-        header('Location: /police/police-dashboard.html');
+        header('Location: /police/police-dashboard.php');
         exit();
       case 'admin':
-        header('Location: /admin/admin-dashboard.html');
+        header('Location: /admin/admin-dashboard.php');
         exit();
       case 'public':
       default:
-        header('Location: /public/public-dashboard.html');
+        header('Location: /public/public-dashboard.php');
         exit();
     }
 
