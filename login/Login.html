@@ -19,19 +19,24 @@
   </ul>
   </div>
 
-  <script>
-  // show error from query string if present
-  const params = new URLSearchParams(window.location.search);
-  if (params.has('error')) {
-  alert(params.get('error'));
-  }
-  </script>
   <div class="container py-1">
   <div class="row justify-content-center">
   <div class="col-md-10">
   <div class="card shadow-sm">
     <div class="card-body">
     <h1 class="text-center mb-4">Log In</h1>
+
+    <!-- Display error from URL if present -->
+    <div id="url-error" class="alert alert-danger text-center mb-4" style="display:none;"></div>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('error')) {
+      const errorDiv = document.getElementById('url-error');
+      errorDiv.textContent = decodeURIComponent(params.get('error'));
+      errorDiv.style.display = 'block';
+      }
+    </script>
+
     <!-- login form posts to backend script -->
     <form id="loginForm" method="POST" action="login.php">
     <div class="row g-3">

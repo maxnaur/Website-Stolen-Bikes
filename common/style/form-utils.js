@@ -32,3 +32,15 @@ document.querySelectorAll('form').forEach(form => {
   }
   });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const showPass = document.getElementById('showPasswordCheck');
+  if (showPass) {
+  showPass.addEventListener('change', () => {
+  const pass = document.getElementById('password');
+  if (pass) {
+    pass.type = showPass.checked ? 'text' : 'password';
+  }
+  });
+  }
+});

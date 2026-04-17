@@ -19,7 +19,7 @@ CREATE TABLE `users` (
   city VARCHAR(50) NOT NULL,
   date_of_birth DATE NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);-- ENGINE=InnoDB;
+);
 
 -- Bicycles table
 CREATE TABLE `bicycles` (
@@ -39,11 +39,7 @@ CREATE TABLE `bicycles` (
   image_path VARCHAR(255),
   status ENUM('safe', 'stolen', 'sold') DEFAULT 'safe',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);-- ENGINE=InnoDB;
-
--- Add foreign key constraint for bicycles
--- ALTER TABLE `bicycles`
--- ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`);
+);
 
 -- Report table
 CREATE TABLE `report` (
@@ -55,11 +51,7 @@ CREATE TABLE `report` (
   investigation_notes TEXT,
   bike_status ENUM('stolen', 'captured', 'returned') DEFAULT 'stolen',  -- Fixed: 'safe' not in ENUM
   closed_at DATETIME DEFAULT NULL
-);-- ENGINE=InnoDB;
-
--- Add foreign key constraint for report
--- ALTER TABLE `report`
--- ADD FOREIGN KEY (`bicycle_id`) REFERENCES `bicycles`(`id`);
+);
 
 -- Insert default admin user (password: admin123)
 INSERT INTO `users` (
