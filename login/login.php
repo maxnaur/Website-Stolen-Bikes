@@ -48,14 +48,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $role = strtolower($user['role']);
     switch ($role) {
       case 'police':
-      $response['redirect_url'] = '../police/police-dashboard.php'; 
+      $response['redirect_url'] = '/police/police-dashboard.php'; 
       break;
       case 'admin':
-      $response['redirect_url'] = '../admin/admin-dashboard.php'; 
+      $response['redirect_url'] = '/admin/admin-dashboard.php'; 
       break;
       case 'public':
       default:
-      $response['redirect_url'] = '../public/public-dashboard.php'; 
+      $response['redirect_url'] = '/public/public-dashboard.php'; 
       break;
     }
 
