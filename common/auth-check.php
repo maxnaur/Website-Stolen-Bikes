@@ -38,11 +38,4 @@ function getCurrentUser() {
   'last_name' => explode(' ', $_SESSION['username'] ?? '')[1] ?? ''
   ];
 }
-
-// Handle logout (Helper function)
-function logout() {
-  session_destroy();
-  header('Location: ../login/Login.html');
-  exit;
-}
 ?>
