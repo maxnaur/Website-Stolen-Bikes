@@ -1,12 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
   // password visibility toggles
   document.querySelectorAll('.toggle-password').forEach(cb => {
-  cb.addEventListener('change', () => {
-  const tgt = document.querySelector(cb.dataset.target);
-  if (tgt && tgt.type === 'password') {
-  tgt.type = cb.checked ? 'text' : 'password';
-  }
-  });
+    cb.addEventListener('click', (e) => {
+      // For checkboxes, click event happens after value is toggled
+      const tgt = document.querySelector(cb.dataset.target);
+      if (tgt) {
+        tgt.type = cb.checked ? 'text' : 'password';
+      }
+    });
   });
 });
 

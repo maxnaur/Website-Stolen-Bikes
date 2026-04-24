@@ -322,9 +322,15 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&libraries=places"></script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Google Maps Autocomplete for incident location
+    const input = document.querySelector('input[name="incident_location"]');
+    if (input) {
+      new google.maps.places.Autocomplete(input);
+    }
+
     loadBikes();
     loadReports();
   });
@@ -449,10 +455,29 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
     }
   });
 
+  document.getElementById('incidentStatusSelect').addEventListener('change', function() {
+    const recoveredSection = document.getElementById('recoveredExplanationSection');
+    const recoveryInput = document.getElementById('recoveryExplanation');
+    if (this.value === 'recovered') {
+      recoveredSection.style.display = 'block';
+      recoveryInput.required = true;
+    } else {
+      recoveredSection.style.display = 'none';
+      recoveryInput.required = false;
+    }
+  });
+
   document.getElementById('reportTheftForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     
+    // Merge explanation into notes if status is recovered
+    if (formData.get('bike_status') === 'recovered') {
+      const expl = formData.get('recovery_explanation');
+      const notes = formData.get('investigation_notes');
+      formData.set('investigation_notes', `RECOVERY REPORT: ${expl}\n\nAdditional Info: ${notes}`);
+    }
+
     try {
     const response = await fetch('../api/reports.php?action=create', {
       method: 'POST',

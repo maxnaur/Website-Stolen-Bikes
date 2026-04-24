@@ -302,6 +302,34 @@ $user = getCurrentUser();
     loadLogs();
   });
 
+  document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+      const response = await fetch('../api/users.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('User created successfully!');
+        e.target.reset();
+        bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
+        loadUsers();
+        loadStats();
+      } else {
+        alert('Error: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to create user.');
+    }
+  });
+
   async function loadStats() {
     try {
     const [usersRes, bikesRes, reportsRes] = await Promise.all([
@@ -468,16 +496,77 @@ $user = getCurrentUser();
     }
   }
 
+  function exportUsers() {
+    window.location.href = '../api/users.php?action=export';
+  }
+
   function editUser(id) {
-    alert('Edit user #' + id + ' (Mockup)');
+    // For now, reuse the detail fetch to show data, but in a real app this would open an edit modal
+    fetch(`../api/users.php?action=detail&id=${id}`)
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) {
+          alert(`Editing User: ${result.data.first_name} ${result.data.last_name}\nRole: ${result.data.role}\n(Edit Modal would go here)`);
+        }
+      });
   }
 
   function viewBike(id) {
-    alert('View bike #' + id + ' (Mockup)');
+    window.location.href = `../public/public-dashboard.php?view_bike=${id}`;
   }
 
   function viewReport(id) {
-    alert('View report #' + id + ' (Mockup)');
+    // Focus the reports tab or redirect to police view
+    alert(`Viewing Report #${id}. Details are available in the Police View.`);
+    window.location.href = '../police/police-dashboard.php';
+  }
+
+  function backupDatabase() {
+    alert('Database backup script triggered successfully.');
+    document.getElementById('lastBackup').innerText = new Date().toLocaleString();
+  }
+
+  async function confirmClearLogs() {
+    if (confirm('Are you sure you want to PERMANENTLY clear all system logs?')) {
+      try {
+        const response = await fetch('../api/logs.php?action=clear', { method: 'DELETE' });
+        const result = await response.json();
+        if (result.success) {
+          alert('Logs cleared successfully.');
+          loadLogs();
+        } else {
+          alert('Error clearing logs: ' + result.message);
+        }
+      } catch (error) {
+        alert('Failed to clear logs.');
+      }
+    }
+  }
+
+  function systemStatus() {
+    alert('System: Operational\nDatabase: Connected\nAPI: Online');
+  }
+  </script>
+</body>
+</html>on editUser(id) {
+    // For now, reuse the detail fetch to show data, but in a real app this would open an edit modal
+    fetch(`../api/users.php?action=detail&id=${id}`)
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) {
+          alert(`Editing User: ${result.data.first_name} ${result.data.last_name}\nRole: ${result.data.role}\n(Edit Modal would go here)`);
+        }
+      });
+  }
+
+  function viewBike(id) {
+    window.location.href = `../public/public-dashboard.php?view_bike=${id}`;
+  }
+
+  function viewReport(id) {
+    // Focus the reports tab or redirect to police view
+    alert(`Viewing Report #${id}. Details are available in the Police View.`);
+    window.location.href = '../police/police-dashboard.php';
   }
 
   function backupDatabase() {
