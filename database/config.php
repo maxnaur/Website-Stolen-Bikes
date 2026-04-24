@@ -1,5 +1,9 @@
 <?php
 // Database configuration
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(E_ALL);
+
 define('DB_SERVER', 'localhost');
 define('DB_USERNAME', 'bikesafety');
 define('DB_PASSWORD', '0kztCN@fZAb4@R^pRYz@');
@@ -25,4 +29,3 @@ try {
 
 // For backward compatibility
 $conn = $pdo;
-?>

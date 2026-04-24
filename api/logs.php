@@ -8,7 +8,7 @@ session_start();
 // Admin only check
 if (!isset($_SESSION['loggedin']) || $_SESSION['role'] !== 'admin') {
   http_response_code(401);
-  echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+  echo json_encode(['success' => false, 'message' => 'Unauthorized']); exit;
   exit;
 }
 
@@ -31,12 +31,12 @@ try {
 
   default:
     http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+    echo json_encode(['success' => false, 'message' => 'Method not allowed']); exit;
   }
 } catch (Exception $e) {
   error_log("Logs API Error: " . $e->getMessage());
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Server error']);
+  echo json_encode(['success' => false, 'message' => 'Server error']); exit;
 }
 
 function listLogs() {
@@ -51,10 +51,10 @@ function listLogs() {
     LIMIT 500
   ");
   $logs = $stmt->fetchAll();
-  echo json_encode(['success' => true, 'data' => $logs]);
+  echo json_encode(['success' => true, 'data' => $logs]); exit;
   } catch (PDOException $e) {
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Database error']);
+  echo json_encode(['success' => false, 'message' => 'Database error']); exit;
   }
 }
 
@@ -62,10 +62,10 @@ function clearLogs() {
   global $pdo;
   try {
   $pdo->exec("TRUNCATE TABLE activity_log");
-  echo json_encode(['success' => true, 'message' => 'Logs cleared successfully']);
+  echo json_encode(['success' => true, 'message' => 'Logs cleared successfully']); exit;
   } catch (PDOException $e) {
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Failed to clear logs']);
+  echo json_encode(['success' => false, 'message' => 'Failed to clear logs']); exit;
   }
 }
 
@@ -100,4 +100,3 @@ function exportLogs() {
     echo "Error exporting data: " . $e->getMessage();
   }
 }
-?>

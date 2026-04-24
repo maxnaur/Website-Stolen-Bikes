@@ -40,12 +40,12 @@ try {
 
   default:
     http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+    echo json_encode(['success' => false, 'message' => 'Method not allowed']); exit;
   }
 } catch (Exception $e) {
   error_log("Bicycle API Error: " . $e->getMessage());
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Server error']);
+  echo json_encode(['success' => false, 'message' => 'Server error']); exit;
 }
 
 // Get list of bikes based on role
@@ -88,11 +88,11 @@ function listBikes($user) {
     }
   }
   
-  echo json_encode(['success' => true, 'data' => $bikes]);
+  echo json_encode(['success' => true, 'data' => $bikes]); exit;
   } catch (PDOException $e) {
   error_log("List Bikes Error: " . $e->getMessage());
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Database error']);
+  echo json_encode(['success' => false, 'message' => 'Database error']); exit;
   }
 }
 
@@ -113,21 +113,21 @@ function getBikeDetail($user) {
   
   if (!$bike) {
     http_response_code(404);
-    echo json_encode(['success' => false, 'message' => 'Bike not found']);
+    echo json_encode(['success' => false, 'message' => 'Bike not found']); exit;
     return;
   }
   
   // Check authorization
   if ($user['role'] === 'public' && $bike['user_id'] != $user['id']) {
     http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Access denied']);
+    echo json_encode(['success' => false, 'message' => 'Access denied']); exit;
     return;
   }
   
-  echo json_encode(['success' => true, 'data' => $bike]);
+  echo json_encode(['success' => true, 'data' => $bike]); exit;
   } catch (PDOException $e) {
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Database error']);
+  echo json_encode(['success' => false, 'message' => 'Database error']); exit;
   }
 }
 
@@ -137,7 +137,7 @@ function exportBikes($user) {
   
   if ($user['role'] !== 'admin' && $user['role'] !== 'police') {
   http_response_code(403);
-  echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+  echo json_encode(['success' => false, 'message' => 'Unauthorized']); exit;
   exit;
   }
   
@@ -181,7 +181,7 @@ function addBike($user) {
   
   if ($user['role'] === 'police') {
   http_response_code(403);
-  echo json_encode(['success' => false, 'message' => 'Police cannot add bikes']);
+  echo json_encode(['success' => false, 'message' => 'Police cannot add bikes']); exit;
   exit;
   }
   
@@ -194,7 +194,7 @@ function addBike($user) {
   // Validate required fields
   if (empty($data['brand']) || empty($data['model']) || empty($data['colour']) || empty($data['type'])) {
   http_response_code(400);
-  echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+  echo json_encode(['success' => false, 'message' => 'Missing required fields']); exit;
   exit;
   }
   
@@ -240,7 +240,7 @@ function addBike($user) {
   $bike_id = $pdo->lastInsertId();
   logActivity($pdo, 'BICYCLE_ADDED', 'bicycles', $bike_id, "Added {$data['brand']} {$data['model']}");
   
-  echo json_encode(['success' => true, 'message' => 'Bike added successfully', 'image_path' => $image_path]);
+  echo json_encode(['success' => true, 'message' => 'Bike added successfully', 'image_path' => $image_path]); exit;
   } catch (PDOException $e) {
   error_log("Add Bike Error: " . $e->getMessage());
   http_response_code(500);
@@ -248,7 +248,7 @@ function addBike($user) {
   if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
     $msg = 'A bike with this serial number already exists.';
   }
-  echo json_encode(['success' => false, 'message' => $msg, 'error_detail' => $e->getMessage()]);
+  echo json_encode(['success' => false, 'message' => $msg, 'error_detail' => $e->getMessage()]); exit;
   }
 }
 
@@ -266,7 +266,7 @@ function updateBike($user) {
   
   if (!$bike || ($user['role'] === 'public' && $bike['user_id'] != $user['id'])) {
     http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Access denied']);
+    echo json_encode(['success' => false, 'message' => 'Access denied']); exit;
     exit;
   }
   
@@ -274,10 +274,9 @@ function updateBike($user) {
   $stmt = $pdo->prepare("UPDATE bicycles SET status = ? WHERE id = ?");
   $stmt->execute([$data['status'] ?? 'safe', $bike_id]);
   
-  echo json_encode(['success' => true, 'message' => 'Bike updated successfully']);
+  echo json_encode(['success' => true, 'message' => 'Bike updated successfully']); exit;
   } catch (PDOException $e) {
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Failed to update bike']);
+  echo json_encode(['success' => false, 'message' => 'Failed to update bike']); exit;
   }
 }
-?>

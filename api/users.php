@@ -7,7 +7,7 @@ session_start();
 
 if (!isset($_SESSION['loggedin'])) {
   http_response_code(401);
-  echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+  echo json_encode(['success' => false, 'message' => 'Unauthorized']); exit;
   exit;
 }
 
@@ -32,7 +32,7 @@ try {
       }
     } else {
       http_response_code(403);
-      echo json_encode(['success' => false, 'message' => 'Forbidden']);
+      echo json_encode(['success' => false, 'message' => 'Forbidden']); exit;
     }
     break;
 
@@ -41,7 +41,7 @@ try {
       createUser();
     } else {
       http_response_code(403);
-      echo json_encode(['success' => false, 'message' => 'Forbidden']);
+      echo json_encode(['success' => false, 'message' => 'Forbidden']); exit;
     }
     break;
 
@@ -52,7 +52,7 @@ try {
       updateUser();
     } else {
       http_response_code(403);
-      echo json_encode(['success' => false, 'message' => 'Forbidden']);
+      echo json_encode(['success' => false, 'message' => 'Forbidden']); exit;
     }
     break;
 
@@ -61,18 +61,18 @@ try {
       deleteUser();
     } else {
       http_response_code(403);
-      echo json_encode(['success' => false, 'message' => 'Forbidden']);
+      echo json_encode(['success' => false, 'message' => 'Forbidden']); exit;
     }
     break;
 
   default:
     http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+    echo json_encode(['success' => false, 'message' => 'Method not allowed']); exit;
   }
 } catch (Exception $e) {
   error_log("User API Error: " . $e->getMessage());
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Server error']);
+  echo json_encode(['success' => false, 'message' => 'Server error']); exit;
 }
 
 function getOwnProfile($user) {
@@ -81,10 +81,10 @@ function getOwnProfile($user) {
     $stmt = $pdo->prepare("SELECT id, first_name, last_name, email, role, phone, address_line1, address_line2, postcode, county, city, date_of_birth, created_at FROM users WHERE id = ?");
     $stmt->execute([$user['user_id']]);
     $data = $stmt->fetch();
-    echo json_encode(['success' => true, 'data' => $data]);
+    echo json_encode(['success' => true, 'data' => $data]); exit;
   } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database error']);
+    echo json_encode(['success' => false, 'message' => 'Database error']); exit;
   }
 }
 
@@ -98,7 +98,7 @@ function updateOwnProfile($user) {
     // Check format (numbers, spaces, dashes, +, parentheses)
     if (!preg_match('/^[\d\s\-+()]{7,20}$/', $phone)) {
       http_response_code(400);
-      echo json_encode(['success' => false, 'message' => 'Invalid phone number format']);
+      echo json_encode(['success' => false, 'message' => 'Invalid phone number format']); exit;
       return;
     }
     
@@ -106,7 +106,7 @@ function updateOwnProfile($user) {
     $digitCount = strlen(preg_replace('/[^\d]/', '', $phone));
     if ($digitCount < 10 || $digitCount > 15) {
       http_response_code(400);
-      echo json_encode(['success' => false, 'message' => 'Phone number must contain between 10 and 15 digits']);
+      echo json_encode(['success' => false, 'message' => 'Phone number must contain between 10 and 15 digits']); exit;
       return;
     }
   }
@@ -123,7 +123,7 @@ function updateOwnProfile($user) {
   }
 
   if (empty($update_parts)) {
-    echo json_encode(['success' => true, 'message' => 'No changes made']);
+    echo json_encode(['success' => true, 'message' => 'No changes made']); exit;
     return;
   }
 
@@ -134,10 +134,10 @@ function updateOwnProfile($user) {
     
     logActivity($pdo, 'PROFILE_UPDATED', 'users', $user['user_id'], "Fields changed: " . implode(", ", $update_parts));
     
-    echo json_encode(['success' => true, 'message' => 'Profile updated successfully']);
+    echo json_encode(['success' => true, 'message' => 'Profile updated successfully']); exit;
   } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database error']);
+    echo json_encode(['success' => false, 'message' => 'Database error']); exit;
   }
 }
 
@@ -146,10 +146,10 @@ function listUsers() {
   try {
   $stmt = $pdo->query("SELECT id, first_name, last_name, email, role, phone, city, created_at FROM users ORDER BY created_at DESC");
   $users = $stmt->fetchAll();
-  echo json_encode(['success' => true, 'data' => $users]);
+  echo json_encode(['success' => true, 'data' => $users]); exit;
   } catch (PDOException $e) {
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Database error']);
+  echo json_encode(['success' => false, 'message' => 'Database error']); exit;
   }
 }
 
@@ -162,14 +162,14 @@ function getUserDetail() {
   $user = $stmt->fetch();
   if ($user) {
     unset($user['password']); // Don't send password hash
-    echo json_encode(['success' => true, 'data' => $user]);
+    echo json_encode(['success' => true, 'data' => $user]); exit;
   } else {
     http_response_code(404);
-    echo json_encode(['success' => false, 'message' => 'User not found']);
+    echo json_encode(['success' => false, 'message' => 'User not found']); exit;
   }
   } catch (PDOException $e) {
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Database error']);
+  echo json_encode(['success' => false, 'message' => 'Database error']); exit;
   }
 }
 
@@ -179,7 +179,7 @@ function createUser() {
   
   if (empty($data['email']) || empty($data['password']) || empty($data['first_name'])) {
   http_response_code(400);
-  echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+  echo json_encode(['success' => false, 'message' => 'Missing required fields']); exit;
   return;
   }
 
@@ -200,14 +200,14 @@ function createUser() {
     $data['city'] ?? '',
     $data['date_of_birth'] ?? '2000-01-01'
   ]);
-  echo json_encode(['success' => true, 'message' => 'User created successfully']);
+  echo json_encode(['success' => true, 'message' => 'User created successfully']); exit;
   } catch (PDOException $e) {
   if ($e->getCode() == 23000) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Email already exists']);
+    echo json_encode(['success' => false, 'message' => 'Email already exists']); exit;
   } else {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database error']);
+    echo json_encode(['success' => false, 'message' => 'Database error']); exit;
   }
   }
 }
@@ -235,17 +235,17 @@ function updateUser() {
   }
 
   if (empty($fields)) {
-    echo json_encode(['success' => true, 'message' => 'No changes made']);
+    echo json_encode(['success' => true, 'message' => 'No changes made']); exit;
     return;
   }
 
   $params[] = $id;
   $stmt = $pdo->prepare("UPDATE users SET " . implode(", ", $fields) . " WHERE id = ?");
   $stmt->execute($params);
-  echo json_encode(['success' => true, 'message' => 'User updated successfully']);
+  echo json_encode(['success' => true, 'message' => 'User updated successfully']); exit;
   } catch (PDOException $e) {
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Database error']);
+  echo json_encode(['success' => false, 'message' => 'Database error']); exit;
   }
 }
 
@@ -258,10 +258,10 @@ function deleteUser() {
   
   logActivity($pdo, 'USER_DELETED', 'users', $id, "Deleted by Admin");
   
-  echo json_encode(['success' => true, 'message' => 'User deleted successfully']);
+  echo json_encode(['success' => true, 'message' => 'User deleted successfully']); exit;
   } catch (PDOException $e) {
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Database error']);
+  echo json_encode(['success' => false, 'message' => 'Database error']); exit;
   }
 }
 
@@ -291,4 +291,3 @@ function exportUsers() {
     echo "Error exporting data.";
   }
 }
-?>

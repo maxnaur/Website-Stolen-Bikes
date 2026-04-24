@@ -50,4 +50,3 @@ function logActivity($pdo, $action, $table = null, $id = null, $details = null) 
   error_log("Failed to log activity: " . $e->getMessage());
   }
 }
-?>

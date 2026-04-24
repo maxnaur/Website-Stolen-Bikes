@@ -31,12 +31,12 @@ try {
 
   default:
     http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+    echo json_encode(['success' => false, 'message' => 'Method not allowed']); exit;
   }
 } catch (Exception $e) {
   error_log("Report API Error: " . $e->getMessage());
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Server error']);
+  echo json_encode(['success' => false, 'message' => 'Server error']); exit;
 }
 
 // List reports based on role and filters
@@ -101,11 +101,11 @@ function listReports($user) {
   }
   
   $reports = $stmt->fetchAll();
-  echo json_encode(['success' => true, 'data' => $reports]);
+  echo json_encode(['success' => true, 'data' => $reports]); exit;
   
   } catch (PDOException $e) {
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Database error']);
+  echo json_encode(['success' => false, 'message' => 'Database error']); exit;
   }
 }
 
@@ -115,7 +115,7 @@ function createReport($user) {
   
   if ($user['role'] === 'police') {
   http_response_code(403);
-  echo json_encode(['success' => false, 'message' => 'Police cannot create reports']);
+  echo json_encode(['success' => false, 'message' => 'Police cannot create reports']); exit;
   exit;
   }
   
@@ -129,7 +129,7 @@ function createReport($user) {
   
   if (empty($bike_id)) {
   http_response_code(400);
-  echo json_encode(['success' => false, 'message' => 'Missing bicycle_id']);
+  echo json_encode(['success' => false, 'message' => 'Missing bicycle_id']); exit;
   exit;
   }
   
@@ -142,7 +142,7 @@ function createReport($user) {
     
     if (!$bike || $bike['user_id'] != $user['id']) {
     http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Access denied']);
+    echo json_encode(['success' => false, 'message' => 'Access denied']); exit;
     exit;
     }
   }
@@ -161,12 +161,12 @@ function createReport($user) {
   $report_id = $pdo->lastInsertId();
   logActivity($pdo, 'REPORT_CREATED', 'report', $report_id, "Report for bike ID $bike_id created as $bike_status");
   
-  echo json_encode(['success' => true, 'message' => 'Report created successfully']);
+  echo json_encode(['success' => true, 'message' => 'Report created successfully']); exit;
   
   } catch (PDOException $e) {
   error_log("Create Report Error: " . $e->getMessage());
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Failed to create report']);
+  echo json_encode(['success' => false, 'message' => 'Failed to create report']); exit;
   }
 }
 
@@ -176,7 +176,7 @@ function updateReport($user) {
   
   if ($user['role'] === 'public') {
   http_response_code(403);
-  echo json_encode(['success' => false, 'message' => 'Public users cannot update reports']);
+  echo json_encode(['success' => false, 'message' => 'Public users cannot update reports']); exit;
   exit;
   }
   
@@ -218,15 +218,19 @@ function updateReport($user) {
   $stmt = $pdo->prepare($query);
   $stmt->execute($params);
   
-  echo json_encode(['success' => true, 'message' => 'Report updated successfully']);
+  echo json_encode(['success' => true, 'message' => 'Report updated successfully']); exit;
   
   } catch (PDOException $e) {
   http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Failed to update report']);
+  echo json_encode(['success' => false, 'message' => 'Failed to update report']); exit;
   }
 }
-?>
 
+// Export reports to CSV (Admin/Police only)
+function exportReports($user) {
+  global $pdo;
+  
+  if ($user['role'] !== 'admin' && $user['role'] !== 'police') {
     http_response_code(403);
     echo "Unauthorized access.";
     return;
@@ -264,4 +268,3 @@ function updateReport($user) {
     echo "Error exporting data: " . $e->getMessage();
   }
 }
-?>

@@ -38,4 +38,4 @@ function getCurrentUser() {
   'last_name' => explode(' ', $_SESSION['username'] ?? '')[1] ?? ''
   ];
 }
-?>
+
