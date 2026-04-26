@@ -1,49 +1,27 @@
-// login-handler.js
+/**
+ * login/login.js
+ * Handles error display and login form enhancements
+ */
 
-document.addEventListener('DOMContentLoaded', function() {
-  const loginForm = document.getElementById('loginForm');
-  const errorDiv = document.getElementById('error-message');
-
-  if (!loginForm) return; // Exit if the form doesn't exist
-
-  loginForm.addEventListener('submit', async (event) => {
-  // 1. Prevent default submission refresh
-  event.preventDefault();
-
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  // Reset previous errors and show loading state
-  errorDiv.textContent = '';
-  errorDiv.style.display = 'block'; 
-
-  try {
-    // 2. Send credentials to the PHP backend via fetch API
-    const response = await fetch('login.php', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: new URLSearchParams({
-      email: email,
-      password: password
-    })
-    });
-
-    const result = await response.json(); // Assuming PHP returns JSON success/error status
-
-    // 3. Handle the server response
-    if (result.success) {
-    // If successful, redirect the user based on their role
-    window.location.href = result.redirect_url;
-    } else {
-    // Display specific error messages from the server
-    errorDiv.textContent = result.message || "An unknown login error occurred.";
+document.addEventListener('DOMContentLoaded', () => {
+    // Check for error parameters in the URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('error')) {
+        const errorDiv = document.getElementById('url-error');
+        if (errorDiv) {
+            errorDiv.textContent = decodeURIComponent(params.get('error'));
+            errorDiv.style.display = 'block';
+        }
     }
 
-  } catch (e) {
-    console.error('Login failed:', e);
-    errorDiv.textContent = 'Could not connect to the server. Please try again later.';
-  }
-  });
+    // Check for success messages (e.g., after registration)
+    if (params.has('success')) {
+        const errorDiv = document.getElementById('url-error');
+        if (errorDiv) {
+            errorDiv.classList.remove('alert-danger');
+            errorDiv.classList.add('alert-success');
+            errorDiv.textContent = decodeURIComponent(params.get('success'));
+            errorDiv.style.display = 'block';
+        }
+    }
 });

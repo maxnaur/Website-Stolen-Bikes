@@ -1,293 +1,77 @@
 <?php
-// api/users.php - REST API for user management (Admin only)
+// api/users.php - REST API for user management
 header('Content-Type: application/json');
 require_once '../database/config.php';
+require_once '../common/auth-check.php';
+require_once '../includes/UserDAO.php';
 
-session_start();
-
-if (!isset($_SESSION['loggedin'])) {
-  http_response_code(401);
-  echo json_encode(['success' => false, 'message' => 'Unauthorized']); exit;
-  exit;
-}
-
-$user = $_SESSION;
 $method = $_SERVER['REQUEST_METHOD'];
+$user = getCurrentUser();
 $action = $_GET['action'] ?? '';
 
 try {
-  switch ($method) {
-  case 'GET':
-    if ($action === 'profile') {
-      getOwnProfile($user);
-    } elseif ($user['role'] === 'admin') {
-      if ($action === 'list') {
-        listUsers();
-      } elseif ($action === 'detail') {
-        getUserDetail();
-      } elseif ($action === 'export') {
-        exportUsers();
-      } else {
-        listUsers();
-      }
-    } else {
-      http_response_code(403);
-      echo json_encode(['success' => false, 'message' => 'Forbidden']); exit;
+    switch ($method) {
+        case 'GET':
+            handleGet($user, $action);
+            break;
+        case 'POST':
+            handlePost($user);
+            break;
+        case 'PUT':
+            handlePut($user, $action);
+            break;
+        default:
+            http_response_code(405);
+            echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+            break;
     }
-    break;
-
-  case 'POST':
-    if ($user['role'] === 'admin') {
-      createUser();
-    } else {
-      http_response_code(403);
-      echo json_encode(['success' => false, 'message' => 'Forbidden']); exit;
-    }
-    break;
-
-  case 'PUT':
-    if ($action === 'update_profile') {
-      updateOwnProfile($user);
-    } elseif ($user['role'] === 'admin') {
-      updateUser();
-    } else {
-      http_response_code(403);
-      echo json_encode(['success' => false, 'message' => 'Forbidden']); exit;
-    }
-    break;
-
-  case 'DELETE':
-    if ($user['role'] === 'admin') {
-      deleteUser();
-    } else {
-      http_response_code(403);
-      echo json_encode(['success' => false, 'message' => 'Forbidden']); exit;
-    }
-    break;
-
-  default:
-    http_response_code(405);
-    echo json_encode(['success' => false, 'message' => 'Method not allowed']); exit;
-  }
 } catch (Exception $e) {
-  error_log("User API Error: " . $e->getMessage());
-  http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Server error']); exit;
-}
-
-function getOwnProfile($user) {
-  global $pdo;
-  try {
-    $stmt = $pdo->prepare("SELECT id, first_name, last_name, email, role, phone, address_line1, address_line2, postcode, county, city, date_of_birth, created_at FROM users WHERE id = ?");
-    $stmt->execute([$user['user_id']]);
-    $data = $stmt->fetch();
-    echo json_encode(['success' => true, 'data' => $data]); exit;
-  } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database error']); exit;
-  }
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
 
-function updateOwnProfile($user) {
-  global $pdo;
-  $data = json_decode(file_get_contents("php://input"), true);
-  
-  // Validation
-  $phone = trim($data['phone'] ?? '');
-  if (!empty($phone)) {
-    // Check format (numbers, spaces, dashes, +, parentheses)
-    if (!preg_match('/^[\d\s\-+()]{7,20}$/', $phone)) {
-      http_response_code(400);
-      echo json_encode(['success' => false, 'message' => 'Invalid phone number format']); exit;
-      return;
+function handleGet($currentUser, $action) {
+    global $pdo;
+    if ($action === 'list') {
+        checkRole('admin');
+        echo json_encode(['success' => true, 'data' => listUsers($pdo)]);
+    } elseif ($action === 'detail') {
+        checkRole('admin');
+        echo json_encode(['success' => true, 'data' => getUserDetail($pdo, $_GET['id'])]);
+    } elseif ($action === 'profile') {
+        echo json_encode(['success' => true, 'data' => getUserDetail($pdo, $currentUser['id'])]);
+    } elseif ($action === 'export') {
+        checkRole('admin');
+        exportUsersToCSV($pdo);
     }
-    
-    // Check digit length specifically (usually 10-15 digits globally)
-    $digitCount = strlen(preg_replace('/[^\d]/', '', $phone));
-    if ($digitCount < 10 || $digitCount > 15) {
-      http_response_code(400);
-      echo json_encode(['success' => false, 'message' => 'Phone number must contain between 10 and 15 digits']); exit;
-      return;
+}
+
+function handlePost($currentUser) {
+    global $pdo;
+    checkRole('admin');
+    $data = json_decode(file_get_contents("php://input"), true);
+    $id = createUser($pdo, $data);
+    logActivity($pdo, 'USER_CREATED', 'users', $id, "Admin created user: " . $data['email']);
+    echo json_encode(['success' => true, 'id' => $id]);
+}
+
+function handlePut($currentUser, $action) {
+    global $pdo;
+    if ($action === 'update_profile') {
+        $data = json_decode(file_get_contents("php://input"), true);
+        updateUserProfile($pdo, $currentUser['id'], $data);
+        logActivity($pdo, 'PROFILE_UPDATED', 'users', $currentUser['id'], "User updated their own profile");
+        echo json_encode(['success' => true]);
     }
-  }
-
-  $allowed_fields = ['phone', 'address_line1', 'address_line2', 'postcode', 'county', 'city'];
-  $update_parts = [];
-  $params = [];
-
-  foreach ($allowed_fields as $field) {
-    if (isset($data[$field])) {
-      $update_parts[] = "$field = ?";
-      $params[] = trim($data[$field]);
-    }
-  }
-
-  if (empty($update_parts)) {
-    echo json_encode(['success' => true, 'message' => 'No changes made']); exit;
-    return;
-  }
-
-  $params[] = $user['user_id'];
-  try {
-    $stmt = $pdo->prepare("UPDATE users SET " . implode(", ", $update_parts) . " WHERE id = ?");
-    $stmt->execute($params);
-    
-    logActivity($pdo, 'PROFILE_UPDATED', 'users', $user['user_id'], "Fields changed: " . implode(", ", $update_parts));
-    
-    echo json_encode(['success' => true, 'message' => 'Profile updated successfully']); exit;
-  } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database error']); exit;
-  }
 }
 
-function listUsers() {
-  global $pdo;
-  try {
-  $stmt = $pdo->query("SELECT id, first_name, last_name, email, role, phone, city, created_at FROM users ORDER BY created_at DESC");
-  $users = $stmt->fetchAll();
-  echo json_encode(['success' => true, 'data' => $users]); exit;
-  } catch (PDOException $e) {
-  http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Database error']); exit;
-  }
-}
-
-function getUserDetail() {
-  global $pdo;
-  $id = $_GET['id'] ?? 0;
-  try {
-  $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
-  $stmt->execute([$id]);
-  $user = $stmt->fetch();
-  if ($user) {
-    unset($user['password']); // Don't send password hash
-    echo json_encode(['success' => true, 'data' => $user]); exit;
-  } else {
-    http_response_code(404);
-    echo json_encode(['success' => false, 'message' => 'User not found']); exit;
-  }
-  } catch (PDOException $e) {
-  http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Database error']); exit;
-  }
-}
-
-function createUser() {
-  global $pdo;
-  $data = json_decode(file_get_contents("php://input"), true);
-  
-  if (empty($data['email']) || empty($data['password']) || empty($data['first_name'])) {
-  http_response_code(400);
-  echo json_encode(['success' => false, 'message' => 'Missing required fields']); exit;
-  return;
-  }
-
-  $password_hash = password_hash($data['password'], PASSWORD_DEFAULT);
-
-  try {
-  $stmt = $pdo->prepare("INSERT INTO users (first_name, last_name, email, password, role, phone, address_line1, postcode, county, city, date_of_birth) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-  $stmt->execute([
-    $data['first_name'],
-    $data['last_name'],
-    $data['email'],
-    $password_hash,
-    $data['role'] ?? 'public',
-    $data['phone'] ?? null,
-    $data['address_line1'] ?? '',
-    $data['postcode'] ?? '',
-    $data['county'] ?? '',
-    $data['city'] ?? '',
-    $data['date_of_birth'] ?? '2000-01-01'
-  ]);
-  echo json_encode(['success' => true, 'message' => 'User created successfully']); exit;
-  } catch (PDOException $e) {
-  if ($e->getCode() == 23000) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Email already exists']); exit;
-  } else {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database error']); exit;
-  }
-  }
-}
-
-function updateUser() {
-  global $pdo;
-  $id = $_GET['id'] ?? 0;
-  $data = json_decode(file_get_contents("php://input"), true);
-
-  try {
-  $fields = [];
-  $params = [];
-  $allowed_fields = ['first_name', 'last_name', 'role', 'phone', 'address_line1', 'postcode', 'county', 'city'];
-  
-  foreach ($allowed_fields as $field) {
-    if (isset($data[$field])) {
-    $fields[] = "$field = ?";
-    $params[] = $data[$field];
-    }
-  }
-
-  if (isset($data['password']) && !empty($data['password'])) {
-    $fields[] = "password = ?";
-    $params[] = password_hash($data['password'], PASSWORD_DEFAULT);
-  }
-
-  if (empty($fields)) {
-    echo json_encode(['success' => true, 'message' => 'No changes made']); exit;
-    return;
-  }
-
-  $params[] = $id;
-  $stmt = $pdo->prepare("UPDATE users SET " . implode(", ", $fields) . " WHERE id = ?");
-  $stmt->execute($params);
-  echo json_encode(['success' => true, 'message' => 'User updated successfully']); exit;
-  } catch (PDOException $e) {
-  http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Database error']); exit;
-  }
-}
-
-function deleteUser() {
-  global $pdo;
-  $id = $_GET['id'] ?? 0;
-  try {
-  $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
-  $stmt->execute([$id]);
-  
-  logActivity($pdo, 'USER_DELETED', 'users', $id, "Deleted by Admin");
-  
-  echo json_encode(['success' => true, 'message' => 'User deleted successfully']); exit;
-  } catch (PDOException $e) {
-  http_response_code(500);
-  echo json_encode(['success' => false, 'message' => 'Database error']); exit;
-  }
-}
-
-function exportUsers() {
-  global $pdo;
-  try {
-    $stmt = $pdo->query("SELECT id, first_name, last_name, email, role, phone, city, county, postcode, created_at FROM users");
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    if (empty($users)) {
-      echo "No data to export.";
-      exit;
-    }
-
+function exportUsersToCSV($pdo) {
+    $users = listUsers($pdo);
     header('Content-Type: text/csv');
-    header('Content-Disposition: attachment; filename="users_export_' . date('Y-m-d') . '.csv"');
-    
-    $output = fopen('php://output', 'w');
-    fputcsv($output, array_keys($users[0]));
-    foreach ($users as $row) {
-      fputcsv($output, $row);
-    }
-    fclose($output);
+    header('Content-Disposition: attachment; filename="users.csv"');
+    $out = fopen('php://output', 'w');
+    fputcsv($out, array_keys($users[0]));
+    foreach($users as $u) fputcsv($out, $u);
+    fclose($out);
     exit;
-  } catch (PDOException $e) {
-    http_response_code(500);
-    echo "Error exporting data.";
-  }
 }

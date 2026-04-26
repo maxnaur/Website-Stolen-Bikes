@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Police Dashboard - Bike Police System</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+  body { background-color: #f8f9fa; }
+  .navbar { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .alert-status { font-weight: bold; }
+  .badge-stolen { background-color: #dc3545; }
+  .badge-recovered { background-color: #28a745; }
+  .badge-investigating { background-color: #ffc107; }
+  .clickable-row { cursor: pointer; }
+  .clickable-row:hover { background-color: rgba(0,0,0,0.05) !important; }
+  .admin-only { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">🚔 Police Dashboard</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item admin-only"><a class="nav-link fw-bold text-warning" href="../admin/Admin.html">⚙️ Admin View</a></li>
+      <li class="nav-item me-3"><a class="nav-link fw-bold text-info" href="../public/Public.html">👤 Public View</a></li>
+      <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+        <span class="user-first-name">Officer</span>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="#" onclick="showProfile()">Profile</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" href="../api/auth.php?action=logout">Logout</a></li>
+      </ul>
+      </li>
+    </ul>
+    </div>
+  </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container-fluid mt-4 mb-5">
+  <h2 class="mb-4 text-success fw-bold">🔍 Stolen Bike Investigation System</h2>
+
+  <!-- Stats Row -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+    <div class="card text-center shadow-sm">
+      <div class="card-body">
+      <h6 class="text-muted">Active Reports</h6>
+      <h3 class="text-danger" id="activeReportCount">0</h3>
+      </div>
+    </div>
+    </div>
+    <div class="col-md-3">
+    <div class="card text-center shadow-sm">
+      <div class="card-body">
+      <h6 class="text-muted">Under Investigation</h6>
+      <h3 class="text-warning" id="investigatingCount">0</h3>
+      </div>
+    </div>
+    </div>
+    <div class="col-md-3">
+    <div class="card text-center shadow-sm">
+      <div class="card-body">
+      <h6 class="text-muted">Recovered</h6>
+      <h3 class="text-success" id="recoveredCount">0</h3>
+      </div>
+    </div>
+    </div>
+    <div class="col-md-3">
+    <div class="card text-center shadow-sm">
+      <div class="card-body">
+      <h6 class="text-muted">Total Bikes</h6>
+      <h3 class="text-primary" id="totalBikeCount">0</h3>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Reports Table -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">📋 Active Reports</h5>
+        <div class="form-check form-switch small">
+          <input class="form-check-input" type="checkbox" id="showClosedReports">
+          <label class="form-check-label text-white" for="showClosedReports">Show Closed</label>
+        </div>
+        </div>
+        <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+            <th>Report ID</th>
+            <th>Bike Details</th>
+            <th>Reporter</th>
+            <th>Status</th>
+            <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reportsTable">
+            <tr><td colspan="5" class="text-center text-muted p-4">Loading reports...</td></tr>
+          </tbody>
+          </table>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bike/Report Detail Section -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm mb-4 sticky-top" style="top: 20px;">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">ℹ️ Detailed View</h5>
+        </div>
+        <div class="card-body" id="detailViewContent">
+          <p class="text-muted text-center mt-3">Click on a report row to view full details and history.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Investigation Form -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+    <h5 class="mb-0">📝 Update Investigation</h5>
+    </div>
+    <div class="card-body">
+    <form id="investigationForm">
+      <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="reportSelect" class="form-label fw-bold">Select Report *</label>
+        <select class="form-select" id="reportSelect" required>
+        <option value="">Choose a report...</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="investStatus" class="form-label fw-bold">Investigation Status *</label>
+        <select class="form-select" id="investStatus" required>
+        <option value="">Select status</option>
+        <option value="open">Open</option>
+        <option value="in_progress">In Progress</option>
+        <option value="closed">Closed</option>
+        </select>
+      </div>
+      </div>
+      <div class="mb-3">
+      <label for="bikeStatus" class="form-label fw-bold">Bike Status *</label>
+      <select class="form-select" id="bikeStatus" required>
+        <option value="">Select status</option>
+        <option value="stolen">Stolen</option>
+        <option value="captured">Captured</option>
+        <option value="returned">Returned to Owner</option>
+      </select>
+      </div>
+      <div class="mb-3">
+      <label for="notes" class="form-label fw-bold">Investigation Notes *</label>
+      <textarea class="form-control" id="notes" rows="4" placeholder="Enter investigation details..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-success w-100">Update Investigation</button>
+    </form>
+    </div>
+  </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+      <h5 class="modal-title" id="profileModalLabel">👤 Police Officer Profile Information</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">First Name</label>
+          <input type="text" class="form-control bg-light" id="profile_first_name" readonly>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Last Name</label>
+          <input type="text" class="form-control bg-light" id="profile_last_name" readonly>
+        </div>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Email Address</label>
+        <input type="email" class="form-control bg-light" id="profile_email" readonly>
+        </div>
+        <hr>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Phone Number</label>
+        <input type="text" class="form-control bg-light" id="profile_phone" readonly>
+        </div>
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Address Line 1</label>
+          <input type="text" class="form-control bg-light" id="profile_address_line1" readonly>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Address Line 2</label>
+          <input type="text" class="form-control bg-light" id="profile_address_line2" readonly>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small">City</label>
+          <input type="text" class="form-control bg-light" id="profile_city" readonly>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small">County</label>
+          <input type="text" class="form-control bg-light" id="profile_county" readonly>
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small">Postcode</label>
+          <input type="text" class="form-control bg-light" id="profile_postcode" readonly>
+        </div>
+        </div>
+        <div class="alert alert-info py-2 small mb-0">
+          <i class="bi bi-info-circle me-2"></i> Police profiles are managed by department administration and cannot be edited here.
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&libraries=places"></script>
+  <script src="../common/auth-check.js"></script>
+  <script src="police.js"></script>
+</body>
+</html>

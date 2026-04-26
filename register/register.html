@@ -74,14 +74,15 @@
     </div>
     
     <!-- Address Section -->
-    <div class="col-md-6">
-      <label for="addressLine1" class="form-label">Address Line 1*</label>
-      <input type="text" name="addressLine1" class="form-control" id="addressLine1" placeholder="Address Line 1" required>
+    <div class="col-md-12">
+      <label for="addressLine1" class="form-label">Address Line 1* (Start typing to search)</label>
+      <input type="text" name="addressLine1" class="form-control" id="addressLine1" placeholder="Search for your address..." required>
+      <div id="map" style="height: 200px; width: 100%; display: none;" class="mt-2 rounded border"></div>
     </div>
     
     <div class="col-md-6">
       <label for="addressLine2" class="form-label">Address Line 2</label>
-      <input type="text" name="addressLine2" class="form-control" id="addressLine2" placeholder="Address Line 2">
+      <input type="text" name="addressLine2" class="form-control" id="addressLine2" placeholder="Apartment, suite, etc.">
     </div>
     
     <div class="col-md-6">
@@ -136,31 +137,27 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&libraries=places"></script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Check if google is defined
     if (typeof google === 'undefined') {
-      console.error('Google Maps API not loaded. Check your API key and internet connection.');
+      console.error('Google Maps API not loaded.');
       return;
     }
 
     const addressInput = document.getElementById('addressLine1');
+    const mapDiv = document.getElementById('map');
+    
     const autocomplete = new google.maps.places.Autocomplete(addressInput, {
-      componentRestrictions: { country: "uk" },
-      fields: ["address_components", "geometry"],
+      componentRestrictions: { country: "gb" },
+      fields: ["address_components", "geometry", "formatted_address"],
       types: ["address"]
     });
 
+    let map, marker;
+
     autocomplete.addListener('place_changed', function() {
       const place = autocomplete.getPlace();
-      if (!place.address_components) {
-        console.warn("No address components found for the selected place.");
-        return;
-      }
+      if (!place.address_components) return;
 
-      let streetNumber = '';
-      let route = '';
-      let city = '';
-      let county = '';
-      let postcode = '';
+      let streetNumber = '', route = '', city = '', county = '', postcode = '';
       
       for (const component of place.address_components) {
         const type = component.types[0];
@@ -171,17 +168,31 @@
         if (type === 'postal_code') postcode = component.long_name;
       }
       
-      // Update fields
       addressInput.value = (streetNumber ? streetNumber + ' ' : '') + route;
       if (city) document.getElementById('city').value = city;
       if (county) document.getElementById('county').value = county;
       if (postcode) document.getElementById('postcode').value = postcode;
       
-      // Trigger change events for validation if necessary
-      addressInput.dispatchEvent(new Event('input'));
+      // Show map
+      if (place.geometry && place.geometry.location) {
+        mapDiv.style.display = 'block';
+        if (!map) {
+          map = new google.maps.Map(mapDiv, {
+            zoom: 17,
+            center: place.geometry.location,
+            disableDefaultUI: true
+          });
+          marker = new google.maps.Marker({
+            map: map,
+            position: place.geometry.location
+          });
+        } else {
+          map.setCenter(place.geometry.location);
+          marker.setPosition(place.geometry.location);
+        }
+      }
     });
 
-    // Prevent form submission on enter in autocomplete
     addressInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') e.preventDefault();
     });

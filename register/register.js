@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const formData = new FormData(this);
   
   // Submit form to backend
-  fetch('create_register.php', {
+  fetch('../api/auth.php?action=register', {
   method: 'POST',
   body: formData
   })

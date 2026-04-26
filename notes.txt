@@ -11,30 +11,48 @@ GOOGLE MAPS API INTEGRATION UPDATES - APRIL 2026
    - Integrated Places Autocomplete on 'Address Line 1'.
    - Auto-fills City, County, and Postcode fields based on selected location.
    - Fixed robustness and prevented accidental form submission on 'Enter'.
+   - Added visual Map integration that appears when an address is selected.
+   - Updated country restriction to 'gb' for better UK results.
    
-2. Public Dashboard (public-dashboard.php):
+2. Public Dashboard (Public.html):
    - Integrated Places Autocomplete on 'Incident Location' in the theft reporting form.
    - Ensures standardized location data for police reports.
    - Fixed focus/input bug where API took over after one letter.
 
-3. Police Dashboard (police-dashboard.php):
+3. Police Dashboard (Police.html):
    - Added dynamic Mini-Maps in the 'Detailed View' panel.
    - Geocodes the saved incident location string to show a visual pin on a map for officers.
 
 *Note: Requires active API Key with 'Places API' and 'Maps JavaScript API' enabled.*
 ==================================================
 
-Project Status Notes:
-- Admin Dashboard error text removed and logic fixed.
-- "System Management" tab removed from Admin view for simplicity.
-- "Lost" status removed from Public reporting; replaced with "Recovered" + mandatory explanation.
-- Police dashboard now filters out closed investigations by default.
-- Export functionality for Users, Bikes, and Reports now standardized and fixed.
-- Activity logs added for bike reporting and police investigation updates.
+SECURITY AUDIT & FIXES - APRIL 2026
+==================================================
+1. Insecure File Uploads (api/bicycles.php):
+   - Problem: No validation on file type or size; potential for malicious script uploads.
+   - Fix: Added MIME type checking (JPG/PNG/WebP only) and a 5MB size limit.
+   - Fix: Files are now renamed to a random UUID to prevent overwriting and path traversal.
 
-COMPLETED TO-DO:
-1. Fix report download on admin page [DONE]
-2. Move export bikes to be consistent with users/reports tabs [DONE]
-3. Add activity logs for reporting and police updates [DONE]
-4. Fix auto-fill on register.html and integrate into GUI [DONE]
-5. Fix location input issue on public-dashboard.php [DONE]
+2. SQL Injection Risk (includes/ReportDAO.php):
+   - Problem: Dynamic query building in updateReportEntry could allow column injection.
+   - Fix: Implemented strict "Allowed Fields" whitelist.
+   - Fix: Ensured all dynamic values use PDO prepared statement placeholders.
+
+3. Role Enforcement (api/reports.php):
+   - Problem: Police were able to hit the 'create' endpoint via raw POST.
+   - Fix: Added explicit check to prevent police accounts from creating theft reports.
+
+4. Data Integrity:
+   - Verified that all database interactions use PDO which prevents standard SQL injection.
+   - Ensured session_start() is consistent across all API entry points.
+==================================================
+
+COMPLETED:
+- Separate Frontend (HTML) from Backend (PHP) [DONE]
+- Separate Scripts (JS) into different files [DONE]
+- Separate PHP Logic into modular includes (DAO pattern) [DONE]
+- Security Hardening (File Uploads, SQL Whitelisting) [DONE]
+- System Problem Reporting [DONE]
+  - Global "Report Problem" button/modal on all pages (via common/auth-check.js).
+  - Admin dashboard tab to view and manage (status: New, In Review, Resolved) reported issues.
+  - Automatic capturing of User Email and Page URL where the problem occurred.
