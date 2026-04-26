@@ -69,7 +69,7 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
     <div class="col-md-12">
     <div class="alert alert-info shadow-sm" id="welcomeAlert">
       <h4 class="alert-heading">Welcome, <?php echo htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?>!</h4>
-      <p>Register your bicycles here to protect them. If a registered bike is lost or stolen, you can quickly file a report for the police.</p>
+      <p>Register your bicycles here to protect them. If a registered bike is stolen, you can quickly file a report for the police.</p>
     </div>
     </div>
   </div>
@@ -175,7 +175,7 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
 
     <div class="card shadow-sm border-0 mt-4">
       <div class="card-header bg-danger text-white">
-      <h5 class="card-title mb-0">🚨 Report Theft or Loss</h5>
+      <h5 class="card-title mb-0">🚨 Report Theft or Recovery</h5>
       </div>
       <div class="card-body">
       <form id="reportTheftForm">
@@ -187,14 +187,20 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
         </div>
         <div class="mb-3">
         <label class="form-label fw-bold small">Incident Status *</label>
-        <select class="form-select" name="bike_status" required>
+        <select class="form-select" name="bike_status" id="incidentStatusSelect" required>
           <option value="stolen">Stolen</option>
-          <option value="lost">Lost</option>
+          <option value="recovered">Recovered</option>
         </select>
+        </div>
+        <div id="recoveredExplanationSection" style="display:none;">
+          <div class="mb-3">
+          <label class="form-label fw-bold small">Recovery Explanation *</label>
+          <textarea class="form-control" name="recovery_explanation" id="recoveryExplanation" rows="2" placeholder="Where and how was it found?"></textarea>
+          </div>
         </div>
         <div class="mb-3">
         <label class="form-label fw-bold small">Incident Location *</label>
-        <input type="text" class="form-control" name="incident_location" placeholder="e.g. Central London Station" required>
+        <input type="text" class="form-control" name="incident_location" id="incidentLocationInput" placeholder="e.g. Central London Station" required>
         </div>
         <div class="mb-3">
         <label class="form-label fw-bold small">Additional Notes</label>
@@ -322,17 +328,16 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&libraries=places"></script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Initialize Google Maps Autocomplete for incident location
-    const input = document.querySelector('input[name="incident_location"]');
-    if (input) {
-      new google.maps.places.Autocomplete(input);
-    }
-
     loadBikes();
     loadReports();
+
+    if (typeof google !== 'undefined') {
+      new google.maps.places.Autocomplete(document.getElementById('incidentLocationInput'));
+    }
   });
 
   async function loadBikes() {
@@ -414,47 +419,6 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
     }
   }
 
-  document.getElementById('registerBikeForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    
-    // Client-side GUI validation
-    const brand = formData.get('brand').trim();
-    const model = formData.get('model').trim();
-    if (brand.length < 2 || model.length < 2) {
-      alert('Brand and Model must be at least 2 characters long.');
-      return;
-    }
-
-    const file = formData.get('bike_image');
-    if (file && file.size > 5 * 1024 * 1024) { // 5MB limit
-      alert('Image file is too large. Max size is 5MB.');
-      return;
-    }
-
-    try {
-    const response = await fetch('../api/bicycles.php?action=add', {
-      method: 'POST',
-      body: formData
-    });
-    const result = await response.json();
-    if (result.success) {
-      alert('Bike registered successfully!');
-      e.target.reset();
-      loadBikes();
-    } else {
-      // Show detailed error message from backend
-      let errorMsg = result.message || 'Registration failed.';
-      if (result.error_detail) {
-        errorMsg += '\n\nTechnical details: ' + result.error_detail;
-      }
-      alert('Error: ' + errorMsg);
-    }
-    } catch (error) {
-    alert('An error occurred while connecting to the server. Please try again.');
-    }
-  });
-
   document.getElementById('incidentStatusSelect').addEventListener('change', function() {
     const recoveredSection = document.getElementById('recoveredExplanationSection');
     const recoveryInput = document.getElementById('recoveryExplanation');
@@ -467,11 +431,31 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
     }
   });
 
+  document.getElementById('registerBikeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    try {
+    const response = await fetch('../api/bicycles.php?action=add', {
+      method: 'POST',
+      body: formData
+    });
+    const result = await response.json();
+    if (result.success) {
+      alert('Bike registered successfully!');
+      e.target.reset();
+      loadBikes();
+    } else {
+      alert('Error: ' + result.message);
+    }
+    } catch (error) {
+    alert('An error occurred. Please try again.');
+    }
+  });
+
   document.getElementById('reportTheftForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     
-    // Merge explanation into notes if status is recovered
     if (formData.get('bike_status') === 'recovered') {
       const expl = formData.get('recovery_explanation');
       const notes = formData.get('investigation_notes');
@@ -485,7 +469,7 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
     });
     const result = await response.json();
     if (result.success) {
-      alert('Report submitted to police successfully!');
+      alert('Report submitted successfully!');
       e.target.reset();
       loadBikes();
       loadReports();
@@ -530,11 +514,6 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
     
-    if (data.phone && !/^[\d\s\-+()]{7,20}$/.test(data.phone)) {
-      alert('Invalid phone number format. Please use numbers, spaces, and +() only (7-20 chars).');
-      return;
-    }
-
     try {
       const response = await fetch('../api/users.php?action=update_profile', {
         method: 'PUT',

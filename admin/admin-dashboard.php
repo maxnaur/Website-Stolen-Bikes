@@ -103,9 +103,6 @@ $user = getCurrentUser();
       <a class="nav-link" href="#reports" data-bs-toggle="tab">📋 Reports</a>
       </li>
       <li class="nav-item">
-      <a class="nav-link" href="#system" data-bs-toggle="tab">⚙️ System</a>
-      </li>
-      <li class="nav-item">
       <a class="nav-link" href="#logs" data-bs-toggle="tab">📜 Activity Logs</a>
       </li>
     </ul>
@@ -114,7 +111,13 @@ $user = getCurrentUser();
     <div class="tab-content p-4">
     <!-- Users Tab -->
     <div class="tab-pane fade show active" id="users">
-      <h5 class="mb-3">User Management</h5>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">User Management</h5>
+        <div>
+          <button class="btn btn-sm btn-success me-2" data-bs-toggle="modal" data-bs-target="#addUserModal">➕ Add New User</button>
+          <button class="btn btn-sm btn-danger" onclick="exportUsers()">📥 Download All Users</button>
+        </div>
+      </div>
       <div class="table-responsive">
       <table class="table table-striped table-hover">
         <thead class="table-light">
@@ -182,28 +185,6 @@ $user = getCurrentUser();
       </div>
     </div>
 
-    <!-- System Tab -->
-    <div class="tab-pane fade" id="system">
-      <h5 class="mb-3">System Management</h5>
-      <div class="row">
-      <div class="col-md-6">
-        <button class="btn btn-danger w-100 mb-2" onclick="backupDatabase()">💾 Backup Database</button>
-        <button class="btn btn-warning w-100 mb-2" onclick="confirmClearLogs()">🗑️ Clear Logs</button>
-      </div>
-      <div class="col-md-6">
-        <button class="btn btn-info w-100 mb-2" onclick="systemStatus()">📊 System Status</button>
-      </div>
-      </div>
-      <hr>
-      <h6 class="mt-4">System Information</h6>
-      <ul class="list-unstyled">
-      <li><strong>Database:</strong> bike_police_system</li>
-      <li><strong>Server:</strong> localhost</li>
-      <li><strong>Admin User:</strong> <?php echo htmlspecialchars($user['username']); ?></li>
-      <li><strong>Last Backup:</strong> <span id="lastBackup">Never</span></li>
-      </ul>
-    </div>
-
     <!-- Logs Tab -->
     <div class="tab-pane fade" id="logs">
       <div class="d-flex justify-content-between align-items-center mb-3">
@@ -230,6 +211,64 @@ $user = getCurrentUser();
     </div>
     </div>
   </div>
+  </div>
+
+  <!-- Add User Modal -->
+  <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+      <h5 class="modal-title" id="addUserModalLabel">➕ Create New User / Officer</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form id="addUserForm">
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">First Name *</label>
+          <input type="text" class="form-control" name="first_name" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Last Name *</label>
+          <input type="text" class="form-control" name="last_name" required>
+        </div>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Email Address *</label>
+        <input type="email" class="form-control" name="email" required>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Temporary Password *</label>
+        <input type="password" class="form-control" name="password" required>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">User Role *</label>
+        <select class="form-select" name="role" required>
+          <option value="police" selected>Police Officer</option>
+          <option value="public">Public User</option>
+          <option value="admin">Administrator</option>
+        </select>
+        </div>
+        <hr>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Address Line 1</label>
+        <input type="text" class="form-control" name="address_line1">
+        </div>
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">City</label>
+          <input type="text" class="form-control" name="city">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Postcode</label>
+          <input type="text" class="form-control" name="postcode">
+        </div>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Create User Account</button>
+      </form>
+      </div>
+    </div>
+    </div>
   </div>
 
   <!-- Profile Modal -->
@@ -500,8 +539,11 @@ $user = getCurrentUser();
     window.location.href = '../api/users.php?action=export';
   }
 
+  function exportReports() {
+    window.location.href = '../api/reports.php?action=export';
+  }
+
   function editUser(id) {
-    // For now, reuse the detail fetch to show data, but in a real app this would open an edit modal
     fetch(`../api/users.php?action=detail&id=${id}`)
       .then(res => res.json())
       .then(result => {
@@ -516,83 +558,7 @@ $user = getCurrentUser();
   }
 
   function viewReport(id) {
-    // Focus the reports tab or redirect to police view
-    alert(`Viewing Report #${id}. Details are available in the Police View.`);
-    window.location.href = '../police/police-dashboard.php';
-  }
-
-  function backupDatabase() {
-    alert('Database backup script triggered successfully.');
-    document.getElementById('lastBackup').innerText = new Date().toLocaleString();
-  }
-
-  async function confirmClearLogs() {
-    if (confirm('Are you sure you want to PERMANENTLY clear all system logs?')) {
-      try {
-        const response = await fetch('../api/logs.php?action=clear', { method: 'DELETE' });
-        const result = await response.json();
-        if (result.success) {
-          alert('Logs cleared successfully.');
-          loadLogs();
-        } else {
-          alert('Error clearing logs: ' + result.message);
-        }
-      } catch (error) {
-        alert('Failed to clear logs.');
-      }
-    }
-  }
-
-  function systemStatus() {
-    alert('System: Operational\nDatabase: Connected\nAPI: Online');
-  }
-  </script>
-</body>
-</html>on editUser(id) {
-    // For now, reuse the detail fetch to show data, but in a real app this would open an edit modal
-    fetch(`../api/users.php?action=detail&id=${id}`)
-      .then(res => res.json())
-      .then(result => {
-        if (result.success) {
-          alert(`Editing User: ${result.data.first_name} ${result.data.last_name}\nRole: ${result.data.role}\n(Edit Modal would go here)`);
-        }
-      });
-  }
-
-  function viewBike(id) {
-    window.location.href = `../public/public-dashboard.php?view_bike=${id}`;
-  }
-
-  function viewReport(id) {
-    // Focus the reports tab or redirect to police view
-    alert(`Viewing Report #${id}. Details are available in the Police View.`);
-    window.location.href = '../police/police-dashboard.php';
-  }
-
-  function backupDatabase() {
-    alert('Database backup script triggered successfully.');
-    document.getElementById('lastBackup').innerText = new Date().toLocaleString();
-  }
-
-  async function confirmClearLogs() {
-    if (confirm('Are you sure you want to PERMANENTLY clear all system logs?')) {
-      try {
-        const response = await fetch('../api/logs.php?action=clear', { method: 'DELETE' });
-        const result = await response.json();
-        if (result.success) {
-          alert('Logs cleared successfully.');
-          loadLogs();
-        } else {
-          alert('Error clearing logs: ' + result.message);
-        }
-      } catch (error) {
-        alert('Failed to clear logs.');
-      }
-    }
-  }
-
-  function systemStatus() {
-    alert('System: Operational\nDatabase: Connected\nAPI: Online');
+    window.location.href = '../police/police-dashboard.php?report_id=' + id;
   }
   </script>
 </body>

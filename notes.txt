@@ -4,4 +4,26 @@ bike image
 http://vecteezy.com/vector-art/4852977-bike-bicycle-line-icon-vector-illustration-logo-template-suitable-for-many-purposes
 named then thing favicon.ico
 
+==================================================
+GOOGLE MAPS API INTEGRATION UPDATES - APRIL 2026
+==================================================
+1. Register Page (register.html):
+   - Integrated Places Autocomplete on 'Address Line 1'.
+   - Auto-fills City, County, and Postcode fields based on selected location.
+   
+2. Public Dashboard (public-dashboard.php):
+   - Integrated Places Autocomplete on 'Incident Location' in the theft reporting form.
+   - Ensures standardized location data for police reports.
 
+3. Police Dashboard (police-dashboard.php):
+   - Added dynamic Mini-Maps in the 'Detailed View' panel.
+   - Geocodes the saved incident location string to show a visual pin on a map for officers.
+
+*Note: Requires active API Key with 'Places API' and 'Maps JavaScript API' enabled.*
+==================================================
+
+Project Status Notes:
+- Admin Dashboard error text removed and logic fixed.
+- "System Management" tab removed from Admin view for simplicity.
+- "Lost" status removed from Public reporting; replaced with "Recovered" + mandatory explanation.
+- Police dashboard now filters out closed investigations by default.
