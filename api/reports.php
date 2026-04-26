@@ -218,6 +218,8 @@ function updateReport($user) {
   $stmt = $pdo->prepare($query);
   $stmt->execute($params);
   
+  logActivity($pdo, 'REPORT_UPDATED', 'report', $report_id, "Status: $investigation_status, Bike: $bike_status. Notes updated.");
+  
   echo json_encode(['success' => true, 'message' => 'Report updated successfully']); exit;
   
   } catch (PDOException $e) {
@@ -233,10 +235,13 @@ function exportReports($user) {
   if ($user['role'] !== 'admin' && $user['role'] !== 'police') {
     http_response_code(403);
     echo "Unauthorized access.";
-    return;
+    exit;
   }
   
   try {
+    // Clear any previous output
+    if (ob_get_level()) ob_end_clean();
+
     $stmt = $pdo->query("
       SELECT r.id, r.report_date, r.investigation_status, r.investigation_notes, r.bike_status, r.incident_location, r.closed_at,
              b.brand, b.model, b.colour, b.mpn,
@@ -250,13 +255,18 @@ function exportReports($user) {
     
     if (empty($reports)) {
       echo "No report data to export.";
-      return;
+      exit;
     }
 
-    header('Content-Type: text/csv');
+    header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="reports_export_' . date('Y-m-d') . '.csv"');
+    header('Pragma: no-cache');
+    header('Expires: 0');
     
     $output = fopen('php://output', 'w');
+    // UTF-8 BOM for Excel
+    fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+    
     fputcsv($output, array_keys($reports[0]));
     foreach ($reports as $row) {
       fputcsv($output, $row);
@@ -266,5 +276,6 @@ function exportReports($user) {
   } catch (PDOException $e) {
     http_response_code(500);
     echo "Error exporting data: " . $e->getMessage();
+    exit;
   }
 }

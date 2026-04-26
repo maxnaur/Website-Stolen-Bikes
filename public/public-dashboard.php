@@ -336,7 +336,16 @@ $defaultAgeGroup = ($age < 18) ? 'Child' : 'Adult';
     loadReports();
 
     if (typeof google !== 'undefined') {
-      new google.maps.places.Autocomplete(document.getElementById('incidentLocationInput'));
+      const locationInput = document.getElementById('incidentLocationInput');
+      const autocomplete = new google.maps.places.Autocomplete(locationInput, {
+        fields: ["formatted_address", "geometry", "name"],
+        types: ["geocode", "establishment"]
+      });
+      
+      // Prevent the 'enter' key from submitting the form when selecting a place
+      locationInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') e.preventDefault();
+      });
     }
   });
 

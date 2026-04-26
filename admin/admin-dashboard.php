@@ -139,8 +139,10 @@ $user = getCurrentUser();
 
     <!-- Bikes Tab -->
     <div class="tab-pane fade" id="bikes">
-      <h5 class="mb-3">Bicycle Registry</h5>
-      <button class="btn btn-sm btn-danger mb-3" onclick="exportBikes()">📥 Export Bikes</button>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Bicycle Registry</h5>
+        <button class="btn btn-sm btn-danger" onclick="exportBikes()">📥 Export Bikes</button>
+      </div>
       <div class="table-responsive">
       <table class="table table-striped table-hover">
         <thead class="table-light">

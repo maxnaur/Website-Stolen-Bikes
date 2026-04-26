@@ -10,10 +10,12 @@ GOOGLE MAPS API INTEGRATION UPDATES - APRIL 2026
 1. Register Page (register.html):
    - Integrated Places Autocomplete on 'Address Line 1'.
    - Auto-fills City, County, and Postcode fields based on selected location.
+   - Fixed robustness and prevented accidental form submission on 'Enter'.
    
 2. Public Dashboard (public-dashboard.php):
    - Integrated Places Autocomplete on 'Incident Location' in the theft reporting form.
    - Ensures standardized location data for police reports.
+   - Fixed focus/input bug where API took over after one letter.
 
 3. Police Dashboard (police-dashboard.php):
    - Added dynamic Mini-Maps in the 'Detailed View' panel.
@@ -27,3 +29,12 @@ Project Status Notes:
 - "System Management" tab removed from Admin view for simplicity.
 - "Lost" status removed from Public reporting; replaced with "Recovered" + mandatory explanation.
 - Police dashboard now filters out closed investigations by default.
+- Export functionality for Users, Bikes, and Reports now standardized and fixed.
+- Activity logs added for bike reporting and police investigation updates.
+
+COMPLETED TO-DO:
+1. Fix report download on admin page [DONE]
+2. Move export bikes to be consistent with users/reports tabs [DONE]
+3. Add activity logs for reporting and police updates [DONE]
+4. Fix auto-fill on register.html and integrate into GUI [DONE]
+5. Fix location input issue on public-dashboard.php [DONE]

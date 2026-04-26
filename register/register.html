@@ -136,26 +136,55 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&libraries=places"></script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
-    if (typeof google !== 'undefined') {
-      const autocomplete = new google.maps.places.Autocomplete(document.getElementById('addressLine1'));
-      autocomplete.addListener('place_changed', function() {
-        const place = autocomplete.getPlace();
-        if (!place.address_components) return;
-
-        let streetNumber = '';
-        let route = '';
-        
-        for (const component of place.address_components) {
-          const type = component.types[0];
-          if (type === 'street_number') streetNumber = component.long_name;
-          if (type === 'route') route = component.long_name;
-          if (type === 'postal_town' || type === 'locality') document.getElementById('city').value = component.long_name;
-          if (type === 'administrative_area_level_2') document.getElementById('county').value = component.long_name;
-          if (type === 'postal_code') document.getElementById('postcode').value = component.long_name;
-        }
-        document.getElementById('addressLine1').value = streetNumber + ' ' + route;
-      });
+    // Check if google is defined
+    if (typeof google === 'undefined') {
+      console.error('Google Maps API not loaded. Check your API key and internet connection.');
+      return;
     }
+
+    const addressInput = document.getElementById('addressLine1');
+    const autocomplete = new google.maps.places.Autocomplete(addressInput, {
+      componentRestrictions: { country: "uk" },
+      fields: ["address_components", "geometry"],
+      types: ["address"]
+    });
+
+    autocomplete.addListener('place_changed', function() {
+      const place = autocomplete.getPlace();
+      if (!place.address_components) {
+        console.warn("No address components found for the selected place.");
+        return;
+      }
+
+      let streetNumber = '';
+      let route = '';
+      let city = '';
+      let county = '';
+      let postcode = '';
+      
+      for (const component of place.address_components) {
+        const type = component.types[0];
+        if (type === 'street_number') streetNumber = component.long_name;
+        if (type === 'route') route = component.long_name;
+        if (type === 'postal_town' || type === 'locality') city = component.long_name;
+        if (type === 'administrative_area_level_2') county = component.long_name;
+        if (type === 'postal_code') postcode = component.long_name;
+      }
+      
+      // Update fields
+      addressInput.value = (streetNumber ? streetNumber + ' ' : '') + route;
+      if (city) document.getElementById('city').value = city;
+      if (county) document.getElementById('county').value = county;
+      if (postcode) document.getElementById('postcode').value = postcode;
+      
+      // Trigger change events for validation if necessary
+      addressInput.dispatchEvent(new Event('input'));
+    });
+
+    // Prevent form submission on enter in autocomplete
+    addressInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') e.preventDefault();
+    });
   });
   </script>
   <script src="../common/style/form-utils.js"></script>
