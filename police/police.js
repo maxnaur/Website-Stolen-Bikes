@@ -104,21 +104,30 @@ function showDetail(reportId) {
 
     // Attempt to show on map if location exists
     if (report.incident_location && typeof google !== 'undefined') {
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address: report.incident_location }, (results, status) => {
-        if (status === 'OK') {
-          const map = new google.maps.Map(document.getElementById('miniMap'), {
-            zoom: 15,
-            center: results[0].geometry.location,
-            disableDefaultUI: true
-          });
-          new google.maps.Marker({
-            map: map,
-            position: results[0].geometry.location
-          });
-        }
-      });
+      initMiniMap(report.incident_location).catch(console.error);
     }
+}
+
+async function initMiniMap(address) {
+    const { Geocoder } = await google.maps.importLibrary("geocoding");
+    const { Map } = await google.maps.importLibrary("maps");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+    const geocoder = new Geocoder();
+    geocoder.geocode({ address: address }, (results, status) => {
+        if (status === 'OK') {
+            const map = new Map(document.getElementById('miniMap'), {
+                zoom: 15,
+                center: results[0].geometry.location,
+                disableDefaultUI: true,
+                mapId: "DEMO_MAP_ID"
+            });
+            new AdvancedMarkerElement({
+                map: map,
+                position: results[0].geometry.location
+            });
+        }
+    });
 }
 
 function getInvestBadge(status) {

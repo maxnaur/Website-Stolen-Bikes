@@ -51,11 +51,11 @@ try {
   echo "<div class='card bg-light p-3 mb-4'>";
   echo "<h5>Default Admin Account:</h5>";
   echo "<ul><li><strong>Email:</strong> admin@police.uk</li><li><strong>Password:</strong> admin123</li></ul>";
+  echo "</ul>";
   echo "</div>";
-  
-  echo "<a href='../login/Login.html' class='btn btn-success btn-lg w-100'>🔐 Go to Login Page</a>";
-  echo "<a href='../index.html' class='btn btn-outline-secondary w-100 mt-2'>🏠 Back to Welcome</a>";
 
+  echo "<a href='../login/login.html' class='btn btn-success btn-lg w-100'>🔐 Go to Login Page</a>";
+  echo "<a href='../index.html' class='btn btn-outline-secondary w-100 mt-2'>🏠 Back to Welcome</a>";
 } catch (Exception $e) {
   echo "<div class='alert alert-danger'>";
   echo "<h4>❌ Setup Failed</h4>";

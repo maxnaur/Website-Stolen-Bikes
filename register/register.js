@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
   .then(data => {
   if (data.success) {
   alert('Registration successful! Welcome to Bike\'s Safety!');
-  window.location.href = '../login/Login.html?success=' + encodeURIComponent(data.message);
+  window.location.href = '../login/login.html?success=' + encodeURIComponent(data.message);
   } else {
   alert('Registration failed: ' + data.message);
   }

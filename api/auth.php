@@ -6,6 +6,10 @@
 header('Content-Type: application/json');
 require_once '../database/config.php';
 require_once '../common/common.php';
+require_once '../common/security.php';
+
+// Set security headers
+setSecurityHeaders();
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -40,8 +44,21 @@ function handleLogin() {
     $password = $_POST['password'] ?? '';
 
     if (empty($email) || empty($password)) {
+        // Rate limiting check
+        if (!checkRateLimit($email, 5, 300)) {
+            http_response_code(429);
+            echo json_encode(['success' => false, 'message' => 'Too many login attempts. Please try again later.']);
+            exit;
+        }
         redirectOrError('Please fill in both email and password.');
         return;
+    }
+
+    // Rate limiting check
+    if (!checkRateLimit($email, 5, 300)) {
+        http_response_code(429);
+        echo json_encode(['success' => false, 'message' => 'Too many login attempts. Please try again later.']);
+        exit;
     }
 
     try {
@@ -50,17 +67,21 @@ function handleLogin() {
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password'])) {
+            // Regenerate session ID on login (security best practice)
+            session_regenerate_id(true);
+            
             $_SESSION['loggedin'] = true;
             $_SESSION['user_id'] = $user['id'];
+            $_SESSION['first_name'] = $user['first_name'];
             $_SESSION['username'] = $user['first_name'] . ' ' . $user['last_name'];
             $_SESSION['role'] = $user['role'];
             
             logActivity($pdo, 'LOGIN', 'users', $user['id'], "User $email logged in successfully");
 
             $role = strtolower($user['role'] ?? 'public');
-            $redirect = '../public/Public.html';
-            if ($role === 'police') $redirect = '../police/Police.html';
-            if ($role === 'admin') $redirect = '../admin/Admin.html';
+            $redirect = '../public/public.html';
+            if ($role === 'police') $redirect = '../police/police.html';
+            if ($role === 'admin') $redirect = '../admin/admin.html';
 
             if (isset($_GET['format']) && $_GET['format'] === 'json') {
                 echo json_encode(['success' => true, 'redirect' => $redirect]);
@@ -105,6 +126,9 @@ function handleLogout() {
  */
 function handleRegister() {
     global $pdo;
+    
+    // CSRF Check
+    validateCsrfToken($_POST['csrf_token'] ?? '');
     
     $firstName = trim($_POST['firstName'] ?? '');
     $lastName = trim($_POST['lastName'] ?? '');

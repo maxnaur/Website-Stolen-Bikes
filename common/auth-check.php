@@ -9,8 +9,14 @@ if (session_status() === PHP_SESSION_NONE) {
 // Global check: if not logged in, redirect to login page (relative path)
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
   // Determine the path to Login.html based on current file location
-  header('Location: ../login/Login.html');
+  header('Location: ../login/login.html');
   exit;
+}
+
+// Global CSRF Check for all state-changing methods
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? '';
+    validateCsrfToken($token);
 }
 
 // Optional: Check for specific role
