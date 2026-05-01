@@ -9,14 +9,24 @@ function loadEnv($filePath = __DIR__ . '/../.env') {
         // Use .env.example as fallback if .env doesn't exist
         $filePath = __DIR__ . '/../.env.example';
         if (!file_exists($filePath)) {
-            throw new Exception('.env file not found. Please copy .env.example to .env');
+            // If neither file exists, use hardcoded defaults (for backward compatibility)
+            // In production, you should always have a .env file
+            $_ENV['DB_SERVER'] = getenv('DB_SERVER') ?: 'localhost';
+            $_ENV['DB_USERNAME'] = getenv('DB_USERNAME') ?: 'bikesafety';
+            $_ENV['DB_PASSWORD'] = getenv('DB_PASSWORD') ?: '';
+            $_ENV['DB_NAME'] = getenv('DB_NAME') ?: 's4512742_';
+            return;
         }
     }
 
     $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if ($lines === false) {
+        return; // File read failed, continue with defaults
+    }
+
     foreach ($lines as $line) {
-        // Skip comments
-        if (str_starts_with($line, '#')) {
+        // Skip comments and empty lines (compatible with PHP 7.x)
+        if (empty($line) || strpos($line, '#') === 0) {
             continue;
         }
 
@@ -26,9 +36,16 @@ function loadEnv($filePath = __DIR__ . '/../.env') {
             $key = trim($key);
             $value = trim($value);
 
-            // Remove quotes if present
-            if ((str_starts_with($value, '"') && str_ends_with($value, '"')) ||
-                (str_starts_with($value, "'") && str_ends_with($value, "'"))) {
+            // Skip empty keys/values
+            if (empty($key) || empty($value)) {
+                continue;
+            }
+
+            // Remove quotes if present (compatible with PHP 7.x)
+            $firstChar = substr($value, 0, 1);
+            $lastChar = substr($value, -1);
+            if (($firstChar === '"' && $lastChar === '"') ||
+                ($firstChar === "'" && $lastChar === "'")) {
                 $value = substr($value, 1, -1);
             }
 
@@ -39,4 +56,9 @@ function loadEnv($filePath = __DIR__ . '/../.env') {
 }
 
 // Load environment variables
-loadEnv();
+try {
+    loadEnv();
+} catch (Exception $e) {
+    error_log("Environment loading error: " . $e->getMessage());
+    // Continue with defaults if loading fails
+}
