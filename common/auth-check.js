@@ -9,13 +9,13 @@ async function verifySession(requiredRole = null) {
         const session = await response.json();
 
         if (!session.loggedin) {
-            window.location.href = '../login/Login.html';
+            window.location.href = '../login/login.html';
             return null;
         }
 
         if (requiredRole && session.role !== 'admin' && session.role !== requiredRole) {
             alert('Access Denied: You do not have permission to view this page.');
-            window.location.href = '../login/Login.html';
+            window.location.href = '../login/login.html';
             return null;
         }
 
@@ -35,7 +35,7 @@ async function verifySession(requiredRole = null) {
         return session;
     } catch (error) {
         console.error('Session verification failed:', error);
-        window.location.href = '../login/Login.html';
+        window.location.href = '../login/login.html';
         return null;
     }
 }

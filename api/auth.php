@@ -116,7 +116,7 @@ function handleLogout() {
     if (isset($_GET['format']) && $_GET['format'] === 'json') {
         echo json_encode(['success' => true]);
     } else {
-        header('Location: ../login/Login.html');
+        header('Location: ../login/login.html');
     }
     exit;
 }
@@ -195,7 +195,7 @@ function redirectOrError($msg) {
     if (isset($_GET['format']) && $_GET['format'] === 'json') {
         echo json_encode(['success' => false, 'message' => $msg]);
     } else {
-        header('Location: ../login/Login.html?error=' . urlencode($msg));
+        header('Location: ../login/login.html?error=' . urlencode($msg));
     }
     exit;
 }

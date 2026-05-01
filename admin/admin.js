@@ -228,11 +228,11 @@ function editUser(id) {
 }
 
 function viewBike(id) {
-    window.location.href = `../public/Public.html?view_bike=${id}`;
+    window.location.href = `../public/public.html?view_bike=${id}`;
 }
 
 function viewReport(id) {
-    window.location.href = '../police/Police.html?report_id=' + id;
+    window.location.href = '../police/police.html?report_id=' + id;
 }
 lems() {
     const tableBody = document.getElementById('problemsTable');
