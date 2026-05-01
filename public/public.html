@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bike Police Report System - Public Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="public.css"> 
+  <style>
+  body { background-color: #f8f9fa; }
+  .navbar { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .bike-thumbnail-details { 
+    max-height: 300px; 
+    width: 100%; 
+    object-fit: contain; 
+    border-radius: 8px;
+    background-color: #f8f9fa;
+  }
+  .admin-only { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">🚲 Bike Police System</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item admin-only"><a class="nav-link fw-bold text-danger" href="../admin/admin.html">⚙️ Admin View</a></li>
+      <li class="nav-item me-3 admin-only"><a class="nav-link fw-bold text-warning" href="../police/police.html">🚔 Police View</a></li>
+      <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+        <span class="user-first-name">User</span>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="#" onclick="showProfile()">Profile</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" href="../api/auth.php?action=logout">Logout</a></li>
+      </ul>
+      </li>
+    </ul>
+    </div>
+  </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mt-5 mb-5">
+  <div class="row">
+    <div class="col-md-12">
+    <div class="alert alert-info shadow-sm" id="welcomeAlert">
+      <h4 class="alert-heading">Welcome, <span class="user-first-name"></span>!</h4>
+      <p>Register your bicycles here to protect them. If a registered bike is stolen, you can quickly file a report for the police.</p>
+    </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Register Bike Form -->
+    <div class="col-md-5 mb-4">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-success text-white">
+      <h5 class="card-title mb-0">🚲 Register New Bicycle</h5>
+      </div>
+      <div class="card-body">
+      <form id="registerBikeForm">
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Brand *</label>
+          <input type="text" class="form-control" name="brand" placeholder="e.g. Trek" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Model *</label>
+          <input type="text" class="form-control" name="model" placeholder="e.g. FX 3" required>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Type *</label>
+          <select class="form-select" name="type" required>
+          <option value="Road">Road</option>
+          <option value="Mountain">Mountain</option>
+          <option value="Hybrid">Hybrid</option>
+          <option value="Electric">Electric</option>
+          <option value="BMX">BMX</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Colour *</label>
+          <input type="text" class="form-control" name="colour" placeholder="e.g. Blue" required>
+        </div>
+        </div>
+
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Wheel Size (Inches)</label>
+          <input type="number" class="form-control" name="wheel_size" placeholder="e.g. 26">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Number of Gears</label>
+          <input type="number" class="form-control" name="gears" placeholder="e.g. 21">
+        </div>
+        </div>
+
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Brake Type</label>
+          <select class="form-select" name="brake_type">
+          <option value="">Select...</option>
+          <option value="Rim">Rim Brakes</option>
+          <option value="Disc-Mechanical">Mechanical Disc</option>
+          <option value="Disc-Hydraulic">Hydraulic Disc</option>
+          <option value="V-Brake">V-Brakes</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Suspension</label>
+          <select class="form-select" name="suspension">
+          <option value="None">None (Rigid)</option>
+          <option value="Front">Front (Hardtail)</option>
+          <option value="Full">Full Suspension</option>
+          </select>
+        </div>
+        </div>
+
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Gender *</label>
+          <select class="form-select" name="gender" required>
+          <option value="Unisex" selected>Unisex</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Age Group *</label>
+          <select class="form-select" name="age_group" id="ageGroupSelect" required>
+          <option value="Adult">Adult</option>
+          <option value="Child">Child</option>
+          </select>
+        </div>
+        </div>
+
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Serial Number / MPN</label>
+        <input type="text" class="form-control" name="mpn" placeholder="Optional but recommended">
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Bike Image</label>
+        <input type="file" class="form-control" name="bike_image" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-success w-100">Register Bike</button>
+      </form>
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mt-4">
+      <div class="card-header bg-danger text-white">
+      <h5 class="card-title mb-0">🚨 Report Theft or Recovery</h5>
+      </div>
+      <div class="card-body">
+      <form id="reportTheftForm">
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Select Your Bike *</label>
+        <select class="form-select" id="reportBikeSelect" name="bicycle_id" required>
+          <option value="">Choose a registered bike...</option>
+        </select>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Incident Status *</label>
+        <select class="form-select" name="bike_status" id="incidentStatusSelect" required>
+          <option value="stolen">Stolen</option>
+          <option value="recovered">Recovered</option>
+        </select>
+        </div>
+        <div id="recoveredExplanationSection" style="display:none;">
+          <div class="mb-3">
+          <label class="form-label fw-bold small">Recovery Explanation *</label>
+          <textarea class="form-control" name="recovery_explanation" id="recoveryExplanation" rows="2" placeholder="Where and how was it found?"></textarea>
+          </div>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Incident Location *</label>
+        <input type="text" class="form-control" name="incident_location" id="incidentLocationInput" placeholder="e.g. Central London Station" required>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Additional Notes</label>
+        <textarea class="form-control" name="investigation_notes" rows="2" placeholder="Any other details?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-danger w-100">Submit Police Report</button>
+      </form>
+      </div>
+    </div>
+    </div>
+
+    <!-- Your Bikes List -->
+    <div class="col-md-7 mb-4">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="card-title mb-0">📊 Your Registered Bicycles</h5>
+      <button class="btn btn-sm btn-light" onclick="loadBikes()">Refresh</button>
+      </div>
+      <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+        <tr>
+          <th>Bike Info</th>
+          <th>Status</th>
+          <th>Registered</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="bikesTableBody">
+        <!-- Loaded via AJAX -->
+        </tbody>
+      </table>
+      </div>
+    </div>
+    
+    <div class="card shadow-sm border-0 mt-4">
+      <div class="card-header bg-info text-white">
+      <h5 class="card-title mb-0">📜 Recent Activity / Reports</h5>
+      </div>
+      <div class="card-body p-0">
+      <ul class="list-group list-group-flush" id="activityList">
+        <!-- Loaded via AJAX -->
+      </ul>
+      </div>
+    </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+      <h5 class="modal-title" id="profileModalLabel">👤 Your Profile Information</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form id="profileUpdateForm">
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">First Name</label>
+          <input type="text" class="form-control" id="profile_first_name" readonly>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Last Name</label>
+          <input type="text" class="form-control" id="profile_last_name" readonly>
+        </div>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Email Address</label>
+        <input type="email" class="form-control" id="profile_email" readonly>
+        </div>
+        <hr>
+        <div class="mb-3">
+        <label class="form-label fw-bold small text-primary">Phone Number (Editable)</label>
+        <input type="text" class="form-control" name="phone" id="profile_phone" placeholder="Enter phone number">
+        <div class="text-muted small mt-1">Format: numbers, spaces, and +() symbols.</div>
+        </div>
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small text-primary">Address Line 1 (Editable)</label>
+          <input type="text" class="form-control" name="address_line1" id="profile_address_line1">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small text-primary">Address Line 2 (Editable)</label>
+          <input type="text" class="form-control" name="address_line2" id="profile_address_line2">
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small text-primary">City (Editable)</label>
+          <input type="text" class="form-control" name="city" id="profile_city">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small text-primary">County (Editable)</label>
+          <input type="text" class="form-control" name="county" id="profile_county">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label class="form-label fw-bold small text-primary">Postcode (Editable)</label>
+          <input type="text" class="form-control" name="postcode" id="profile_postcode">
+        </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Update Profile Details</button>
+      </form>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- Bike Details Modal -->
+  <div class="modal fade" id="bikeDetailsModal" tabindex="-1" aria-labelledby="bikeDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+      <h5 class="modal-title" id="bikeDetailsModalLabel">🚲 Bicycle Details</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="bikeDetailsContent">
+      <div class="text-center p-4">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../common/google-maps-loader.js"></script>
+  <script src="../common/auth-check.js"></script>
+  <script src="public.js"></script>
+</body>
+</html>
