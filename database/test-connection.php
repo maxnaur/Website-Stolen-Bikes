@@ -1,33 +1,29 @@
 <?php
 // test-connection.php - Test database connectivity
 
-echo "<h2>Database Connection Test</h2>";
-
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "bike_police_system";
 
+echo "<h2>Database Connection Test</h2>";
+
 // Test 1: Connect without database
 echo "<h3>Test 1: Connect to MySQL Server</h3>";
 try {
-  $pdo = new PDO(
-  "mysql:host=" . $servername,
-  $username,
-  $password
-  );
+    $pdo = new PDO("mysql:host=$servername", $username, $password);
   echo "<p style='color: green;'>✓ Connected to MySQL server successfully</p>";
 } catch (PDOException $e) {
   echo "<p style='color: red;'>✗ Failed to connect to MySQL: " . htmlspecialchars($e->getMessage()) . "</p>";
-  echo "<p><strong>Troubleshooting:</strong> Make sure MySQL is running on localhost:3306</p>";
+    echo "<p><strong class='text-danger'>Troubleshooting:</strong> Make sure MySQL is running on localhost:3306</p>";
   exit;
 }
 
 // Test 2: Check if database exists
 echo "<h3>Test 2: Check Database</h3>";
 try {
-  $pdo->exec("USE " . $dbname);
-  echo "<p style='color: green;'>✓ Database '" . $dbname . "' exists</p>";
+    $pdo->exec("USE $dbname");
+    echo "<p style='color: green;'>✓ Database '$dbname' exists</p>";
   
   // Test 3: Check tables
   echo "<h3>Test 3: Check Tables</h3>";
@@ -41,7 +37,7 @@ try {
   echo "<p>Run <a href='setup.php'>setup.php</a> to create tables</p>";
   }
 } catch (PDOException $e) {
-  echo "<p style='color: orange;'>⚠ Database '" . $dbname . "' does not exist</p>";
+    echo "<p style='color: orange;'>⚠ Database '$dbname' does not exist</p>";
   echo "<p>Run <a href='setup.php'>setup.php</a> to create the database and tables</p>";
   exit;
 }
@@ -50,7 +46,7 @@ try {
 echo "<h3>Test 4: Full PDO Configuration Test</h3>";
 try {
   $pdo = new PDO(
-  "mysql:host=" . $servername . ";dbname=" . $dbname . ";charset=utf8mb4",
+        "mysql:host=$servername;dbname=$dbname;charset=utf8mb4",
   $username,
   $password,
   [
@@ -65,24 +61,25 @@ try {
   echo "<h3>Test 5: Sample Query</h3>";
   $result = $pdo->query("SELECT COUNT(*) as user_count FROM users");
   $data = $result->fetch();
-  echo "<p style='color: green;'>✓ Query successful - Users in database: " . $data['user_count'] . "</p>";
+    echo "<p style='color: green;'>✓ Query successful - Users in database: " . htmlspecialchars($data['user_count']) . "</p>";
   
 } catch (PDOException $e) {
   echo "<p style='color: red;'>✗ Configuration test failed: " . htmlspecialchars($e->getMessage()) . "</p>";
 }
 
 echo "<hr>";
-echo "<p><strong>Connection configuration (from config.php):</strong></p>";
+echo "<p><strong class='text-info'>Connection configuration (from config.php):</strong></p>";
 echo "<pre>";
-echo "DB_SERVER: localhost\n";
-echo "DB_USERNAME: root\n";
+echo "DB_SERVER: $servername\n";
+echo "DB_USERNAME: $username\n";
 echo "DB_PASSWORD: (empty)\n";
-echo "DB_NAME: bike_police_system\n";
+echo "DB_NAME: $dbname\n";
 echo "</pre>";
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Connection Test</title>
   <style>
   body { font-family: Arial, sans-serif; margin: 40px; background: #f9f9f9; }
@@ -90,8 +87,12 @@ echo "</pre>";
   p { line-height: 1.8; }
   pre { background: #f0f0f0; padding: 10px; border-radius: 5px; overflow-x: auto; }
   a { color: #0066cc; }
+  /* Added style for text-danger and text-info to match suggested edit intent */
+  .text-danger { color: red; }
+  .text-info { color: blue; }
   </style>
 </head>
 <body>
 </body>
 </html>
+

@@ -142,7 +142,7 @@ function handleRegister() {
     $city = trim($_POST['city'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirmEmail = trim($_POST['confirmEmail'] ?? '');
-    
+  
     if (empty($firstName) || empty($lastName) || empty($email) || empty($addressLine1) || 
         empty($postcode) || empty($county) || empty($city) || empty($password) || empty($dob)) {
         http_response_code(400);

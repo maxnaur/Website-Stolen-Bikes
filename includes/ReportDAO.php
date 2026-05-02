@@ -1,27 +1,33 @@
 <?php
 /**
  * includes/ReportDAO.php
+ * Data Access Object for Reports
  */
 
-function getAllReports($pdo, $status = null) {
+function getAllReports(PDO $pdo, ?string $status = null): array
+{
     $query = "
     SELECT r.*, b.brand, b.model, b.colour, u.first_name, u.last_name, u.email
     FROM report r
     JOIN bicycles b ON r.bicycle_id = b.id
     JOIN users u ON b.user_id = u.id
     ";
+
     $params = [];
     if ($status) {
         $query .= " WHERE r.bike_status = ?";
         $params[] = $status;
     }
+
     $query .= " ORDER BY r.report_date DESC";
+
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
     return $stmt->fetchAll();
 }
 
-function getUserReports($pdo, $userId) {
+function getUserReports(PDO $pdo, int $userId): array
+{
     $stmt = $pdo->prepare("
         SELECT r.*, b.brand, b.model, b.colour
         FROM report r
@@ -33,11 +39,13 @@ function getUserReports($pdo, $userId) {
     return $stmt->fetchAll();
 }
 
-function createReportEntry($pdo, $data) {
+function createReportEntry(PDO $pdo, array $data): int
+{
     $stmt = $pdo->prepare("
         INSERT INTO report (bicycle_id, investigation_status, investigation_notes, bike_status, incident_location)
         VALUES (?, ?, ?, ?, ?)
     ");
+
     $stmt->execute([
         $data['bicycle_id'],
         $data['investigation_status'] ?? 'open',
@@ -45,6 +53,7 @@ function createReportEntry($pdo, $data) {
         $data['bike_status'],
         $data['incident_location']
     ]);
+
     $reportId = $pdo->lastInsertId();
     
     // Update bike status too
@@ -54,27 +63,31 @@ function createReportEntry($pdo, $data) {
     return $reportId;
 }
 
-function updateReportEntry($pdo, $reportId, $data) {
+function updateReportEntry(PDO $pdo, int $reportId, array $data): bool
+{
     $allowedFields = ['investigation_status', 'investigation_notes', 'bike_status'];
     $updates = [];
     $params = [];
     
-    foreach($allowedFields as $field) {
+    foreach ($allowedFields as $field) {
         if (isset($data[$field])) {
             $updates[] = "$field = ?";
             $params[] = $data[$field];
         }
     }
     
-    if (empty($updates)) return false;
-
+    if (empty($updates)) {
+        return false;
+    }
+    
     if (isset($data['investigation_status']) && $data['investigation_status'] === 'closed') {
         $updates[] = "closed_at = NOW()";
     }
-    
+
     $query = "UPDATE report SET " . implode(", ", $updates) . " WHERE id = ?";
     $params[] = $reportId;
     
     $stmt = $pdo->prepare($query);
     return $stmt->execute($params);
 }
+

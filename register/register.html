@@ -13,198 +13,165 @@
   <!-- Sidebar CSS -->
   <link rel="stylesheet" href="../common/sidebar/sidebar.css">
 </head>
-<body>
+<body class="bg-light">
+
   <!-- Sidebar Navigation -->
-  <nav aria-label="Main navigation">
-  <ul id="topbar">
-    <li><a href="../home/home.html">Home</a></li>
-    <li><a href="../home/meet-the-team.html">Meet The Team</a></li>
-    <li><a href="../login/login.html">Login</a></li>
-    <li><a href="./register.html" aria-current="page">Register</a></li>
-  </ul>
+  <nav aria-label="Main navigation" class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <ul id="topbar" class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a href="../home/home.html" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="../home/meet-the-team.html" class="nav-link">Meet The Team</a></li>
+        <li class="nav-item"><a href="../login/login.html" class="nav-link">Login</a></li>
+        <li class="nav-item"><a href="./register.html" aria-current="page" class="nav-link active">Register</a></li>
+      </ul>
+    </div>
   </nav>
 
   <div id="error-alert" class="alert alert-danger text-center mb-4" style="display:none;" role="alert"></div>
 
-  <div class="container py-1">
-  <div class="row justify-content-center">
-  <div class="col-md-10">
-  <div class="card shadow-sm">
-    <div class="card-body">
-    <h1 class="text-center mb-4">Register</h1>
-    <form id="registerForm" method="POST" action="../api/auth.php?action=register" novalidate>
-    <div class="row g-3">
-    <!-- First Name -->
-    <div class="col-md-6">
-      <label for="firstName" class="form-label">First Name <span aria-label="required">*</span></label>
-      <input type="text" name="firstName" class="form-control" id="firstName" placeholder="John" required aria-required="true">
-    </div>
-    
-    <!-- Last Name -->
-    <div class="col-md-6">
-      <label for="lastName" class="form-label">Last Name <span aria-label="required">*</span></label>
-      <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Smith" required aria-required="true">
-    </div>
-    
-    <!-- Email Section -->
-    <div class="col-md-6">
-      <label for="email" class="form-label">Email <span aria-label="required">*</span></label>
-      <input type="email" name="email" class="form-control" id="email" placeholder="user@example.com" required aria-required="true">
-      <div id="emailError" class="text-danger small mt-1" style="display:none;"></div>
-    </div>
-    
-    <div class="col-md-6">
-      <label for="confirmEmail" class="form-label">Confirm Email <span aria-label="required">*</span></label>
-      <input type="email" name="confirmEmail" class="form-control" id="confirmEmail" placeholder="user@example.com" required aria-required="true">
-      <div id="confirmEmailError" class="text-danger small mt-1" style="display:none;"></div>
-    </div>
-    
-    <!-- Phone Number -->
-    <div class="col-md-12">
-      <label for="phone" class="form-label">Phone Number</label>
-      <input type="tel" name="phone" class="form-control" id="phone" placeholder="+44 (0) 1234 567890">
-    </div>
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10">
+        <div class="card shadow-lg border-primary">
+          <div class="card-header bg-primary text-white">
+            <h1 class="mb-0">Register for Bike Safety</h1>
+          </div>
+          <div class="card-body p-4">
+            <form id="registerForm" method="POST" action="../api/auth.php?action=register" novalidate>
+              <!-- CSRF Token -->
+              <input type="hidden" name="csrf_token" id="csrfToken" value="">
+              
+              <div class="row g-4">
 
-    <!-- Date of Birth -->
-    <div class="col-md-12">
-      <label for="birth" class="form-label">Date of Birth</label>
-      <input type="date" name="DOB" class="form-control" id="birth">
+                <!-- 1. Personal Information -->
+                <div class="col-md-6">
+                  <h5 class="text-primary mb-3">Personal Details</h5>
+                  
+                  <!-- First Name -->
+                  <div class="mb-3">
+                    <label for="firstName" class="form-label fw-bold">First Name <span aria-label="required">*</span></label>
+                    <input type="text" name="firstName" class="form-control" id="firstName" placeholder="John" required aria-required="true">
+                  </div>
+                  
+                  <!-- Last Name -->
+                  <div class="mb-3">
+                    <label for="lastName" class="form-label fw-bold">Last Name <span aria-label="required">*</span></label>
+                    <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Smith" required aria-required="true">
+                  </div>
+
+                  <!-- Date of Birth -->
+                  <div class="mb-3">
+                    <label for="birth" class="form-label fw-bold">Date of Birth</label>
+                    <input type="date" name="DOB" class="form-control" id="birth">
+                  </div>
+                </div>
+
+                <!-- 2. Email and Phone -->
+                <div class="col-md-6">
+                  <h5 class="text-primary mb-3">Contact Information</h5>
+                  
+                  <!-- Email -->
+                  <div class="mb-3">
+                    <label for="email" class="form-label fw-bold">Email <span aria-label="required">*</span></label>
+                    <input type="email" name="email" class="form-control" id="email" placeholder="user@example.com" required aria-required="true">
+                    <div id="emailError" class="text-danger small mt-1" style="display:none;"></div>
+                  </div>
+
+                  <!-- Confirm Email -->
+                  <div class="mb-3">
+                    <label for="confirmEmail" class="form-label fw-bold">Confirm Email <span aria-label="required">*</span></label>
+                    <input type="email" name="confirmEmail" class="form-control" id="confirmEmail" placeholder="user@example.com" required aria-required="true">
+                    <div id="confirmEmailError" class="text-danger small mt-1" style="display:none;"></div>
+                  </div>
+
+                  <!-- Phone Number -->
+                  <div class="mb-3">
+                    <label for="phone" class="form-label fw-bold">Phone Number</label>
+                    <input type="tel" name="phone" class="form-control" id="phone" placeholder="+44 (0) 1234 567890">
+                  </div>
+                </div>
+
+                <!-- 3. Address Information -->
+                <div class="col-md-6">
+                  <h5 class="text-primary mb-3">Address Details</h5>
+                  
+                  <!-- Address Line 1 (With Autocomplete) -->
+                  <div class="mb-3">
+                    <label for="addressLine1" class="form-label fw-bold">Address Line 1 <span aria-label="required">*</span></label>
+                    <div id="autocomplete-container"></div>
+                    <input type="hidden" name="addressLine1" id="addressLine1" required aria-required="true">
+                    <div id="map" style="height: 200px; width: 100%; display: none;" class="mt-2 rounded border bg-light" aria-label="Address map preview"></div>
+                  </div>
+
+                  <!-- Address Line 2 -->
+                  <div class="mb-3">
+                    <label for="addressLine2" class="form-label">Address Line 2</label>
+                    <input type="text" name="addressLine2" class="form-control" id="addressLine2" placeholder="Apartment, suite, etc.">
+                  </div>
+
+                  <!-- Postcode -->
+                  <div class="mb-3">
+                    <label for="postcode" class="form-label fw-bold">Postcode <span aria-label="required">*</span></label>
+                    <input type="text" name="postcode" class="form-control" id="postcode" placeholder="SW1A 1AA" required aria-required="true">
+                  </div>
+
+                  <!-- County -->
+                  <div class="mb-3">
+                    <label for="county" class="form-label fw-bold">County <span aria-label="required">*</span></label>
+                    <input type="text" name="county" class="form-control" id="county" placeholder="County" required aria-required="true">
+                  </div>
+
+                  <!-- City -->
+                  <div class="mb-3">
+                    <label for="city" class="form-label fw-bold">Town/City <span aria-label="required">*</span></label>
+                    <input type="text" name="city" class="form-control" id="city" placeholder="Town/City" required aria-required="true">
+                  </div>
+                </div>
+
+                <!-- 4. Password Information -->
+                <div class="col-md-6">
+                  <h5 class="text-primary mb-3">Security Details</h5>
+
+                  <!-- Password -->
+                  <div class="mb-3">
+                    <label for="password" class="form-label fw-bold">Password*</label>
+                    <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                    <div id="passwordError" class="text-danger small mt-1" style="display:none;"></div>
+                    <label class="form-check-label mt-2">
+                      <input type="checkbox" class="toggle-password form-check-input" data-target="#password">
+                      Show password
+                    </label>
+                  </div>
+
+                  <!-- Confirm Password -->
+                  <div class="mb-3">
+                    <label for="confirmPassword" class="form-label fw-bold">Confirm Password*</label>
+                    <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
+                    <div id="confirmPasswordError" class="text-danger small mt-1" style="display:none;"></div>
+                    <label class="form-check-label mt-2">
+                      <input type="checkbox" class="toggle-password form-check-input" data-target="#confirmPassword">
+                      Show password
+                    </label>
+                  </div>
+                </div>
+
+              </div>
+              
+              <div class="mt-5 text-center">
+                <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm">Create Account</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-    
-    <!-- Address Section -->
-    <div class="col-md-12">
-      <label for="addressLine1" class="form-label">Address Line 1 <span aria-label="required">*</span> (Start typing to search)</label>
-      <div id="autocomplete-container"></div>
-      <input type="hidden" name="addressLine1" id="addressLine1" required aria-required="true">
-      <div id="map" style="height: 200px; width: 100%; display: none;" class="mt-2 rounded border" aria-label="Address map preview"></div>
-    </div>
-    
-    <div class="col-md-6">
-      <label for="addressLine2" class="form-label">Address Line 2</label>
-      <input type="text" name="addressLine2" class="form-control" id="addressLine2" placeholder="Apartment, suite, etc.">
-    </div>
-    
-    <div class="col-md-6">
-      <label for="postcode" class="form-label">Postcode <span aria-label="required">*</span></label>
-      <input type="text" name="postcode" class="form-control" id="postcode" placeholder="SW1A 1AA" required aria-required="true">
-    </div>
-    
-    <div class="col-md-6">
-      <label for="county" class="form-label">County <span aria-label="required">*</span></label>
-      <input type="text" name="county" class="form-control" id="county" placeholder="County" required aria-required="true">
-    </div>
-    
-    <div class="col-md-12">
-      <label for="city" class="form-label">Town/City <span aria-label="required">*</span></label>
-      <input type="text" name="city" class="form-control" id="city" placeholder="Town/City" required>
-    </div>
-    
-    <!-- Password Section -->
-    <div class="col-md-6">
-      <label for="password" class="form-label">Password*</label>
-      <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
-      <div id="passwordError" class="text-danger small mt-1" style="display:none;"></div>
-      <label class="form-check-label mt-1">
-      <input type="checkbox" class="toggle-password form-check-input" data-target="#password">
-      Show password
-      </label>
-    </div>
-    
-    <div class="col-md-6">
-      <label for="confirmPassword" class="form-label">Confirm Password*</label>
-      <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
-      <div id="confirmPasswordError" class="text-danger small mt-1" style="display:none;"></div>
-      <label class="form-check-label mt-1">
-      <input type="checkbox" class="toggle-password form-check-input" data-target="#confirmPassword">
-      Show password
-      </label>
-    </div>
-    </div>
-    
-    <div class="mt-4 text-center">
-    <button type="submit" class="btn btn-primary btn-lg px-5">Create Account</button>
-    </div>
-    </div>
-    </form>
-    </div>
-  </div>
-  </div>
-  </div>
   </div>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../common/google-maps-loader.js"></script>
-  <script>
-  async function initAutocomplete() {
-    const { PlaceAutocompleteElement } = await google.maps.importLibrary("places");
-    const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-
-    const autocompleteElement = new PlaceAutocompleteElement({
-      includedRegionCodes: ["gb"],
-      includedPrimaryTypes: ["address"],
-    });
-    
-    const container = document.getElementById('autocomplete-container');
-    container.appendChild(autocompleteElement);
-    
-    let map, marker;
-    const mapDiv = document.getElementById('map');
-    const addressLine1Input = document.getElementById('addressLine1');
-
-    autocompleteElement.addEventListener('gmp-select', async (event) => {
-      const place = event.placePrediction.toPlace();
-      await place.fetchFields({ 
-        fields: ["addressComponents", "location", "formattedAddress"] 
-      });
-
-      let streetNumber = '', route = '', city = '', county = '', postcode = '';
-      
-      if (place.addressComponents) {
-        for (const component of place.addressComponents) {
-          const type = component.types[0];
-          if (type === 'street_number') streetNumber = component.long_name;
-          if (type === 'route') route = component.long_name;
-          if (type === 'postal_town' || type === 'locality') city = component.long_name;
-          if (type === 'administrative_area_level_2') county = component.long_name;
-          if (type === 'postal_code') postcode = component.long_name;
-        }
-      }
-      
-      const addrValue = (streetNumber ? streetNumber + ' ' : '') + route;
-      addressLine1Input.value = addrValue || place.formattedAddress;
-      
-      if (city) document.getElementById('city').value = city;
-      if (county) document.getElementById('county').value = county;
-      if (postcode) document.getElementById('postcode').value = postcode;
-      
-      // Show map
-      if (place.location) {
-        mapDiv.style.display = 'block';
-        if (!map) {
-          map = new Map(mapDiv, {
-            zoom: 17,
-            center: place.location,
-            disableDefaultUI: true,
-            mapId: "DEMO_MAP_ID"
-          });
-          marker = new AdvancedMarkerElement({
-            map: map,
-            position: place.location
-          });
-        } else {
-          map.setCenter(place.location);
-          marker.position = place.location;
-        }
-      }
-    });
-  }
-  
-  document.addEventListener('DOMContentLoaded', () => {
-    initAutocomplete().catch(console.error);
-  });
-  </script>
   <script src="../common/style/form-utils.js"></script>
   <script src="register.js"></script>
+
 </body>
 </html>
