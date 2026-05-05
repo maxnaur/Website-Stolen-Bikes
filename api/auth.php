@@ -31,7 +31,11 @@ try {
         echo json_encode(['success' => false, 'message' => 'Database connection failed. Please try again later.']);
         exit;
     }
-    redirectOrError('Database connection failed. Please try again later.');
+    // Handle general error for other actions like login
+    header('Content-Type: application/json');
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Database connection failed. Please try again later.']);
+    exit;
 }
 
 switch ($action) {
@@ -54,7 +58,7 @@ switch ($action) {
 }
 
 /**
- * Handle user login
+ * Handle user login - MODIFIED TO RETURN JSON ONLY
  */
 function handleLogin() {
     global $pdo;
@@ -70,8 +74,11 @@ function handleLogin() {
             echo json_encode(['success' => false, 'message' => 'Too many login attempts. Please try again later.']);
             exit;
         }
-        redirectOrError('Please fill in both email and password.');
-        return;
+        // Send JSON error for client handling (HTTP 400 Bad Request)
+        header('Content-Type: application/json');
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Please fill in both email and password.']);
+        exit;
     }
 
     // Rate limiting check
@@ -99,23 +106,36 @@ function handleLogin() {
             logActivity($pdo, 'LOGIN', 'users', $user['id'], "User $email logged in successfully");
 
             $role = strtolower($user['role'] ?? 'public');
-            $redirect = '../public/public.html';
+            $redirect = '';
             if ($role === 'police') $redirect = '../police/police.html';
-            if ($role === 'admin') $redirect = '../admin/admin.html';
+            else if ($role === 'admin') $redirect = '../admin/admin.html';
+            else $redirect = '../public/public.html';
 
-            if (isset($_GET['format']) && $_GET['format'] === 'json') {
-                echo json_encode(['success' => true, 'redirect' => $redirect]);
-            } else {
-                header("Location: $redirect");
-            }
+            // SUCCESS: Send JSON payload with redirect path
+            echo json_encode(['success' => true, 'message' => 'Login successful!', 'redirect' => $redirect]);
             exit;
         } else {
             logActivity($pdo, 'LOGIN_FAILED', 'users', null, "Failed login attempt for email: $email");
-            redirectOrError('Incorrect login or password');
+            // FAILURE: Unauthorized credentials (HTTP 401)
+            header('Content-Type: application/json');
+            http_response_code(401); 
+            echo json_encode(['success' => false, 'message' => 'Incorrect login or password']);
+            exit;
         }
     } catch (PDOException $e) {
         error_log("Login API Error: " . $e->getMessage());
-        redirectOrError('System maintenance. Please try again later.');
+        // FAILURE: Database error (HTTP 500)
+        header('Content-Type: application/json');
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'System maintenance. Please try again later.']);
+        exit;
+    } catch (Throwable $e) {
+         // Catch all other exceptions
+        error_log("Login API General Error: " . $e->getMessage());
+        header('Content-Type: application/json');
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'An unexpected error occurred.']);
+        exit;
     }
 }
 
@@ -133,11 +153,9 @@ function handleLogout() {
     }
     session_destroy();
     
-    if (isset($_GET['format']) && $_GET['format'] === 'json') {
-        echo json_encode(['success' => true]);
-    } else {
-        header('Location: ../login/login.html');
-    }
+    // CHANGE: Always return JSON on success/logout
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'message' => 'Logged out successfully.', 'redirect' => '../login/login.html']);
     exit;
 }
 

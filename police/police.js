@@ -8,14 +8,16 @@ let allReports = [];
 document.addEventListener('DOMContentLoaded', async () => {
     const session = await verifySession('police');
     if (session) {
-        loadReports();
-        loadStats();
+        await loadReports();
+        await loadStats();
         document.getElementById('showClosedReports')?.addEventListener('change', renderReports);
 
         const investigationForm = document.getElementById('investigationForm');
         if (investigationForm) {
             investigationForm.addEventListener('submit', handleInvestigationSubmit);
         }
+
+        handlePoliceQueryParams();
     }
 });
 
@@ -168,6 +170,14 @@ function getBikeBadge(status) {
     case 'captured': return '<span class="badge bg-primary">CAPTURED</span>';
     case 'returned': return '<span class="badge bg-success">RETURNED</span>';
     default: return `<span class="badge bg-info">${status.toUpperCase()}</span>`;
+    }
+}
+
+function handlePoliceQueryParams() {
+    const params = new URLSearchParams(window.location.search);
+    const reportId = params.get('report_id');
+    if (reportId) {
+      showDetail(reportId);
     }
 }
 

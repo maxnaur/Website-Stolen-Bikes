@@ -234,7 +234,8 @@ function viewBike(id) {
 function viewReport(id) {
     window.location.href = '../police/police.html?report_id=' + id;
 }
-lems() {
+
+async function loadProblems() {
     const tableBody = document.getElementById('problemsTable');
     try {
         const response = await fetch('../api/problems.php');

@@ -6,8 +6,9 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const session = await verifySession('public');
     if (session) {
-        loadBikes();
-        loadReports();
+        await loadBikes();
+        await loadReports();
+        handlePublicQueryParams();
     }
 });
 
@@ -90,7 +91,9 @@ async function loadReports() {
     }
 }
 
-document.getElementById('incidentStatusSelect').addEventListener('change', function() {
+const incidentStatusSelect = document.getElementById('incidentStatusSelect');
+if (incidentStatusSelect) {
+  incidentStatusSelect.addEventListener('change', function() {
     const recoveredSection = document.getElementById('recoveredExplanationSection');
     const recoveryInput = document.getElementById('recoveryExplanation');
     if (this.value === 'recovered') {
@@ -100,33 +103,38 @@ document.getElementById('incidentStatusSelect').addEventListener('change', funct
       recoveredSection.style.display = 'none';
       recoveryInput.required = false;
     }
-});
+  });
+}
 
-document.getElementById('registerBikeForm').addEventListener('submit', async (e) => {
+const registerBikeForm = document.getElementById('registerBikeForm');
+if (registerBikeForm) {
+  registerBikeForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     try {
-    const response = await fetch('../api/bicycles.php?action=add', {
-      method: 'POST',
-      body: formData
-    });
-    const result = await response.json();
-    if (result.success) {
-      alert('Bike registered successfully!');
-      e.target.reset();
-      loadBikes();
-    } else {
-      alert('Error: ' + result.message);
-    }
+      const response = await fetch('../api/bicycles.php?action=add', {
+        method: 'POST',
+        body: formData
+      });
+      const result = await response.json();
+      if (result.success) {
+        alert('Bike registered successfully!');
+        e.target.reset();
+        loadBikes();
+      } else {
+        alert('Error: ' + result.message);
+      }
     } catch (error) {
-    alert('An error occurred. Please try again.');
+      alert('An error occurred. Please try again.');
     }
-});
+  });
+}
 
-document.getElementById('reportTheftForm').addEventListener('submit', async (e) => {
+const reportTheftForm = document.getElementById('reportTheftForm');
+if (reportTheftForm) {
+  reportTheftForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    
     if (formData.get('bike_status') === 'recovered') {
       const expl = formData.get('recovery_explanation');
       const notes = formData.get('investigation_notes');
@@ -134,57 +142,31 @@ document.getElementById('reportTheftForm').addEventListener('submit', async (e) 
     }
 
     try {
-    const response = await fetch('../api/reports.php?action=create', {
-      method: 'POST',
-      body: formData
-    });
-    const result = await response.json();
-    if (result.success) {
-      alert('Report submitted successfully!');
-      e.target.reset();
-      loadBikes();
-      loadReports();
-    } else {
-      alert('Error: ' + result.message);
-    }
-    } catch (error) {
-    alert('An error occurred. Please try again.');
-    }
-});
-
-async function showProfile() {
-    try {
-      const response = await fetch('../api/users.php?action=profile');
+      const response = await fetch('../api/reports.php?action=create', {
+        method: 'POST',
+        body: formData
+      });
       const result = await response.json();
-      
       if (result.success) {
-        const user = result.data;
-        document.getElementById('profile_first_name').value = user.first_name;
-        document.getElementById('profile_last_name').value = user.last_name;
-        document.getElementById('profile_email').value = user.email;
-        document.getElementById('profile_phone').value = user.phone || '';
-        document.getElementById('profile_address_line1').value = user.address_line1 || '';
-        document.getElementById('profile_address_line2').value = user.address_line2 || '';
-        document.getElementById('profile_city').value = user.city || '';
-        document.getElementById('profile_county').value = user.county || '';
-        document.getElementById('profile_postcode').value = user.postcode || '';
-        
-        const modal = new bootstrap.Modal(document.getElementById('profileModal'));
-        modal.show();
+        alert('Report submitted successfully!');
+        e.target.reset();
+        loadBikes();
+        loadReports();
       } else {
-        alert('Error loading profile: ' + result.message);
+        alert('Error: ' + result.message);
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('Failed to load profile details.');
+      alert('An error occurred. Please try again.');
     }
+  });
 }
 
-document.getElementById('profileUpdateForm').addEventListener('submit', async (e) => {
+const profileUpdateForm = document.getElementById('profileUpdateForm');
+if (profileUpdateForm) {
+  profileUpdateForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
-    
     try {
       const response = await fetch('../api/users.php?action=update_profile', {
         method: 'PUT',
@@ -192,7 +174,6 @@ document.getElementById('profileUpdateForm').addEventListener('submit', async (e
         body: JSON.stringify(data)
       });
       const result = await response.json();
-      
       if (result.success) {
         alert('Profile updated successfully!');
         bootstrap.Modal.getInstance(document.getElementById('profileModal')).hide();
@@ -203,7 +184,16 @@ document.getElementById('profileUpdateForm').addEventListener('submit', async (e
       console.error('Error:', error);
       alert('An error occurred while updating profile.');
     }
-});
+  });
+}
+
+function handlePublicQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  const viewBikeId = params.get('view_bike');
+  if (viewBikeId) {
+    viewBike(viewBikeId);
+  }
+}
 
 async function viewBike(id) {
     const content = document.getElementById('bikeDetailsContent');
