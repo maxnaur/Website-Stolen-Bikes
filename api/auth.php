@@ -4,7 +4,6 @@
  * Centralized Authentication & Registration API
  */
 header('Content-Type: application/json');
-require_once '../database/config.php';
 require_once '../common/common.php';
 require_once '../common/security.php';
 
@@ -17,6 +16,24 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $action = $_GET['action'] ?? '';
 
+if ($action === 'csrf') {
+    handleCsrfToken();
+}
+
+try {
+    if (in_array($action, ['login', 'register'], true)) {
+        require_once '../database/config.php';
+    }
+} catch (Throwable $e) {
+    error_log('Auth database init error: ' . $e->getMessage());
+    if ($action === 'register') {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Database connection failed. Please try again later.']);
+        exit;
+    }
+    redirectOrError('Database connection failed. Please try again later.');
+}
+
 switch ($action) {
     case 'login':
         handleLogin();
@@ -26,6 +43,9 @@ switch ($action) {
         break;
     case 'register':
         handleRegister();
+        break;
+    case 'csrf':
+        handleCsrfToken();
         break;
     default:
         http_response_code(400);
@@ -186,6 +206,14 @@ function handleRegister() {
         echo json_encode(['success' => false, 'message' => "Registration failed. Please try again later."]);
         exit;
     }
+}
+
+/**
+ * Return a fresh CSRF token for client forms.
+ */
+function handleCsrfToken() {
+    echo json_encode(['success' => true, 'csrf_token' => generateCsrfToken()]);
+    exit;
 }
 
 /**

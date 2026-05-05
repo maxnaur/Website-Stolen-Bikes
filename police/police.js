@@ -10,7 +10,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (session) {
         loadReports();
         loadStats();
-        document.getElementById('showClosedReports').addEventListener('change', renderReports);
+        document.getElementById('showClosedReports')?.addEventListener('change', renderReports);
+
+        const investigationForm = document.getElementById('investigationForm');
+        if (investigationForm) {
+            investigationForm.addEventListener('submit', handleInvestigationSubmit);
+        }
     }
 });
 
@@ -24,6 +29,35 @@ async function loadReports() {
     }
     } catch (error) {
       console.error('Error loading reports:', error);
+    }
+}
+
+async function handleInvestigationSubmit(e) {
+    e.preventDefault();
+    const reportId = document.getElementById('reportSelect').value;
+    const data = {
+      investigation_status: document.getElementById('investStatus').value,
+      bike_status: document.getElementById('bikeStatus').value,
+      investigation_notes: document.getElementById('notes').value
+    };
+
+    try {
+      const response = await fetch(`../api/reports.php?action=update&id=${reportId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      if (result.success) {
+        alert('Investigation updated successfully!');
+        e.target.reset();
+        loadReports();
+        loadStats();
+      } else {
+        alert('Error: ' + result.message);
+      }
+    } catch (error) {
+      alert('An error occurred. Please try again.');
     }
 }
 
@@ -112,7 +146,10 @@ async function initMiniMap(address) {
     const location = await window.leafletUtils.geocodeAddress(address);
     if (!location) return;
 
-    document.getElementById('miniMap').style.background = '#fff';
+    const miniMap = document.getElementById('miniMap');
+    if (!miniMap) return;
+
+    miniMap.style.background = '#fff';
     window.leafletUtils.createOrUpdateMap('miniMap', location.lat, location.lng, 15);
 }
 
@@ -144,35 +181,6 @@ function editInvestigation(id) {
     }
     document.getElementById('reportSelect').scrollIntoView({ behavior: 'smooth' });
 }
-
-document.getElementById('investigationForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const reportId = document.getElementById('reportSelect').value;
-    const data = {
-    investigation_status: document.getElementById('investStatus').value,
-    bike_status: document.getElementById('bikeStatus').value,
-    investigation_notes: document.getElementById('notes').value
-    };
-    
-    try {
-    const response = await fetch(`../api/reports.php?action=update&id=${reportId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    const result = await response.json();
-    if (result.success) {
-      alert('Investigation updated successfully!');
-      e.target.reset();
-      loadReports();
-      loadStats();
-    } else {
-      alert('Error: ' + result.message);
-    }
-    } catch (error) {
-    alert('An error occurred. Please try again.');
-    }
-});
 
 async function loadStats() {
     try {

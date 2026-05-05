@@ -29,9 +29,8 @@ try {
     ]
   );
 } catch (PDOException $e) {
-  http_response_code(500);
   error_log("Database Connection Error: " . $e->getMessage());
-  die(json_encode(['success' => false, 'message' => 'Database connection failed']));
+  throw new RuntimeException('Database connection failed.', 0, $e);
 }
 
 // For backward compatibility
@@ -40,34 +39,38 @@ $conn = $pdo;
 /**
  * Generate CSRF token
  */
-function generateCSRFToken(): string
-{
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+if (!function_exists('generateCSRFToken')) {
+    function generateCSRFToken(): string
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
 
-    return $_SESSION['csrf_token'];
+        return $_SESSION['csrf_token'];
+    }
 }
 
 /**
  * Verify CSRF token
  */
-function verifyCSRFToken(string $token): bool
-{
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+if (!function_exists('verifyCSRFToken')) {
+    function verifyCSRFToken(string $token): bool
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-    if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
-        return false;
-    }
+        if (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $token)) {
+            return false;
+        }
 
-    // Optionally, regenerate the token upon successful verification to prevent replay attacks.
-    // For simplicity, we stick to just verification here based on the snippet provided.
-    return true;
+        // Optionally, regenerate the token upon successful verification to prevent replay attacks.
+        // For simplicity, we stick to just verification here based on the snippet provided.
+        return true;
+    }
 }
 

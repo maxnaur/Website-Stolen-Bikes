@@ -7,27 +7,31 @@
 /**
  * Generate CSRF token
  */
-function generateCSRFToken() {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+if (!function_exists('generateCSRFToken')) {
+    function generateCSRFToken() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
 
-    return $_SESSION['csrf_token'];
+        return $_SESSION['csrf_token'];
+    }
 }
 
 /**
  * Verify CSRF token
  */
-function verifyCSRFToken($token) {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+if (!function_exists('verifyCSRFToken')) {
+    function verifyCSRFToken($token) {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-    return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+        return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+    }
 }
 
 /**

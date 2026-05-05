@@ -151,9 +151,6 @@ RECOMMENDATIONS FOR FURTHER IMPROVEMENTS
 ========================================
 1. Implement password reset functionality
 2. Add email verification on registration
-3. Implement two-factor authentication (2FA)
-4. Add CAPTCHA to prevent automated attacks
-5. Create API documentation (OpenAPI/Swagger)
 6. Implement request logging and monitoring
 7. Add automated tests (unit, integration, e2e)
 8. Implement database backup procedures

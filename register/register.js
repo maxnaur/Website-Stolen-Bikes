@@ -77,6 +77,22 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('email').onchange = validateEmail;
   document.getElementById('confirmEmail').onchange = validateEmail;
 
+  const loadCsrfToken = () => {
+    const csrfInput = document.getElementById('csrfToken');
+    if (!csrfInput) return;
+
+    fetch('../api/auth.php?action=csrf')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success && data.csrf_token) {
+          csrfInput.value = data.csrf_token;
+        }
+      })
+      .catch(error => console.error('Failed to load CSRF token:', error));
+  };
+
+  loadCsrfToken();
+
   // Form submission handler
   document.getElementById('registerForm').addEventListener('submit', function(e) {
   e.preventDefault();
@@ -164,6 +180,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const updateAddressPreview = async () => {
     const mapContainer = document.getElementById('map');
+    if (!mapContainer) {
+      return;
+    }
     const query = getFullAddress();
     if (!query || !window.leafletUtils) {
       mapContainer.style.display = 'none';

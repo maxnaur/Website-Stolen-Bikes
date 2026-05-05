@@ -4,6 +4,19 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Load CSRF token for the form
+    const csrfInput = document.getElementById('csrfToken');
+    if (csrfInput) {
+        fetch('../api/auth.php?action=csrf')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.csrf_token) {
+                    csrfInput.value = data.csrf_token;
+                }
+            })
+            .catch(error => console.error('CSRF token fetch failed:', error));
+    }
+
     // Check for error parameters in the URL
     const params = new URLSearchParams(window.location.search);
     if (params.has('error')) {
