@@ -8,44 +8,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (session) {
         loadBikes();
         loadReports();
-        initGoogleMaps().catch(console.error);
     }
 });
-
-async function initGoogleMaps() {
-    if (typeof google === 'undefined') return;
-    
-    const { PlaceAutocompleteElement } = await google.maps.importLibrary("places");
-    const locationInput = document.getElementById('incidentLocationInput');
-    
-    if (locationInput) {
-        const autocomplete = new PlaceAutocompleteElement({
-            includedPrimaryTypes: ["geocode", "establishment"]
-        });
-        
-        // Style the autocomplete element
-        autocomplete.style.width = '100%';
-        
-        // Replace the existing input with the autocomplete element
-        const parent = locationInput.parentNode;
-        parent.replaceChild(autocomplete, locationInput);
-        
-        // Add name attribute for form submission if needed, or handle gmp-select
-        // Since it's a form submission, we might need a hidden input
-        const hiddenInput = document.createElement('input');
-        hiddenInput.type = 'hidden';
-        hiddenInput.name = 'incident_location';
-        hiddenInput.id = 'incidentLocationInput';
-        hiddenInput.required = true;
-        parent.appendChild(hiddenInput);
-
-        autocomplete.addEventListener('gmp-select', async (event) => {
-            const place = event.placePrediction.toPlace();
-            await place.fetchFields({ fields: ["formattedAddress"] });
-            hiddenInput.value = place.formattedAddress;
-        });
-    }
-}
 
 async function loadBikes() {
     try {

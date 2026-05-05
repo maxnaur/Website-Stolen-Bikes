@@ -145,6 +145,51 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   });
 
+  // Leaflet address preview
+  const debounce = (fn, delay = 400) => {
+    let timer = null;
+    return (...args) => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), delay);
+    };
+  };
+
+  const getFullAddress = () => {
+    const addressLine1Value = document.getElementById('addressLine1').value.trim();
+    const postcodeValue = document.getElementById('postcode').value.trim();
+    const cityValue = document.getElementById('city').value.trim();
+    const countyValue = document.getElementById('county').value.trim();
+    return [addressLine1Value, cityValue, countyValue, postcodeValue].filter(Boolean).join(', ');
+  };
+
+  const updateAddressPreview = async () => {
+    const mapContainer = document.getElementById('map');
+    const query = getFullAddress();
+    if (!query || !window.leafletUtils) {
+      mapContainer.style.display = 'none';
+      return;
+    }
+
+    const location = await window.leafletUtils.geocodeAddress(query);
+    if (!location) {
+      mapContainer.style.display = 'none';
+      return;
+    }
+
+    mapContainer.style.display = 'block';
+    window.leafletUtils.createOrUpdateMap('map', location.lat, location.lng, 14);
+  };
+
+  const addressInputIds = ['addressLine1', 'postcode', 'city', 'county'];
+  addressInputIds.forEach((fieldId) => {
+    const field = document.getElementById(fieldId);
+    if (field) {
+      field.addEventListener('input', debounce(updateAddressPreview));
+    }
+  });
+
+  updateAddressPreview();
+
   // Toggle password visibility handlers
   const passwordToggleElements = document.querySelectorAll('.toggle-password');
   passwordToggleElements.forEach(toggle => {

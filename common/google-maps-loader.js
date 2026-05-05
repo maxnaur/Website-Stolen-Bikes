@@ -1,8 +1,17 @@
 /**
  * common/google-maps-loader.js
- * Shared Google Maps JavaScript API Loader
+ *
+ * --- IMPORTANT UPDATE ---
+ * This module has been updated to remove Google Maps API loading functionality.
+ * The application is now transitioning to use Leaflet for mapping services.
+ *
+ * Please ensure that the following assets are included in all relevant HTML pages:
+ * 1. CSS: <link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css" />
+ * 2. JS:  <script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
+ *
+ * Map initialization logic (e.g., creating the map instance) must now be handled
+ * in the respective page's JavaScript file, utilizing Leaflet's API.
  */
-(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
-  key: "AIzaSyDik2TmOhDgjp81dHgo_6pBxoUF-BaHsus",
-  v: "weekly",
-});
+
+// All Google Maps loading code removed. Use Leaflet assets directly in HTML/JS.
+

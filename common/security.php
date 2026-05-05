@@ -44,7 +44,7 @@ function setSecurityHeaders() {
     header('X-XSS-Protection: 1; mode=block');
 
     // Content Security Policy
-    header("Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://maps.googleapis.com; style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; img-src 'self' data: https:;");
+    header("Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' https://cdn.jsdelivr.net https://unpkg.com 'unsafe-inline'; img-src 'self' data: https://*.tile.openstreetmap.org https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org;");
 
     // Referrer Policy
     header('Referrer-Policy: no-referrer-when-downgrade');

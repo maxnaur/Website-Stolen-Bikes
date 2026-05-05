@@ -3,96 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Bike Police Report System - Report and track stolen bicycles with ease">
-  <meta name="author" content="Bike Safety Team">
-  <meta name="theme-color" content="#667eea">
-  <title>Bike Police Report System | Report Stolen Bicycles</title>
-  <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🚲</text></svg>">
+  <meta name="description" content="Bike Safety - Your trusted platform for bicycle security and reporting stolen bicycles">
+  <meta name="theme-color" content="#2f4ccd">
+  <title>Home – Bike Safety | Bicycle Security & Reporting</title>
+  <!-- Bootstrap CSS with integrity check -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUarbnLutan7V7McqxjjXV58Aahan4HUpqyhTYrREUqoLWfN7nxoj" crossorigin="anonymous">
-  <style>
-  body { 
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .welcome-card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    padding: 40px;
-    max-width: 600px;
-    text-align: center;
-  }
-  h1 { color: #333; margin-bottom: 20px; }
-  .btn-lg { padding: 12px 40px; font-size: 18px; }
-  .info-box { 
-    background: #f0f0f0; 
-    padding: 15px; 
-    border-radius: 5px; 
-    margin: 20px 0;
-    text-align: left;
-  }
-  .info-box h5 { color: #667eea; margin-bottom: 10px; }
-  .info-box ul { margin: 0; padding-left: 20px; }
-  .info-box li { margin: 5px 0; }
-  </style>
+  <link rel="stylesheet" href="./common/sidebar/sidebar.css">
 </head>
 <body>
-  <div class="welcome-card">
-  <h1>🚲 Bike Police System</h1>
-  <p class="lead">Report and track stolen bicycles</p>
-  
-  <div class="info-box">
-  <h5>First Time Setup?</h5>
-  <p>Please run the database setup first:</p>
-  <a href="database/setup.php" class="btn btn-primary btn-lg w-100 mb-3" role="button">
-    ⚙️ Setup Database
-  </a>
-  <small class="text-muted">This creates the database and tables needed to run the system.</small>
+  <!-- Navigation Bar -->
+  <nav aria-label="Main navigation">
+    <ul id="topbar">
+      <li><a href="./" aria-current="page">Home</a></li>
+      <li><a href="./home/meet-the-team.html">Meet The Team</a></li>
+      <li><a href="./login/login.html">Login</a></li>
+      <li><a href="./register/register.html">Register</a></li>
+    </ul>
+  </nav>
+
+  <div class="container py-5">
+    <h1>Welcome to Bike Safety</h1>
+    <p class="lead">Your trusted platform for bicycle security and reporting.</p>
+    
+    <div class="row mt-4">
+      <div class="col-md-4">
+        <div class="card p-3 shadow-sm">
+          <h2>Register</h2>
+          <p>Secure your bike by registering its details in our registry.</p>
+          <a href="./register/register.html" class="btn btn-outline-primary" role="button">Go to Register</a>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card p-3 shadow-sm">
+          <h2>Report</h2>
+          <p>Has your bike been stolen? File a report immediately.</p>
+          <a href="./login/login.html" class="btn btn-outline-danger" role="button">File a Report</a>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card p-3 shadow-sm">
+          <h2>Track</h2>
+          <p>Police officers can track and update investigation statuses.</p>
+          <a href="./login/login.html" class="btn btn-outline-success" role="button">Officer Login</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <hr>
-
-  <div class="info-box">
-  <h5>Ready to Use?</h5>
-  <p>Choose your next action:</p>
-  <div class="row g-2">
-  <div class="col-6">
-    <a href="login/login.html" class="btn btn-success w-100">
-    🔐 Login
-    </a>
-  </div>
-  <div class="col-6">
-    <a href="register/register.html" class="btn btn-info w-100">
-    📝 Register
-    </a>
-  </div>
-  </div>
-  </div>
-
-  <hr>
-
-  <div class="info-box">
-  <h5>Useful Links</h5>
-  <ul>
-  <li><a href="database/test-connection.php">🔍 Test Database Connection</a></li>
-  <li><a href="SETUP_GUIDE.md">📖 Setup Guide (Markdown)</a></li>
-  <li><strong>Admin Login:</strong> admin@police.uk / admin123</li>
-  </ul>
-  </div>
-
-  <div class="info-box">
-  <h5>User Roles</h5>
-  <ul>
-  <li><strong>Public:</strong> Register bikes and report incidents</li>
-  <li><strong>Police:</strong> Investigate reports and update status</li>
-  <li><strong>Admin:</strong> Manage system and all users</li>
-  </ul>
-  </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55RPPYC69IY2IGsDQORZ9c1RbWntQ" crossorigin="anonymous"></script>
 </body>
 </html>
