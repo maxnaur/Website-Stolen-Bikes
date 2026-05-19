@@ -6,10 +6,24 @@
 let allReports = [];
 let overviewMapInstance = null;
 let overviewMarkers = [];
+let csrfToken = '';
+
+async function fetchCsrfToken() {
+    try {
+        const response = await fetch('../api/auth.php?action=csrf');
+        const result = await response.json();
+        if (result.success) {
+            csrfToken = result.csrf_token;
+        }
+    } catch (error) {
+        console.error('Failed to fetch CSRF token:', error);
+    }
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     const session = await verifySession('police');
     if (session) {
+        await fetchCsrfToken();
         await loadReports();
         await loadStats();
         document.getElementById('showClosedReports')?.addEventListener('change', renderReports);
@@ -109,7 +123,10 @@ async function handleInvestigationSubmit(e) {
     try {
       const response = await fetch(`../api/reports.php?action=update&id=${reportId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
         body: JSON.stringify(data)
       });
       const result = await response.json();
