@@ -208,7 +208,7 @@ function handleRegister() {
         
         $stmt = $pdo->prepare("
             INSERT INTO users (first_name, last_name, email, phone, date_of_birth, address_line1, address_line2, postcode, county, city, password, role)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'public')
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'public')
         ");
         
         $stmt->execute([$firstName, $lastName, $email, $phone ?: null, $dob, $addressLine1, $addressLine2 ?: null, $postcode, $county, $city, $hashedPassword]);
