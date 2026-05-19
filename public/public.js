@@ -70,39 +70,51 @@ if (incidentStatusSelect) {
   });
 }
 
-const verifyLocationBtn = document.getElementById('verifyLocationBtn');
-if (verifyLocationBtn) {
-  verifyLocationBtn.addEventListener('click', async () => {
-    const locationInput = document.getElementById('incidentLocationInput').value;
+// Remove verifyLocationBtn logic and implement debounce for automatic map updates
+
+  const debounce = (fn, delay = 400) => {
+    let timer = null;
+    return (...args) => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => fn(...args), delay);
+    };
+  };
+
+  const updateReportMapPreview = async () => {
+    const locationInput = document.getElementById('incidentLocationInput').value.trim();
     const mapContainer = document.getElementById('reportFormMap');
+    const dragHint = document.getElementById('dragHint');
     
-    if (!locationInput) {
-      alert('Please enter a location to verify.');
+    if (!locationInput || !window.leafletUtils) {
+      mapContainer.style.display = 'none';
+      if (dragHint) dragHint.style.display = 'none';
       return;
     }
-    
-    if (window.leafletUtils) {
-      const coords = await window.leafletUtils.geocodeAddress(locationInput);
-      if (coords) {
-        mapContainer.style.display = 'block';
-        document.getElementById('dragHint').style.display = 'block';
-        
-        const onDragEnd = async function(e) {
-          const position = e.target.getLatLng();
-          const newAddress = await window.leafletUtils.reverseGeocode(position.lat, position.lng);
-          if (newAddress) {
-            document.getElementById('incidentLocationInput').value = newAddress;
-          }
-        };
 
-        window.leafletUtils.createOrUpdateMap('reportFormMap', coords.lat, coords.lng, 15, true, onDragEnd);
-      } else {
-        alert('Location could not be found. Please try a more specific address.');
-        mapContainer.style.display = 'none';
-      }
+    const coords = await window.leafletUtils.geocodeAddress(locationInput);
+    if (coords) {
+      mapContainer.style.display = 'block';
+      if (dragHint) dragHint.style.display = 'block';
+      
+      const onDragEnd = async function(e) {
+        const position = e.target.getLatLng();
+        const newAddress = await window.leafletUtils.reverseGeocode(position.lat, position.lng);
+        if (newAddress) {
+          document.getElementById('incidentLocationInput').value = newAddress;
+        }
+      };
+
+      window.leafletUtils.createOrUpdateMap('reportFormMap', coords.lat, coords.lng, 15, true, onDragEnd);
+    } else {
+      mapContainer.style.display = 'none';
+      if (dragHint) dragHint.style.display = 'none';
     }
-  });
-}
+  };
+
+  const incidentLocationInput = document.getElementById('incidentLocationInput');
+  if (incidentLocationInput) {
+    incidentLocationInput.addEventListener('input', debounce(updateReportMapPreview));
+  }
 
 const registerBikeForm = document.getElementById('registerBikeForm');
 if (registerBikeForm) {
@@ -149,6 +161,8 @@ if (reportTheftForm) {
         alert('Report submitted successfully!');
         e.target.reset();
         loadBikes();
+        document.getElementById('reportFormMap').style.display = 'none';
+        document.getElementById('dragHint').style.display = 'none';
       } else {
         alert('Error: ' + result.message);
       }
