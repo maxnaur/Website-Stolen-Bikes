@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadBikes();
         loadReports();
         loadLogs();
-        loadProblems();
     }
 });
 
@@ -233,56 +232,4 @@ function viewBike(id) {
 
 function viewReport(id) {
     window.location.href = '../police/police.html?report_id=' + id;
-}
-
-async function loadProblems() {
-    const tableBody = document.getElementById('problemsTable');
-    try {
-        const response = await fetch('../api/problems.php');
-        const result = await response.json();
-        if (result.success) {
-            tableBody.innerHTML = '';
-            if (result.data.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" class="text-center p-3">No problems reported.</td></tr>';
-                return;
-            }
-            result.data.forEach(p => {
-                const statusClass = p.status === 'resolved' ? 'bg-success' : (p.status === 'in_review' ? 'bg-info' : 'bg-warning');
-                tableBody.innerHTML += `
-                    <tr>
-                        <td>${new Date(p.created_at).toLocaleString()}</td>
-                        <td>${p.user_email}</td>
-                        <td><span class="badge bg-secondary">${p.problem_type}</span></td>
-                        <td><div class="small">${p.description}</div><div class="text-muted" style="font-size: 0.7rem;">URL: ${p.page_url}</div></td>
-                        <td><span class="badge ${statusClass}">${p.status.toUpperCase()}</span></td>
-                        <td>
-                            <select class="form-select form-select-sm" onchange="updateProblemStatus(${p.id}, this.value)">
-                                <option value="new" ${p.status === 'new' ? 'selected' : ''}>New</option>
-                                <option value="in_review" ${p.status === 'in_review' ? 'selected' : ''}>In Review</option>
-                                <option value="resolved" ${p.status === 'resolved' ? 'selected' : ''}>Resolved</option>
-                            </select>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-    } catch (error) {
-        tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading problems.</td></tr>';
-    }
-}
-
-async function updateProblemStatus(id, newStatus) {
-    try {
-        const response = await fetch(`../api/problems.php?id=${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: newStatus })
-        });
-        const result = await response.json();
-        if (result.success) {
-            loadProblems();
-        }
-    } catch (error) {
-        alert('Failed to update status.');
-    }
 }

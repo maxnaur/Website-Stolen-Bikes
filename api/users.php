@@ -49,7 +49,19 @@ function handleGet($currentUser, $action) {
 function handlePost($currentUser) {
     global $pdo;
     checkRole('admin');
+    
+    // Support both JSON and standard POST (FormData)
     $data = json_decode(file_get_contents("php://input"), true);
+    if (!$data) {
+        $data = $_POST;
+    }
+    
+    if (empty($data['email']) || empty($data['password'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Email and password are required']);
+        return;
+    }
+
     $id = createUser($pdo, $data);
     logActivity($pdo, 'USER_CREATED', 'users', $id, "Admin created user: " . $data['email']);
     echo json_encode(['success' => true, 'id' => $id]);

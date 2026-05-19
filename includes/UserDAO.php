@@ -15,8 +15,8 @@ function createUser(PDO $pdo, array $data): int
     $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
     
     $stmt = $pdo->prepare("
-        INSERT INTO users (first_name, last_name, email, password, role, address_line1, city, postcode)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO users (first_name, last_name, email, password, role, address_line1, address_line2, city, postcode, county, date_of_birth)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     
     $stmt->execute([
@@ -25,12 +25,15 @@ function createUser(PDO $pdo, array $data): int
         $data['email'],
         $hashedPassword,
         $data['role'],
-        $data['address_line1'] ?? null,
-        $data['city'] ?? null,
-        $data['postcode'] ?? null
+        $data['address_line1'] ?? '',
+        !empty($data['address_line2']) ? $data['address_line2'] : null,
+        $data['city'] ?? '',
+        $data['postcode'] ?? '',
+        $data['county'] ?? '',
+        $data['date_of_birth'] ?? '1990-01-01'
     ]);
     
-    return $pdo->lastInsertId();
+    return (int)$pdo->lastInsertId();
 }
 
 function getUserDetail(PDO $pdo, int $id): ?array
@@ -47,20 +50,32 @@ function getUserDetail(PDO $pdo, int $id): ?array
 
 function updateUserProfile(PDO $pdo, int $userId, array $data): bool
 {
+    $params = [
+        $data['email'],
+        $data['phone'], 
+        $data['address_line1'], 
+        !empty($data['address_line2']) ? $data['address_line2'] : null,
+        $data['city'], 
+        $data['county'],
+        $data['postcode']
+    ];
+    
+    $passwordSql = "";
+    if (!empty($data['password'])) {
+        $passwordSql = ", password = ?";
+        $params[] = password_hash($data['password'], PASSWORD_BCRYPT);
+    }
+    
+    $params[] = $userId;
+    
     $stmt = $pdo->prepare("
         UPDATE users SET 
+            email = ?,
             phone = ?, address_line1 = ?, address_line2 = ?, 
             city = ?, county = ?, postcode = ?
+            $passwordSql
         WHERE id = ?
     ");
     
-    return $stmt->execute([
-        $data['phone'], 
-        $data['address_line1'], 
-        $data['address_line2'],
-        $data['city'], 
-        $data['county'],
-        $data['postcode'],
-        $userId
-    ]);
+    return $stmt->execute($params);
 }

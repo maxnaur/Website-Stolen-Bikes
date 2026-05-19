@@ -153,9 +153,13 @@ function handleLogout() {
     }
     session_destroy();
     
-    // CHANGE: Always return JSON on success/logout
-    header('Content-Type: application/json');
-    echo json_encode(['success' => true, 'message' => 'Logged out successfully.', 'redirect' => '../login/login.html']);
+    // Check if JSON response is requested
+    if (isset($_GET['format']) && $_GET['format'] === 'json') {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'message' => 'Logged out successfully.', 'redirect' => '../login/login.html']);
+    } else {
+        header('Location: ../login/login.html?logout=success');
+    }
     exit;
 }
 

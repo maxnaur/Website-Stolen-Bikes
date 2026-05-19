@@ -195,6 +195,34 @@ function handlePublicQueryParams() {
   }
 }
 
+async function showProfile() {
+    try {
+      const response = await fetch('../api/users.php?action=profile');
+      const result = await response.json();
+      
+      if (result.success) {
+        const user = result.data;
+        document.getElementById('profile_first_name').value = user.first_name;
+        document.getElementById('profile_last_name').value = user.last_name;
+        document.getElementById('profile_email').value = user.email;
+        document.getElementById('profile_phone').value = user.phone || '';
+        document.getElementById('profile_address_line1').value = user.address_line1 || '';
+        document.getElementById('profile_address_line2').value = user.address_line2 || '';
+        document.getElementById('profile_city').value = user.city || '';
+        document.getElementById('profile_county').value = user.county || '';
+        document.getElementById('profile_postcode').value = user.postcode || '';
+        
+        const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+        modal.show();
+      } else {
+        alert('Error loading profile: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to load profile details.');
+    }
+}
+
 async function viewBike(id) {
     const content = document.getElementById('bikeDetailsContent');
     content.innerHTML = '<div class="text-center p-4"><div class="spinner-border text-primary"></div></div>';
