@@ -3,10 +3,10 @@
 header('Content-Type: text/html; charset=utf-8');
 
 // Database configuration
-$host = '127.0.0.1';
+$host = 'localhost';
 $user = 'root';
-$pass = '';
-$db   = 'bike_police_system';
+$pass = '0kztCN@fZAb4@R^pRYz@';
+$db   = 's4512742_';
 
 echo "<!DOCTYPE html><html><head><title>Database Setup</title>";
 echo "<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css' rel='stylesheet'></head><body class='p-5'>";

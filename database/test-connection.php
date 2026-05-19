@@ -1,13 +1,14 @@
 <?php
 // test-connection.php - Test database connectivity (Diagnostics Mode)
 
-$servername = "127.0.0.1";
+$servername = "localhost";
 $password = "0kztCN@fZAb4@R^pRYz@";
-$dbname = "bike_police_system";
+$dbname = "s4512742_";
 
 $users_to_try = ["root", "bikesafety"];
 
 echo "<h2>Database Connection Diagnostic</h2>";
+echo "<p>Target Database: <strong>$dbname</strong></p>";
 
 foreach ($users_to_try as $username) {
     echo "<h3>Testing User: $username</h3>";
@@ -33,7 +34,7 @@ foreach ($users_to_try as $username) {
             
             // Success! Stop here
             echo "<div style='background: #d4edda; padding: 15px; border-radius: 5px; margin-top: 20px;'>";
-            echo "<strong>SOLUTION FOUND:</strong> Use username <code>$username</code> with your provided password.";
+            echo "<strong>SOLUTION FOUND:</strong> Use username <code>$username</code> with database <code>$dbname</code>.";
             echo "</div>";
             break; 
 
@@ -43,14 +44,8 @@ foreach ($users_to_try as $username) {
         }
 
     } catch (PDOException $e) {
-        echo "<p style='color: red;'>✗ Failed to connect as $username: " . htmlspecialchars($e->getMessage()) . "</p>";
+        echo "<p style='color: red;'>✗ Failed to connect as $username (Line " . __LINE__ . "): " . htmlspecialchars($e->getMessage()) . "</p>";
     }
     echo "<hr>";
 }
-
-echo "<h4>Next Steps</h4>";
-echo "<ul>";
-echo "<li>If both fail, verify the password <code>" . htmlspecialchars($password) . "</code> is exactly what you set.</li>";
-echo "<li>If using a control panel (WAMP/XAMPP), check which user has privileges.</li>";
-echo "</ul>";
 ?>

@@ -12,8 +12,8 @@ error_reporting(E_ALL);
 
 // Load database configuration from environment variables
 define('DB_SERVER', getenv('DB_SERVER') ?: 'localhost');
-define('DB_USERNAME', getenv('DB_USERNAME') ?: 'bikesafety');
-define('DB_PASSWORD', getenv('DB_PASSWORD') ?: '');
+define('DB_USERNAME', getenv('DB_USERNAME') ?: 'root');
+define('DB_PASSWORD', getenv('DB_PASSWORD') ?: '0kztCN@fZAb4@R^pRYz@');
 define('DB_NAME', getenv('DB_NAME') ?: 's4512742_');
 
 // Create PDO connection with proper error handling

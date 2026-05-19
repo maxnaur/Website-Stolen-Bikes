@@ -1,4 +1,5 @@
 -- Drop tables (in reverse order of dependency: child tables first)
+DROP TABLE IF EXISTS `password_reset_tokens`;
 DROP TABLE IF EXISTS `report`;
 DROP TABLE IF EXISTS `bicycles`;
 DROP TABLE IF EXISTS `users`;
@@ -49,7 +50,7 @@ CREATE TABLE `report` (
   incident_location VARCHAR(255),
   investigation_status ENUM('open', 'closed', 'in_progress') DEFAULT 'open',
   investigation_notes TEXT,
-  bike_status ENUM('stolen', 'captured', 'returned') DEFAULT 'stolen',  -- Fixed: 'safe' not in ENUM
+  bike_status ENUM('stolen', 'captured', 'returned') DEFAULT 'stolen',
   closed_at DATETIME DEFAULT NULL
 );
 
@@ -63,6 +64,14 @@ CREATE TABLE IF NOT EXISTS `activity_log` (
   details TEXT,
   ip_address VARCHAR(45),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Password Reset Tokens table
+CREATE TABLE `password_reset_tokens` (
+  email VARCHAR(100) NOT NULL,
+  token VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (email, token)
 );
 
 -- Insert default admin users (password: admin)
