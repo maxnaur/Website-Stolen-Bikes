@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const session = await verifySession('public');
     if (session) {
         await loadBikes();
-        await loadReports();
         handlePublicQueryParams();
     }
 });
@@ -53,41 +52,6 @@ async function loadBikes() {
     }
     } catch (error) {
     console.error('Error loading bikes:', error);
-    }
-}
-
-async function loadReports() {
-    try {
-    const response = await fetch('../api/reports.php');
-    const result = await response.json();
-    const list = document.getElementById('activityList');
-    
-    if (result.success) {
-      list.innerHTML = '';
-      if (result.data.length === 0) {
-      list.innerHTML = '<li class="list-group-item text-center text-muted p-3">No recent reports.</li>';
-      return;
-      }
-      
-      result.data.forEach(report => {
-      const statusColor = report.investigation_status === 'open' ? 'text-danger' : 'text-success';
-      list.innerHTML += `
-        <li class="list-group-item">
-        <div class="d-flex w-100 justify-content-between">
-          <h6 class="mb-1">${report.brand} ${report.model} reported ${report.bike_status}</h6>
-          <small>${new Date(report.report_date).toLocaleDateString()}</small>
-        </div>
-        <p class="mb-1 text-muted small">
-          <strong>Location:</strong> ${report.incident_location || 'Not specified'}<br>
-          ${report.investigation_notes || 'No additional notes provided'}
-        </p>
-        <small class="${statusColor} fw-bold">Status: ${report.investigation_status.replace('_', ' ').toUpperCase()}</small>
-        </li>
-      `;
-      });
-    }
-    } catch (error) {
-    console.error('Error loading reports:', error);
     }
 }
 
@@ -151,7 +115,6 @@ if (reportTheftForm) {
         alert('Report submitted successfully!');
         e.target.reset();
         loadBikes();
-        loadReports();
       } else {
         alert('Error: ' + result.message);
       }
@@ -195,7 +158,7 @@ function handlePublicQueryParams() {
   }
 }
 
-async function showProfile() {
+window.showProfile = async function() {
     try {
       const response = await fetch('../api/users.php?action=profile');
       const result = await response.json();
@@ -223,7 +186,7 @@ async function showProfile() {
     }
 }
 
-async function viewBike(id) {
+window.viewBike = async function(id) {
     const content = document.getElementById('bikeDetailsContent');
     content.innerHTML = '<div class="text-center p-4"><div class="spinner-border text-primary"></div></div>';
     

@@ -18,3 +18,13 @@ county
 city
 date_of_birth
 created_at
+
+
+fix the public profile button so it bring up the menu ther is also this error in the console Uncaught                
+   ReferenceError: showProfile is not defined                                                                           
+       onclick https://s4512742-ctxxxx.uogs.co.uk/public/public.html:1                                                  
+   2 public.html:1:1                                                                                                    
+       onclick https://s4512742-ctxxxx.uogs.co.uk/public/public.html:1  
+
+
+remove report problem from public     
