@@ -36,8 +36,8 @@ function loadEnv($filePath = __DIR__ . '/../.env') {
             $key = trim($key);
             $value = trim($value);
 
-            // Skip empty keys/values
-            if (empty($key) || empty($value)) {
+            // Skip empty keys/values                                                                                    │
+            if (empty($key) || empty($value)) {   
                 continue;
             }
 

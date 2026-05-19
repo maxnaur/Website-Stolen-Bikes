@@ -3,7 +3,7 @@
 
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "0kztCN@fZAb4@R^pRYz@";
 $dbname = "bike_police_system";
 
 echo "<h2>Database Connection Test</h2>";
