@@ -5,7 +5,7 @@ header('Content-Type: text/html; charset=utf-8');
 // Database configuration
 $host = '127.0.0.1';
 $user = 'root';
-$pass = '0kztCN@fZAb4@R^pRYz@';
+$pass = '';
 $db   = 'bike_police_system';
 
 echo "<!DOCTYPE html><html><head><title>Database Setup</title>";

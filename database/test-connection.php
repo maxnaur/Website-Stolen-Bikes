@@ -3,7 +3,7 @@
 
 $servername = "127.0.0.1";
 $username = "root";
-$password = "0kztCN@fZAb4@R^pRYz@";
+$password = "";
 $dbname = "bike_police_system";
 
 echo "<h2>Database Connection Test</h2>";
@@ -14,7 +14,7 @@ try {
     $pdo = new PDO("mysql:host=$servername", $username, $password);
   echo "<p style='color: green;'>✓ Connected to MySQL server successfully</p>";
 } catch (PDOException $e) {
-  echo "<p style='color: red;'>✗ Failed to connect to MySQL: " . htmlspecialchars($e->getMessage()) . "</p>";
+  echo "<p style='color: red;'>✗ Failed to connect to MySQL (Line " . __LINE__ . "): " . htmlspecialchars($e->getMessage()) . "</p>";
     echo "<p><strong class='text-danger'>Troubleshooting:</strong> Make sure MySQL is running on localhost:3306</p>";
   exit;
 }

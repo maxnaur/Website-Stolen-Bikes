@@ -13,10 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const confirmPasswordError = document.getElementById('confirmPasswordError');
   
   // Toggle password visibility
-  const togglePasswordVisibility = (inputId) => {
-  const input = document.getElementById(inputId);
-  const type = input.type === 'password' ? 'text' : 'password';
-  input.type = type;
+  const togglePasswordVisibility = (inputId, isVisible) => {
+    const input = document.getElementById(inputId);
+    input.type = isVisible ? 'text' : 'password';
   };
 
   // Password validation function
@@ -208,13 +207,4 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   updateAddressPreview();
-
-  // Toggle password visibility handlers
-  const passwordToggleElements = document.querySelectorAll('.toggle-password');
-  passwordToggleElements.forEach(toggle => {
-  toggle.addEventListener('change', () => {
-  const targetId = toggle.dataset.target.replace('#', '');
-  togglePasswordVisibility(targetId);
-  });
-  });
 });
