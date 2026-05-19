@@ -3,9 +3,24 @@
  * Logic for the Public Dashboard
  */
 
+let csrfToken = '';
+
+async function fetchCsrfToken() {
+    try {
+        const response = await fetch('../api/auth.php?action=csrf');
+        const result = await response.json();
+        if (result.success) {
+            csrfToken = result.csrf_token;
+        }
+    } catch (error) {
+        console.error('Failed to fetch CSRF token:', error);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     const session = await verifySession('public');
     if (session) {
+        await fetchCsrfToken();
         await loadBikes();
         handlePublicQueryParams();
     }
@@ -121,10 +136,14 @@ if (registerBikeForm) {
   registerBikeForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
+    formData.append('csrf_token', csrfToken);
     try {
       const response = await fetch('../api/bicycles.php?action=add', {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        }
       });
       const result = await response.json();
       if (result.success) {
@@ -145,6 +164,7 @@ if (reportTheftForm) {
   reportTheftForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
+    formData.append('csrf_token', csrfToken);
     if (formData.get('bike_status') === 'recovered') {
       const expl = formData.get('recovery_explanation');
       const notes = formData.get('investigation_notes');
@@ -154,7 +174,10 @@ if (reportTheftForm) {
     try {
       const response = await fetch('../api/reports.php?action=create', {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        }
       });
       const result = await response.json();
       if (result.success) {
@@ -181,7 +204,10 @@ if (profileUpdateForm) {
     try {
       const response = await fetch('../api/users.php?action=update_profile', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
         body: JSON.stringify(data)
       });
       const result = await response.json();
