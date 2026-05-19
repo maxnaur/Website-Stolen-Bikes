@@ -25,7 +25,8 @@ function getUserBikes(PDO $pdo, int $userId): array
 function getBikeDetail(PDO $pdo, int $id): ?array
 {
     $stmt = $pdo->prepare("
-        SELECT b.*, u.first_name, u.last_name, u.email
+        SELECT b.*, u.first_name, u.last_name, u.email,
+               (SELECT r.incident_location FROM report r WHERE r.bicycle_id = b.id ORDER BY r.report_date DESC LIMIT 1) as incident_location
         FROM bicycles b
         JOIN users u ON b.user_id = u.id
         WHERE b.id = ?

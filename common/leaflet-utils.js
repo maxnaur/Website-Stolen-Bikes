@@ -32,7 +32,22 @@ window.leafletUtils.geocodeAddress = async function(address) {
   };
 };
 
-window.leafletUtils.createOrUpdateMap = function(containerId, lat, lng, zoom = 15) {
+window.leafletUtils.reverseGeocode = async function(lat, lng) {
+  const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+  try {
+    const response = await fetch(url, {
+      headers: { 'Accept': 'application/json' }
+    });
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data.display_name || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  } catch (error) {
+    console.error('Reverse geocode error:', error);
+    return `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  }
+};
+
+window.leafletUtils.createOrUpdateMap = function(containerId, lat, lng, zoom = 15, isDraggable = false, onDragEnd = null) {
   if (!window.L) {
     throw new Error('Leaflet must be loaded before using leafletUtils.');
   }
@@ -48,6 +63,17 @@ window.leafletUtils.createOrUpdateMap = function(containerId, lat, lng, zoom = 1
     const existingMarker = window.leafletUtils.markers[containerId];
     if (existingMarker) {
       existingMarker.setLatLng([lat, lng]);
+      
+      if (isDraggable) {
+        existingMarker.dragging.enable();
+      } else {
+        if (existingMarker.dragging) existingMarker.dragging.disable();
+      }
+
+      existingMarker.off('dragend');
+      if (isDraggable && onDragEnd) {
+        existingMarker.on('dragend', onDragEnd);
+      }
     }
     setTimeout(() => existingMap.invalidateSize(), 100);
     return existingMap;
@@ -62,7 +88,12 @@ window.leafletUtils.createOrUpdateMap = function(containerId, lat, lng, zoom = 1
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  const marker = L.marker([lat, lng]).addTo(map);
+  const marker = L.marker([lat, lng], { draggable: isDraggable }).addTo(map);
+  
+  if (isDraggable && onDragEnd) {
+    marker.on('dragend', onDragEnd);
+  }
+
   window.leafletUtils.maps[containerId] = map;
   window.leafletUtils.markers[containerId] = marker;
 

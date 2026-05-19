@@ -195,7 +195,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     mapContainer.style.display = 'block';
-    window.leafletUtils.createOrUpdateMap('map', location.lat, location.lng, 14);
+    const dragHint = document.getElementById('dragHint');
+    if (dragHint) dragHint.style.display = 'block';
+
+    const onDragEnd = async function(e) {
+      const position = e.target.getLatLng();
+      const newAddress = await window.leafletUtils.reverseGeocode(position.lat, position.lng);
+      if (newAddress) {
+        document.getElementById('addressLine1').value = newAddress;
+        document.getElementById('city').value = '';
+        document.getElementById('county').value = '';
+        document.getElementById('postcode').value = '';
+      }
+    };
+
+    window.leafletUtils.createOrUpdateMap('map', location.lat, location.lng, 14, true, onDragEnd);
   };
 
   const addressInputIds = ['addressLine1', 'postcode', 'city', 'county'];

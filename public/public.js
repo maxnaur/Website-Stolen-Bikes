@@ -70,6 +70,40 @@ if (incidentStatusSelect) {
   });
 }
 
+const verifyLocationBtn = document.getElementById('verifyLocationBtn');
+if (verifyLocationBtn) {
+  verifyLocationBtn.addEventListener('click', async () => {
+    const locationInput = document.getElementById('incidentLocationInput').value;
+    const mapContainer = document.getElementById('reportFormMap');
+    
+    if (!locationInput) {
+      alert('Please enter a location to verify.');
+      return;
+    }
+    
+    if (window.leafletUtils) {
+      const coords = await window.leafletUtils.geocodeAddress(locationInput);
+      if (coords) {
+        mapContainer.style.display = 'block';
+        document.getElementById('dragHint').style.display = 'block';
+        
+        const onDragEnd = async function(e) {
+          const position = e.target.getLatLng();
+          const newAddress = await window.leafletUtils.reverseGeocode(position.lat, position.lng);
+          if (newAddress) {
+            document.getElementById('incidentLocationInput').value = newAddress;
+          }
+        };
+
+        window.leafletUtils.createOrUpdateMap('reportFormMap', coords.lat, coords.lng, 15, true, onDragEnd);
+      } else {
+        alert('Location could not be found. Please try a more specific address.');
+        mapContainer.style.display = 'none';
+      }
+    }
+  });
+}
+
 const registerBikeForm = document.getElementById('registerBikeForm');
 if (registerBikeForm) {
   registerBikeForm.addEventListener('submit', async (e) => {
@@ -204,6 +238,16 @@ window.viewBike = async function(id) {
           ? `<img src="../${bike.image_path}" class="bike-thumbnail-details shadow-sm mb-3 d-block mx-auto" alt="Bike Image">`
           : `<div class="bg-light text-center p-5 rounded mb-3" style="font-size: 4rem;">🚲</div>`;
 
+        let mapHtml = '';
+        if (bike.status !== 'safe' && bike.incident_location) {
+          mapHtml = `
+            <div class="col-12 mt-3">
+              <strong>Reported Location:</strong> ${bike.incident_location}
+              <div id="publicBikeMap" style="height: 200px; width: 100%; border-radius: 8px;" class="mt-2 shadow-sm border"></div>
+            </div>
+          `;
+        }
+
         content.innerHTML = `
           ${imageHtml}
           <div class="row g-2">
@@ -219,12 +263,25 @@ window.viewBike = async function(id) {
             <div class="col-6"><strong>Age Group:</strong> ${bike.age_group}</div>
             <div class="col-6"><strong>MPN/Serial:</strong> ${bike.mpn || 'N/A'}</div>
             <div class="col-6"><strong>Status:</strong> <span class="badge ${statusClass}">${bike.status.toUpperCase()}</span></div>
+            ${mapHtml}
             <div class="col-12 mt-2"><hr></div>
             <div class="col-12"><strong>Registered To:</strong> ${bike.first_name} ${bike.last_name}</div>
             <div class="col-12"><strong>Contact:</strong> ${bike.email}</div>
             <div class="col-12 small text-muted"><strong>Registered On:</strong> ${new Date(bike.created_at).toLocaleString()}</div>
           </div>
         `;
+
+        if (bike.status !== 'safe' && bike.incident_location && window.leafletUtils) {
+          // Initialize map after the modal is shown to avoid rendering issues
+          setTimeout(async () => {
+             const coords = await window.leafletUtils.geocodeAddress(bike.incident_location);
+             if (coords) {
+                window.leafletUtils.createOrUpdateMap('publicBikeMap', coords.lat, coords.lng, 15);
+             } else {
+                document.getElementById('publicBikeMap').innerHTML = '<div class="text-center p-4 text-muted">Location coordinates could not be found.</div>';
+             }
+          }, 300);
+        }
       } else {
         content.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
       }
