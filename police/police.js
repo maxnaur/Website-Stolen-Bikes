@@ -4,6 +4,8 @@
  */
 
 let allReports = [];
+let overviewMapInstance = null;
+let overviewMarkers = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
     const session = await verifySession('police');
@@ -21,6 +23,63 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+async function refreshOverviewMap() {
+    const containerId = 'overviewMap';
+    const container = document.getElementById(containerId);
+    if (!container || !window.L || !window.leafletUtils) return;
+
+    if (!overviewMapInstance) {
+        // Center of UK default
+        overviewMapInstance = L.map(containerId, { attributionControl: false }).setView([54.5, -2.5], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(overviewMapInstance);
+        
+        // Wait a tick for CSS to apply then invalidate size
+        setTimeout(() => overviewMapInstance.invalidateSize(), 200);
+    }
+
+    // Clear existing markers
+    overviewMarkers.forEach(m => overviewMapInstance.removeLayer(m));
+    overviewMarkers = [];
+
+    const showClosed = document.getElementById('showClosedReports')?.checked;
+    const reportsToPlot = allReports.filter(r => (showClosed || r.investigation_status !== 'closed') && r.incident_location);
+
+    if (reportsToPlot.length === 0) return;
+
+    const bounds = L.latLngBounds();
+
+    for (const report of reportsToPlot) {
+        try {
+            // Add a small delay to avoid hitting Nominatim rate limits (1 req/sec)
+            await new Promise(r => setTimeout(r, 1000));
+            
+            const coords = await window.leafletUtils.geocodeAddress(report.incident_location);
+            if (coords) {
+                const marker = L.marker([coords.lat, coords.lng]).addTo(overviewMapInstance);
+                
+                const popupContent = `
+                    <strong>Report #${report.id}</strong><br>
+                    ${report.brand} ${report.model}<br>
+                    Status: ${report.bike_status.toUpperCase()}<br>
+                    <a href="#" onclick="showDetail(${report.id}); return false;">View Details</a>
+                `;
+                marker.bindPopup(popupContent);
+                overviewMarkers.push(marker);
+                bounds.extend([coords.lat, coords.lng]);
+            }
+        } catch (error) {
+            console.error("Error geocoding for overview map:", error);
+        }
+    }
+
+    if (overviewMarkers.length > 0) {
+        overviewMapInstance.fitBounds(bounds, { padding: [50, 50] });
+    }
+}
+
 async function loadReports() {
     try {
     const response = await fetch('../api/reports.php');
@@ -28,11 +87,15 @@ async function loadReports() {
     if (result.success) {
       allReports = result.data;
       renderReports();
+      // Initially load the map
+      setTimeout(refreshOverviewMap, 500);
     }
     } catch (error) {
       console.error('Error loading reports:', error);
     }
 }
+
+window.refreshOverviewMap = refreshOverviewMap;
 
 async function handleInvestigationSubmit(e) {
     e.preventDefault();

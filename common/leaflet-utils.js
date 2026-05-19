@@ -9,7 +9,8 @@ window.leafletUtils.markers = window.leafletUtils.markers || {};
 window.leafletUtils.geocodeAddress = async function(address) {
   if (!address) return null;
 
-  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(address)}`;
+  /* has the peramiter of within gb to timit the scope of where can be searched */
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=gb&q=${encodeURIComponent(address)}`;
   const response = await fetch(url, {
     headers: {
       'Accept': 'application/json'
