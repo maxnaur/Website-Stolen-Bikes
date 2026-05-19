@@ -4,3 +4,17 @@ setup.php was not supported by the websight hosting the websight so it has been 
 
 when trying to create a new user on register error a sintax error apears 500 from https://s4512742-ctxxxx.uogs.co.uk/api/auth.php?action=register
 
+id
+first_name Ascending 1
+last_name
+email
+password
+role
+phone
+address_line1
+address_line2
+postcode
+county
+city
+date_of_birth
+created_at
