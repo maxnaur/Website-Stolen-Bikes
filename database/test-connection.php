@@ -1,7 +1,7 @@
 <?php
 // test-connection.php - Test database connectivity
 
-$servername = "localhost";
+$servername = "127.0.0.1";
 $username = "root";
 $password = "0kztCN@fZAb4@R^pRYz@";
 $dbname = "bike_police_system";

@@ -3,9 +3,9 @@
 header('Content-Type: text/html; charset=utf-8');
 
 // Database configuration
-$host = 'localhost';
+$host = '127.0.0.1';
 $user = 'root';
-$pass = '0kztCN@fZAb4@R^pRYz@'; // Default XAMPP/WAMP/MAMP password
+$pass = '0kztCN@fZAb4@R^pRYz@';
 $db   = 'bike_police_system';
 
 echo "<!DOCTYPE html><html><head><title>Database Setup</title>";
