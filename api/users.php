@@ -74,6 +74,17 @@ function handlePut($currentUser, $action) {
         updateUserProfile($pdo, $currentUser['id'], $data);
         logActivity($pdo, 'PROFILE_UPDATED', 'users', $currentUser['id'], "User updated their own profile");
         echo json_encode(['success' => true]);
+    } elseif ($action === 'update_user') {
+        checkRole('admin');
+        $data = json_decode(file_get_contents("php://input"), true);
+        if (empty($data['user_id'])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'User ID is required']);
+            return;
+        }
+        updateUserAdmin($pdo, $data['user_id'], $data);
+        logActivity($pdo, 'USER_UPDATED', 'users', $data['user_id'], "Admin updated user: " . $data['email']);
+        echo json_encode(['success' => true]);
     }
 }
 

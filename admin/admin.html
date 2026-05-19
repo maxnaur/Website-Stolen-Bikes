@@ -284,6 +284,75 @@
     </div>
   </div>
 
+  <!-- Edit User Modal -->
+  <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+      <h5 class="modal-title" id="editUserModalLabel">✏️ Edit User</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form id="editUserForm">
+        <input type="hidden" name="user_id" id="edit_user_id">
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">First Name *</label>
+          <input type="text" class="form-control" name="first_name" id="edit_first_name" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Last Name *</label>
+          <input type="text" class="form-control" name="last_name" id="edit_last_name" required>
+        </div>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Email Address *</label>
+        <input type="email" class="form-control" name="email" id="edit_email" required>
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">User Role *</label>
+        <select class="form-select" name="role" id="edit_role" required>
+          <option value="police">Police Officer</option>
+          <option value="public">Public User</option>
+          <option value="admin">Administrator</option>
+        </select>
+        </div>
+        <hr>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Address Line 1</label>
+        <input type="text" class="form-control" name="address_line1" id="edit_address_line1">
+        </div>
+        <div class="mb-3">
+        <label class="form-label fw-bold small">Address Line 2 (Optional)</label>
+        <input type="text" class="form-control" name="address_line2" id="edit_address_line2">
+        </div>
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">City</label>
+          <input type="text" class="form-control" name="city" id="edit_city">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">County</label>
+          <input type="text" class="form-control" name="county" id="edit_county">
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Postcode</label>
+          <input type="text" class="form-control" name="postcode" id="edit_postcode">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label fw-bold small">Date of Birth *</label>
+          <input type="date" class="form-control" name="date_of_birth" id="edit_date_of_birth" required>
+        </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+      </form>
+      </div>
+    </div>
+    </div>
+  </div>
+
   <!-- Profile Modal -->
   <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

@@ -79,3 +79,31 @@ function updateUserProfile(PDO $pdo, int $userId, array $data): bool
     
     return $stmt->execute($params);
 }
+
+function updateUserAdmin(PDO $pdo, int $userId, array $data): bool
+{
+    $params = [
+        $data['first_name'],
+        $data['last_name'],
+        $data['email'],
+        $data['role'],
+        $data['address_line1'] ?? '',
+        !empty($data['address_line2']) ? $data['address_line2'] : null,
+        $data['city'] ?? '',
+        $data['county'] ?? '',
+        $data['postcode'] ?? '',
+        $data['date_of_birth'] ?? '1990-01-01'
+    ];
+    
+    $params[] = $userId;
+    
+    $stmt = $pdo->prepare("
+        UPDATE users SET 
+            first_name = ?, last_name = ?, email = ?, role = ?,
+            address_line1 = ?, address_line2 = ?, 
+            city = ?, county = ?, postcode = ?, date_of_birth = ?
+        WHERE id = ?
+    ");
+    
+    return $stmt->execute($params);
+}

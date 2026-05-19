@@ -28,3 +28,12 @@ fix the public profile button so it bring up the menu ther is also this error in
 
 
 remove report problem from public     
+
+
+on the Police page while trying to modify the details of a file get this error
+Error: CSRF token validation failed
+remove report problem from admin.html
+in admin.html add the ability to edit the users as currently it just shows
+Editing User: user user
+Role: public
+(Edit Modal would go here)

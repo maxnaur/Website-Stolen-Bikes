@@ -15,7 +15,20 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
 // Global CSRF Check for all state-changing methods
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? '';
+    $headers = function_exists('getallheaders') ? getallheaders() : [];
+    $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $headers['X-CSRF-TOKEN'] ?? $headers['X-Csrf-Token'] ?? $_POST['csrf_token'] ?? '';
+    if (empty($token) && isset($headers['x-csrf-token'])) {
+        $token = $headers['x-csrf-token'];
+    }
+    
+    // Fallback for json body if needed
+    if (empty($token) && strpos($_SERVER['CONTENT_TYPE'] ?? '', 'application/json') !== false) {
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (is_array($input) && isset($input['csrf_token'])) {
+            $token = $input['csrf_token'];
+        }
+    }
+
     validateCsrfToken($token);
 }
 

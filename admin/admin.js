@@ -42,6 +42,43 @@ document.getElementById('addUserForm').addEventListener('submit', async (e) => {
     }
 });
 
+document.getElementById('editUserForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+      // Need CSRF token for PUT requests
+      let csrfToken = '';
+      const csrfResponse = await fetch('../api/auth.php?action=csrf');
+      const csrfResult = await csrfResponse.json();
+      if (csrfResult.success) {
+          csrfToken = csrfResult.csrf_token;
+      }
+
+      const response = await fetch('../api/users.php?action=update_user', {
+        method: 'PUT',
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+        },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('User updated successfully!');
+        bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
+        loadUsers();
+      } else {
+        alert('Error: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to update user.');
+    }
+});
+
 async function loadStats() {
     try {
     const [usersRes, bikesRes, reportsRes] = await Promise.all([
@@ -221,8 +258,28 @@ function editUser(id) {
       .then(res => res.json())
       .then(result => {
         if (result.success) {
-          alert(`Editing User: ${result.data.first_name} ${result.data.last_name}\nRole: ${result.data.role}\n(Edit Modal would go here)`);
+          const user = result.data;
+          document.getElementById('edit_user_id').value = user.id;
+          document.getElementById('edit_first_name').value = user.first_name;
+          document.getElementById('edit_last_name').value = user.last_name;
+          document.getElementById('edit_email').value = user.email;
+          document.getElementById('edit_role').value = user.role;
+          document.getElementById('edit_address_line1').value = user.address_line1 || '';
+          document.getElementById('edit_address_line2').value = user.address_line2 || '';
+          document.getElementById('edit_city').value = user.city || '';
+          document.getElementById('edit_county').value = user.county || '';
+          document.getElementById('edit_postcode').value = user.postcode || '';
+          document.getElementById('edit_date_of_birth').value = user.date_of_birth || '';
+          
+          const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+          modal.show();
+        } else {
+          alert('Error loading user details: ' + result.message);
         }
+      })
+      .catch(error => {
+        console.error('Error fetching user:', error);
+        alert('Failed to load user details.');
       });
 }
 
