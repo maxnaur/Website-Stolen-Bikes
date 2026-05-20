@@ -6,7 +6,7 @@
   <title>Police Dashboard - Bike Police System</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="police.css"> 
+  <link rel="stylesheet" href="police.css">
 </head>
 <body>
 
@@ -96,9 +96,12 @@
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0">📋 Active Reports</h5>
-        <div class="form-check form-switch small">
-          <input class="form-check-input" type="checkbox" id="showClosedReports">
-          <label class="form-check-label text-white" for="showClosedReports">Show Closed</label>
+        <div class="d-flex align-items-center">
+          <input type="month" id="reportMonthFilter" class="form-control form-control-sm me-3" style="max-width: 150px;" title="Filter by month">
+          <div class="form-check form-switch small mb-0">
+            <input class="form-check-input" type="checkbox" id="showClosedReports">
+            <label class="form-check-label text-white" for="showClosedReports">Show Closed</label>
+          </div>
         </div>
         </div>
         <div class="card-body p-0">

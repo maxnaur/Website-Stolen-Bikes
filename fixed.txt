@@ -1,3 +1,0 @@
-remove the button for the police to view the public page
-
-look into sidebar.html

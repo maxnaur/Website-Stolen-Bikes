@@ -1,0 +1,44 @@
+SESSION, COOKIE, AND TOKEN SYSTEM EXPLANATION
+===========================================
+
+This website uses a combination of PHP Sessions, HTTP Cookies, and CSRF Tokens to manage user authentication and maintain system security.
+
+1. PHP SESSIONS (Server-Side)
+-----------------------------
+- Implementation: Managed via PHP's built-in `session_start()` function.
+- Storage: Session data (like user ID and role) is stored securely on the server.
+- Lifecycle: A session is created upon a successful login and destroyed when the user logs out or the session expires.
+- Usage: 
+  * `$_SESSION['loggedin']`: A boolean flag indicating if the user is authenticated.
+  * `$_SESSION['user_id']`: Stores the unique ID of the logged-in user.
+  * `$_SESSION['role']`: Stores the user's permission level (public, police, or admin).
+  * `$_SESSION['csrf_token']`: Stores the current unique security token for the user.
+
+2. HTTP COOKIES (Client-Side)
+-----------------------------
+- Implementation: When a session starts, the server sends a 'PHPSESSID' cookie to the user's browser.
+- Purpose: This cookie acts as a "key" that the browser sends back with every request, allowing the server to identify which session belongs to which user.
+- Security Headers (configured in `common/bootstrap.php`):
+  * `HttpOnly`: Prevents JavaScript from accessing the session cookie, protecting against XSS attacks.
+  * `Use Only Cookies`: Ensures the session ID is not passed through the URL, which is a security risk.
+
+3. CSRF TOKENS (Security Layer)
+-------------------------------
+- Implementation: Cross-Site Request Forgery (CSRF) tokens are unique, random strings generated for each session.
+- How it works:
+  1. The server generates a token and stores it in the session.
+  2. The frontend fetches this token using `api/auth.php?action=csrf`.
+  3. For every state-changing request (POST, PUT, DELETE), the frontend must include this token.
+- Validation:
+  * The backend (`common/auth-check.php`) intercepts all non-GET requests.
+  * it checks for the token in the HTTP Header (`X-CSRF-TOKEN`) or the request body.
+  * If the token provided by the browser does not match the token stored in the server-side session, the request is rejected with a "CSRF token validation failed" error.
+- Purpose: This ensures that requests are intentionally made by the user from this specific website, preventing malicious sites from "tricking" the browser into performing actions on the user's behalf.
+
+4. AUTHENTICATION FLOW
+----------------------
+1. User submits login form.
+2. `api/auth.php` validates credentials.
+3. If valid, `session_regenerate_id(true)` is called (to prevent session fixation), and session variables are set.
+4. On subsequent page loads, `common/auth-check.php` verifies `$_SESSION['loggedin']`.
+5. For any updates (like editing a user or reporting a bike), the system validates the CSRF token to ensure the request is legitimate.

@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         await fetchCsrfToken();
         await loadReports();
         await loadStats();
-        document.getElementById('showClosedReports')?.addEventListener('change', renderReports);
+        document.getElementById('showClosedReports')?.addEventListener('change', () => { renderReports(); refreshOverviewMap(); });
+        document.getElementById('reportMonthFilter')?.addEventListener('change', () => { renderReports(); refreshOverviewMap(); });
 
         const investigationForm = document.getElementById('investigationForm');
         if (investigationForm) {
@@ -59,7 +60,17 @@ async function refreshOverviewMap() {
     overviewMarkers = [];
 
     const showClosed = document.getElementById('showClosedReports')?.checked;
-    const reportsToPlot = allReports.filter(r => (showClosed || r.investigation_status !== 'closed') && r.incident_location);
+    const monthFilter = document.getElementById('reportMonthFilter')?.value;
+
+    const reportsToPlot = allReports.filter(r => {
+        const matchesStatus = showClosed || r.investigation_status !== 'closed';
+        let matchesMonth = true;
+        if (monthFilter && r.report_date) {
+            const reportMonth = r.report_date.substring(0, 7);
+            matchesMonth = reportMonth === monthFilter;
+        }
+        return matchesStatus && matchesMonth && r.incident_location;
+    });
 
     if (reportsToPlot.length === 0) return;
 
@@ -147,14 +158,23 @@ function renderReports() {
     const tableBody = document.getElementById('reportsTable');
     const reportSelect = document.getElementById('reportSelect');
     const showClosed = document.getElementById('showClosedReports').checked;
+    const monthFilter = document.getElementById('reportMonthFilter')?.value;
     
     tableBody.innerHTML = '';
     reportSelect.innerHTML = '<option value="">Choose a report...</option>';
     
-    const filtered = allReports.filter(r => showClosed || r.investigation_status !== 'closed');
+    const filtered = allReports.filter(r => {
+        const matchesStatus = showClosed || r.investigation_status !== 'closed';
+        let matchesMonth = true;
+        if (monthFilter && r.report_date) {
+            const reportMonth = r.report_date.substring(0, 7);
+            matchesMonth = reportMonth === monthFilter;
+        }
+        return matchesStatus && matchesMonth;
+    });
     
     if (filtered.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-muted">No ${showClosed ? '' : 'active'} reports found.</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-muted">No reports found matching criteria.</td></tr>`;
       return;
     }
     
