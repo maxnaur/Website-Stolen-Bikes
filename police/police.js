@@ -27,7 +27,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadReports();
         await loadStats();
         document.getElementById('showClosedReports')?.addEventListener('change', () => { renderReports(); refreshOverviewMap(); });
-        document.getElementById('reportDateFilter')?.addEventListener('change', () => { renderReports(); refreshOverviewMap(); });
+        document.getElementById('reportStartDate')?.addEventListener('change', () => { renderReports(); refreshOverviewMap(); });
+        document.getElementById('reportEndDate')?.addEventListener('change', () => { renderReports(); refreshOverviewMap(); });
 
         const investigationForm = document.getElementById('investigationForm');
         if (investigationForm) {
@@ -60,14 +61,16 @@ async function refreshOverviewMap() {
     overviewMarkers = [];
 
     const showClosed = document.getElementById('showClosedReports')?.checked;
-    const dateFilter = document.getElementById('reportDateFilter')?.value; // YYYY-MM-DD from input type="date"
+    const startDateFilter = document.getElementById('reportStartDate')?.value;
+    const endDateFilter = document.getElementById('reportEndDate')?.value;
 
     const reportsToPlot = allReports.filter(r => {
         const matchesStatus = showClosed || r.investigation_status !== 'closed';
         let matchesDate = true;
-        if (dateFilter && r.report_date) {
+        if (r.report_date) {
             const reportDay = r.report_date.substring(0, 10); // Matches YYYY-MM-DD
-            matchesDate = reportDay >= dateFilter;
+            if (startDateFilter && reportDay < startDateFilter) matchesDate = false;
+            if (endDateFilter && reportDay > endDateFilter) matchesDate = false;
         }
         return matchesStatus && matchesDate && r.incident_location;
     });
@@ -158,7 +161,8 @@ function renderReports() {
     const tableBody = document.getElementById('reportsTable');
     const reportSelect = document.getElementById('reportSelect');
     const showClosed = document.getElementById('showClosedReports').checked;
-    const dateFilter = document.getElementById('reportDateFilter')?.value; // YYYY-MM-DD from input
+    const startDateFilter = document.getElementById('reportStartDate')?.value;
+    const endDateFilter = document.getElementById('reportEndDate')?.value;
     
     tableBody.innerHTML = '';
     reportSelect.innerHTML = '<option value="">Choose a report...</option>';
@@ -166,9 +170,10 @@ function renderReports() {
     const filtered = allReports.filter(r => {
         const matchesStatus = showClosed || r.investigation_status !== 'closed';
         let matchesDate = true;
-        if (dateFilter && r.report_date) {
+        if (r.report_date) {
             const reportDay = r.report_date.substring(0, 10);
-            matchesDate = reportDay >= dateFilter;
+            if (startDateFilter && reportDay <= startDateFilter) matchesDate = false;
+            if (endDateFilter && reportDay >= endDateFilter) matchesDate = false;
         }
         return matchesStatus && matchesDate;
     });
