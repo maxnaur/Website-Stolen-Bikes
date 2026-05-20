@@ -97,7 +97,8 @@
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0">📋 Active Reports</h5>
         <div class="d-flex align-items-center">
-          <input type="month" id="reportMonthFilter" class="form-control form-control-sm me-3" style="max-width: 150px;" title="Filter by month">
+          <label for="reportMonthFilter" class="me-2 small fw-bold">Filter Month:</label>
+          <input type="month" id="reportMonthFilter" class="form-control form-control-sm me-3" style="max-width: 150px;" title="Select month and year to filter reports">
           <div class="form-check form-switch small mb-0">
             <input class="form-check-input" type="checkbox" id="showClosedReports">
             <label class="form-check-label text-white" for="showClosedReports">Show Closed</label>
@@ -112,12 +113,13 @@
             <th>Report ID</th>
             <th>Bike Details</th>
             <th>Reporter</th>
+            <th>Report Date</th>
             <th>Status</th>
             <th>Actions</th>
             </tr>
           </thead>
           <tbody id="reportsTable">
-            <tr><td colspan="5" class="text-center text-muted p-4">Loading reports...</td></tr>
+            <tr><td colspan="6" class="text-center text-muted p-4">Loading reports...</td></tr>
           </tbody>
           </table>
         </div>

@@ -174,13 +174,14 @@ function renderReports() {
     });
     
     if (filtered.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-muted">No reports found matching criteria.</td></tr>`;
+      tableBody.innerHTML = `<tr><td colspan="6" class="text-center p-4 text-muted">No reports found matching your filter criteria.</td></tr>`;
       return;
     }
     
     filtered.forEach(report => {
       const bikeBadge = getBikeBadge(report.bike_status);
       const investBadge = getInvestBadge(report.investigation_status);
+      const reportDate = new Date(report.report_date).toLocaleDateString();
       
       const row = document.createElement('tr');
       row.className = 'clickable-row';
@@ -194,6 +195,7 @@ function renderReports() {
         <td>
           ${report.first_name} ${report.last_name}
         </td>
+        <td>${reportDate}</td>
         <td>${bikeBadge} ${investBadge}</td>
         <td>
           <button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation(); editInvestigation(${report.id})">Update</button>
