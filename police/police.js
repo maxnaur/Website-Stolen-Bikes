@@ -67,7 +67,7 @@ async function refreshOverviewMap() {
         let matchesDate = true;
         if (dateFilter && r.report_date) {
             const reportDay = r.report_date.substring(0, 10); // Matches YYYY-MM-DD
-            matchesDate = reportDay === dateFilter;
+            matchesDate = reportDay >= dateFilter;
         }
         return matchesStatus && matchesDate && r.incident_location;
     });
@@ -168,7 +168,7 @@ function renderReports() {
         let matchesDate = true;
         if (dateFilter && r.report_date) {
             const reportDay = r.report_date.substring(0, 10);
-            matchesDate = reportDay === dateFilter;
+            matchesDate = reportDay >= dateFilter;
         }
         return matchesStatus && matchesDate;
     });
