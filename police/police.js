@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadReports();
         await loadStats();
         document.getElementById('showClosedReports')?.addEventListener('change', () => { renderReports(); refreshOverviewMap(); });
-        document.getElementById('reportMonthFilter')?.addEventListener('change', () => { renderReports(); refreshOverviewMap(); });
+        document.getElementById('reportDateFilter')?.addEventListener('change', () => { renderReports(); refreshOverviewMap(); });
 
         const investigationForm = document.getElementById('investigationForm');
         if (investigationForm) {
@@ -60,16 +60,16 @@ async function refreshOverviewMap() {
     overviewMarkers = [];
 
     const showClosed = document.getElementById('showClosedReports')?.checked;
-    const monthFilter = document.getElementById('reportMonthFilter')?.value;
+    const dateFilter = document.getElementById('reportDateFilter')?.value; // YYYY-MM-DD from input type="date"
 
     const reportsToPlot = allReports.filter(r => {
         const matchesStatus = showClosed || r.investigation_status !== 'closed';
-        let matchesMonth = true;
-        if (monthFilter && r.report_date) {
-            const reportMonth = r.report_date.substring(0, 7);
-            matchesMonth = reportMonth === monthFilter;
+        let matchesDate = true;
+        if (dateFilter && r.report_date) {
+            const reportDay = r.report_date.substring(0, 10); // Matches YYYY-MM-DD
+            matchesDate = reportDay === dateFilter;
         }
-        return matchesStatus && matchesMonth && r.incident_location;
+        return matchesStatus && matchesDate && r.incident_location;
     });
 
     if (reportsToPlot.length === 0) return;
@@ -158,19 +158,19 @@ function renderReports() {
     const tableBody = document.getElementById('reportsTable');
     const reportSelect = document.getElementById('reportSelect');
     const showClosed = document.getElementById('showClosedReports').checked;
-    const monthFilter = document.getElementById('reportMonthFilter')?.value;
+    const dateFilter = document.getElementById('reportDateFilter')?.value; // YYYY-MM-DD from input
     
     tableBody.innerHTML = '';
     reportSelect.innerHTML = '<option value="">Choose a report...</option>';
     
     const filtered = allReports.filter(r => {
         const matchesStatus = showClosed || r.investigation_status !== 'closed';
-        let matchesMonth = true;
-        if (monthFilter && r.report_date) {
-            const reportMonth = r.report_date.substring(0, 7);
-            matchesMonth = reportMonth === monthFilter;
+        let matchesDate = true;
+        if (dateFilter && r.report_date) {
+            const reportDay = r.report_date.substring(0, 10);
+            matchesDate = reportDay === dateFilter;
         }
-        return matchesStatus && matchesMonth;
+        return matchesStatus && matchesDate;
     });
     
     if (filtered.length === 0) {
@@ -181,7 +181,13 @@ function renderReports() {
     filtered.forEach(report => {
       const bikeBadge = getBikeBadge(report.bike_status);
       const investBadge = getInvestBadge(report.investigation_status);
-      const reportDate = new Date(report.report_date).toLocaleDateString();
+      
+      // Explicitly format date as DD/MM/YYYY
+      const dateObj = new Date(report.report_date);
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const year = dateObj.getFullYear();
+      const reportDate = `${day}/${month}/${year}`;
       
       const row = document.createElement('tr');
       row.className = 'clickable-row';
