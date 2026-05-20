@@ -11,10 +11,10 @@ function loadEnv($filePath = __DIR__ . '/../.env') {
         if (!file_exists($filePath)) {
             // If neither file exists, use hardcoded defaults (for backward compatibility)
             // In production, you should always have a .env file
-            $_ENV['DB_SERVER'] = getenv('DB_SERVER');
-            $_ENV['DB_USERNAME'] = getenv('DB_USERNAME');
-            $_ENV['DB_PASSWORD'] = getenv('DB_PASSWORD');
-            $_ENV['DB_NAME'] = getenv('DB_NAME');
+            $_ENV['DB_SERVER'] = getenv('DB_SERVER') ?: 'localhost';
+            $_ENV['DB_USERNAME'] = getenv('DB_USERNAME') ?: 'bikesafety';
+            $_ENV['DB_PASSWORD'] = getenv('DB_PASSWORD') ?: '';
+            $_ENV['DB_NAME'] = getenv('DB_NAME') ?: 's4512742_';
             return;
         }
     }
