@@ -1,7 +1,0 @@
-database name : s4512742_
-Tables:
-    activity_log
-    bicycles
-    password_reset_tokens
-    report
-    users

@@ -99,10 +99,3 @@ h2 {
   margin-bottom: 1rem;
   }
 }
-
-/* Leaflet map preview styling */
-#map,
-#miniMap {
-  min-height: 200px;
-  width: 100%;
-}

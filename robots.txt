@@ -1,3 +1,4 @@
+# where the user is allowed to be
 User-agent: *
 Allow: /
 Allow: /index.html
