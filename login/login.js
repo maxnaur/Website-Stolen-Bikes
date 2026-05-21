@@ -1,7 +1,8 @@
-/**
- * login/login.js
- * Handles error display and login form enhancements - MODIFIED TO HANDLE JSON RESPONSE
- */
+/*
+    Tokens
+    Does error and success display
+    sends the message to attempt log in 
+    */
 
 document.addEventListener('DOMContentLoaded', () => {
     // Load CSRF token for the form
@@ -12,12 +13,17 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if (data.success && data.csrf_token) {
                     csrfInput.value = data.csrf_token;
+                } else {
+                    csrfInput.value = generateCSRFToken();
                 }
             })
-            .catch(error => console.error('CSRF token fetch failed:', error));
+            .catch(error => {
+                console.error('CSRF token fetch failed:', error);
+                csrfInput.value = generateCSRFToken();
+            });
     }
 
-    // Function to handle displaying errors from URL parameters (e.g., after a manual redirect failure)
+    // Function to handle displaying errors from URL parameters (e.g., after a redirect failure)
     const displayUrlError = () => {
         const params = new URLSearchParams(window.location.search);
         if (params.has('error')) {
@@ -30,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Function to display success messages (e.g., after registration)
+    // Function to display registration success messages
     const displaySuccessMessage = () => {
         const params = new URLSearchParams(window.location.search);
         if (params.has('success')) {
@@ -58,6 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            if (!csrfInput.value) {
+                csrfInput.value = generateCSRFToken();
+            }
             const csrfToken = csrfInput.value;
 
             // Clear previous messages
@@ -88,5 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Could not connect to the server. Please check your internet connection.');
             }
         });
+    }
+
+    function generateCSRFToken() {
+        return Math.random().toString(36).substring(2) +
+               Math.random().toString(36).substring(2);
     }
 });
