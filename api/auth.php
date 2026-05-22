@@ -1,8 +1,7 @@
 <?php
-/**
- * api/auth.php
- * Centralized Authentication & Registration API
- */
+/*
+  Authentication and Registration
+  */
 header('Content-Type: application/json');
 require_once '../common/common.php';
 require_once '../common/security.php';
@@ -38,6 +37,9 @@ try {
     exit;
 }
 
+/*
+  make sure the right section gets what it needs
+  */
 switch ($action) {
     case 'login':
         handleLogin();
@@ -57,9 +59,9 @@ switch ($action) {
         break;
 }
 
-/**
- * Handle user login - MODIFIED TO RETURN JSON ONLY
- */
+/*
+  login
+  */
 function handleLogin() {
     global $pdo;
     
@@ -139,9 +141,9 @@ function handleLogin() {
     }
 }
 
-/**
- * Handle user logout
- */
+/*
+  logout
+  */
 function handleLogout() {
     $_SESSION = array();
     if (ini_get("session.use_cookies")) {
@@ -163,9 +165,9 @@ function handleLogout() {
     exit;
 }
 
-/**
- * Handle user registration
- */
+/*
+  Registration
+  */
 function handleRegister() {
     global $pdo;
     
@@ -230,17 +232,17 @@ function handleRegister() {
     }
 }
 
-/**
- * Return a fresh CSRF token for client forms.
- */
+/*
+  Fresh CSRF token
+  */
 function handleCsrfToken() {
     echo json_encode(['success' => true, 'csrf_token' => generateCsrfToken()]);
     exit;
 }
 
-/**
- * Helper to handle both JSON and Form redirects
- */
+/*
+  Handles both JSON and Form redirects
+  */
 function redirectOrError($msg) {
     if (isset($_GET['format']) && $_GET['format'] === 'json') {
         echo json_encode(['success' => false, 'message' => $msg]);

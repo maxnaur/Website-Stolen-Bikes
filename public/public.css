@@ -1,16 +1,7 @@
-/* ========================================
-   GENERAL STYLES & BRANDING
-==========================================*/
+body { background-color: #f4f6f8; }
+h1, h2 { font-weight: 600; /* Semi-bold headings */ }
 
-body {
-  background-color: #f4f6f8; /* Light gray background for a police/utility feel */
-}
-
-h1, h2 {
-  font-weight: 600; /* Semi-bold headings */
-}
-
-/* Style the primary color blue to resemble an official uniform/police aesthetic */
+/* make the primary color blue to resemble an official uniform */
 .bg-primary {
   background-color: #1e3c72 !important; /* Deep navy or police blue */
 }
@@ -18,27 +9,20 @@ h1, h2 {
   letter-spacing: 1px;
 }
 
-/* ========================================
-   FORM STYLING & CARDS
-   ==========================================*/
-
-/* Ensure all cards feel integrated into the system design */
+/* cards */
+/* make all cards look good together */
 .card {
   border: none;
   background-color: #ffffff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Soft shadow for professionalism */
 }
-
-/* Style the form labels to stand out and look official */
+/* form labels to stand out */
 .form-label {
   font-weight: 600;
   color: #343a40;
 }
 
-
-/* ========================================
-   RESPONSIVE ADJUSTMENTS (Optional)
-   ==========================================*/
+/* move the pieces about */
 @media (min-width: 992px) {
   .col-lg-8 {
   padding-right: 15px; /* Adds space between the two main sections */

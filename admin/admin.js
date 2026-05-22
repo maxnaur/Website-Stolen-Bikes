@@ -1,7 +1,6 @@
-/**
- * admin/admin.js
- * Logic for the Admin Dashboard
- */
+/*
+  Logic for the Admin page
+  */
 
 document.addEventListener('DOMContentLoaded', async () => {
     const session = await verifySession('admin');

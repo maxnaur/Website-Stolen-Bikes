@@ -1,5 +1,5 @@
 <?php
-// api/reports.php - REST API for report management
+// report management
 header('Content-Type: application/json');
 require_once '../database/config.php';
 require_once '../common/auth-check.php';

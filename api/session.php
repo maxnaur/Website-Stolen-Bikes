@@ -1,5 +1,5 @@
 <?php
-// api/session.php - Returns current user session info as JSON
+// Returns current user session info
 header('Content-Type: application/json');
 
 if (session_status() === PHP_SESSION_NONE) {

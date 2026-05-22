@@ -1,7 +1,6 @@
-/**
- * police/police.js
- * Logic for the Police Dashboard
- */
+/*
+  Logic for the Police page
+  */
 
 let allReports = [];
 let overviewMapInstance = null;
@@ -20,6 +19,7 @@ async function fetchCsrfToken() {
     }
 }
 
+// page setup
 document.addEventListener('DOMContentLoaded', async () => {
     const session = await verifySession('police');
     if (session) {

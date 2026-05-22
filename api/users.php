@@ -1,5 +1,5 @@
 <?php
-// api/users.php - REST API for user management
+// user management
 header('Content-Type: application/json');
 require_once '../database/config.php';
 require_once '../common/auth-check.php';

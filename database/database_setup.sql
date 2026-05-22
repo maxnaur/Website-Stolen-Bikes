@@ -51,8 +51,7 @@ CREATE TABLE `report` (
   investigation_status ENUM('open', 'closed', 'in_progress') DEFAULT 'open',
   investigation_notes TEXT,
   bike_status ENUM('stolen', 'captured', 'returned') DEFAULT 'stolen',
-  closed_at TIMESTAMP DEFAULT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  closed_at DATETIME DEFAULT NULL,
 );
 
 -- Activity Log table

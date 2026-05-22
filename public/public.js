@@ -1,28 +1,26 @@
-/**
- * public/public.js
- * Logic for the Public Dashboard
- */
+/*
+  Logic for the Public page
+  */
 
 let csrfToken = '';
 
 async function fetchCsrfToken() {
     try {
-        const response = await fetch('../api/auth.php?action=csrf');
-        const result = await response.json();
-        if (result.success) {
-            csrfToken = result.csrf_token;
-        }
+      const response = await fetch('../api/auth.php?action=csrf');
+      const result = await response.json();
+      if (result.success) {
+        csrfToken = result.csrf_token;
+      }
     } catch (error) {
-        console.error('Failed to fetch CSRF token:', error);
+      console.error('Failed to fetch CSRF token:', error);
     }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
     const session = await verifySession('public');
     if (session) {
-        await fetchCsrfToken();
-        await loadBikes();
-        handlePublicQueryParams();
+      await fetchCsrfToken();
+      await loadBikes();
     }
 });
 
@@ -39,8 +37,8 @@ async function loadBikes() {
       bikeSelect.innerHTML = '<option value="">Choose a registered bike...</option>';
       
       if (result.data.length === 0) {
-      tableBody.innerHTML = '<tr><td colspan="4" class="text-center p-4 text-muted">No bikes registered yet.</td></tr>';
-      return;
+        tableBody.innerHTML = '<tr><td colspan="4" class="text-center p-4 text-muted">No bikes registered yet.</td></tr>';
+        return;
       }
       
       result.data.forEach(bike => {
@@ -85,17 +83,15 @@ if (incidentStatusSelect) {
   });
 }
 
-// Remove verifyLocationBtn logic and implement debounce for automatic map updates
-
-  const debounce = (fn, delay = 400) => {
+const debounce = (fn, delay = 400) => {
     let timer = null;
     return (...args) => {
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => fn(...args), delay);
     };
-  };
+};
 
-  const updateReportMapPreview = async () => {
+const updateReportMapPreview = async () => {
     const locationInput = document.getElementById('incidentLocationInput').value.trim();
     const mapContainer = document.getElementById('reportFormMap');
     const dragHint = document.getElementById('dragHint');
@@ -124,12 +120,12 @@ if (incidentStatusSelect) {
       mapContainer.style.display = 'none';
       if (dragHint) dragHint.style.display = 'none';
     }
-  };
+};
 
-  const incidentLocationInput = document.getElementById('incidentLocationInput');
-  if (incidentLocationInput) {
-    incidentLocationInput.addEventListener('input', debounce(updateReportMapPreview));
-  }
+const incidentLocationInput = document.getElementById('incidentLocationInput');
+if (incidentLocationInput) {
+  incidentLocationInput.addEventListener('input', debounce(updateReportMapPreview));
+}
 
 const registerBikeForm = document.getElementById('registerBikeForm');
 if (registerBikeForm) {
@@ -314,12 +310,12 @@ window.viewBike = async function(id) {
         if (bike.status !== 'safe' && bike.incident_location && window.leafletUtils) {
           // Initialize map after the modal is shown to avoid rendering issues
           setTimeout(async () => {
-             const coords = await window.leafletUtils.geocodeAddress(bike.incident_location);
-             if (coords) {
-                window.leafletUtils.createOrUpdateMap('publicBikeMap', coords.lat, coords.lng, 15);
-             } else {
-                document.getElementById('publicBikeMap').innerHTML = '<div class="text-center p-4 text-muted">Location coordinates could not be found.</div>';
-             }
+            const coords = await window.leafletUtils.geocodeAddress(bike.incident_location);
+            if (coords) {
+              window.leafletUtils.createOrUpdateMap('publicBikeMap', coords.lat, coords.lng, 15);
+            } else {
+              document.getElementById('publicBikeMap').innerHTML = '<div class="text-center p-4 text-muted">Location coordinates could not be found.</div>';
+            }
           }, 300);
         }
       } else {

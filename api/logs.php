@@ -1,5 +1,5 @@
 <?php
-// api/logs.php - REST API for system activity logs (Admin only)
+// activity logs (Admin only)
 header('Content-Type: application/json');
 require_once '../database/config.php';
 

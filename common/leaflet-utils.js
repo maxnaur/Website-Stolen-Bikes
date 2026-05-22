@@ -1,7 +1,7 @@
-/**
- * common/leaflet-utils.js
- * Shared Leaflet helper functions used by multiple pages.
- */
+/*
+  common/leaflet-utils.js
+  Shared Leaflet helper functions used by multiple pages.
+  */
 window.leafletUtils = window.leafletUtils || {};
 window.leafletUtils.maps = window.leafletUtils.maps || {};
 window.leafletUtils.markers = window.leafletUtils.markers || {};
@@ -9,7 +9,7 @@ window.leafletUtils.markers = window.leafletUtils.markers || {};
 window.leafletUtils.geocodeAddress = async function(address) {
   if (!address) return null;
 
-  /* has the peramiter of within gb to timit the scope of where can be searched */
+  /* within gb limit the scope of where can be searched */
   const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=gb&q=${encodeURIComponent(address)}`;
   const response = await fetch(url, {
     headers: {
