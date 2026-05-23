@@ -15,10 +15,7 @@
   cursor: pointer;
 }
 
-.centered-focus {
-  transform: scale(1.05);
-  z-index: 20; /* Ensures this member sits visually "above" others */
-}
+
 
 /* the card*/
 .card {
