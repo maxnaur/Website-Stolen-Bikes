@@ -1,14 +1,13 @@
 <?php
-/**
- * common/common.php
- * Library of shared utility functions.
- */
+/*
+  Library of utility functions
+  */
 
 require_once __DIR__ . '/bootstrap.php';
 
-/**
- * Logs an activity to the database
- */
+/*
+  Logs an activity to the database
+  */
 function logActivity($pdo, $action, $table = null, $id = null, $details = null) {
   try {
   $user_id = $_SESSION['user_id'] ?? null;
