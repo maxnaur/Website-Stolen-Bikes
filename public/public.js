@@ -71,16 +71,10 @@ async function loadBikes() {
 }
 
 window.reportRecovery = function(bikeId) {
-    const statusSelect = document.getElementById('incidentStatusSelect');
-    if (!statusSelect) return;
-    
-    statusSelect.value = 'returned';
-    // Trigger the change event manually to show explanation field and update bike select
-    statusSelect.dispatchEvent(new Event('change'));
-    
     const bikeSelect = document.getElementById('reportBikeSelect');
     if (bikeSelect) {
         bikeSelect.value = bikeId;
+        bikeSelect.dispatchEvent(new Event('change'));
     }
     
     // Scroll to the form
@@ -89,15 +83,47 @@ window.reportRecovery = function(bikeId) {
 
 function updateBikeSelect() {
     const bikeSelect = document.getElementById('reportBikeSelect');
-    const statusSelect = document.getElementById('incidentStatusSelect');
-    if (!bikeSelect || !statusSelect || !window.userBikes) return;
+    if (!bikeSelect || !window.userBikes) return;
     
+    const currentValue = bikeSelect.value;
     bikeSelect.innerHTML = '<option value="">Choose a registered bike...</option>';
-    const targetStatus = statusSelect.value === 'returned' ? 'stolen' : 'safe';
     
     window.userBikes.forEach(bike => {
-        if (bike.status === targetStatus) {
-            bikeSelect.innerHTML += `<option value="${bike.id}">${bike.brand} ${bike.model} (${bike.colour})</option>`;
+        const statusText = bike.status === 'stolen' ? ' (Stolen)' : '';
+        bikeSelect.innerHTML += `<option value="${bike.id}">${bike.brand} ${bike.model} (${bike.colour})${statusText}</option>`;
+    });
+    
+    if (currentValue) {
+        bikeSelect.value = currentValue;
+    }
+}
+
+const reportBikeSelectElem = document.getElementById('reportBikeSelect');
+if (reportBikeSelectElem) {
+    reportBikeSelectElem.addEventListener('change', function() {
+        const selectedId = this.value;
+        const statusSelect = document.getElementById('incidentStatusSelect');
+        if (!window.userBikes || !statusSelect) return;
+        
+        if (!selectedId) {
+            Array.from(statusSelect.options).forEach(opt => opt.disabled = false);
+            return;
+        }
+        
+        const bike = window.userBikes.find(b => b.id == selectedId);
+        if (bike) {
+            if (bike.status === 'safe') {
+                statusSelect.value = 'stolen';
+                Array.from(statusSelect.options).forEach(opt => {
+                    opt.disabled = (opt.value === 'returned');
+                });
+            } else if (bike.status === 'stolen') {
+                statusSelect.value = 'returned';
+                Array.from(statusSelect.options).forEach(opt => {
+                    opt.disabled = (opt.value === 'stolen');
+                });
+            }
+            statusSelect.dispatchEvent(new Event('change'));
         }
     });
 }
@@ -114,7 +140,6 @@ if (incidentStatusSelect) {
       recoveredSection.style.display = 'none';
       recoveryInput.required = false;
     }
-    updateBikeSelect();
   });
 }
 
