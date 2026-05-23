@@ -41,6 +41,8 @@ async function loadBikes() {
         return;
       }
       
+      window.userBikes = result.data;
+      
       result.data.forEach(bike => {
       const statusClass = bike.status === 'safe' ? 'bg-success' : 'bg-danger';
       
@@ -57,15 +59,28 @@ async function loadBikes() {
         </td>
         </tr>
       `;
-      
-      if (bike.status === 'safe') {
-        bikeSelect.innerHTML += `<option value="${bike.id}">${bike.brand} ${bike.model} (${bike.colour})</option>`;
-      }
       });
+      
+      updateBikeSelect();
     }
     } catch (error) {
     console.error('Error loading bikes:', error);
     }
+}
+
+function updateBikeSelect() {
+    const bikeSelect = document.getElementById('reportBikeSelect');
+    const statusSelect = document.getElementById('incidentStatusSelect');
+    if (!bikeSelect || !statusSelect || !window.userBikes) return;
+    
+    bikeSelect.innerHTML = '<option value="">Choose a registered bike...</option>';
+    const targetStatus = statusSelect.value === 'returned' ? 'stolen' : 'safe';
+    
+    window.userBikes.forEach(bike => {
+        if (bike.status === targetStatus) {
+            bikeSelect.innerHTML += `<option value="${bike.id}">${bike.brand} ${bike.model} (${bike.colour})</option>`;
+        }
+    });
 }
 
 const incidentStatusSelect = document.getElementById('incidentStatusSelect');
@@ -73,13 +88,14 @@ if (incidentStatusSelect) {
   incidentStatusSelect.addEventListener('change', function() {
     const recoveredSection = document.getElementById('recoveredExplanationSection');
     const recoveryInput = document.getElementById('recoveryExplanation');
-    if (this.value === 'recovered') {
+    if (this.value === 'returned') {
       recoveredSection.style.display = 'block';
       recoveryInput.required = true;
     } else {
       recoveredSection.style.display = 'none';
       recoveryInput.required = false;
     }
+    updateBikeSelect();
   });
 }
 
@@ -161,7 +177,7 @@ if (reportTheftForm) {
     e.preventDefault();
     const formData = new FormData(e.target);
     formData.append('csrf_token', csrfToken);
-    if (formData.get('bike_status') === 'recovered') {
+    if (formData.get('bike_status') === 'returned') {
       const expl = formData.get('recovery_explanation');
       const notes = formData.get('investigation_notes');
       formData.set('investigation_notes', `RECOVERY REPORT: ${expl}\n\nAdditional Info: ${notes}`);

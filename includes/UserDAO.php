@@ -1,8 +1,7 @@
 <?php
-/**
- * includes/UserDAO.php
- * Data Access Object for Users
- */
+/*
+  Data Access Object for Users
+  */
 
 function listUsers(PDO $pdo): array
 {

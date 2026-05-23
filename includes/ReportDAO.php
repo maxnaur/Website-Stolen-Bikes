@@ -1,8 +1,7 @@
 <?php
-/**
- * includes/ReportDAO.php
- * Data Access Object for Reports
- */
+/*
+  Data Access Object for Reports
+  */
 
 function getAllReports(PDO $pdo, ?string $status = null): array
 {
@@ -57,8 +56,13 @@ function createReportEntry(PDO $pdo, array $data): int
     $reportId = $pdo->lastInsertId();
     
     // Update bike status too
+    $bikeTableStatus = $data['bike_status'];
+    if ($bikeTableStatus === 'returned' || $bikeTableStatus === 'recovered' || $bikeTableStatus === 'captured') {
+        $bikeTableStatus = 'safe';
+    }
+    
     $stmt = $pdo->prepare("UPDATE bicycles SET status = ? WHERE id = ?");
-    $stmt->execute([$data['bike_status'], $data['bicycle_id']]);
+    $stmt->execute([$bikeTableStatus, $data['bicycle_id']]);
     
     return $reportId;
 }

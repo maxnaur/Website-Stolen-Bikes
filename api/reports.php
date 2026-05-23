@@ -4,6 +4,7 @@ header('Content-Type: application/json');
 require_once '../database/config.php';
 require_once '../common/auth-check.php';
 require_once '../includes/ReportDAO.php';
+require_once '../includes/BicycleDAO.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 $user = getCurrentUser();
@@ -51,6 +52,33 @@ function handleCreateReport($user) {
         echo json_encode(['success' => false, 'message' => 'Police cannot create reports']); exit;
     }
     $data = json_decode(file_get_contents("php://input"), true) ?: $_POST;
+    
+    // Validation
+    if (empty($data['bicycle_id'])) {
+        echo json_encode(['success' => false, 'message' => 'Bicycle ID is required']); exit;
+    }
+
+    $bike = getBikeDetail($pdo, $data['bicycle_id']);
+    if (!$bike) {
+        echo json_encode(['success' => false, 'message' => 'Bicycle not found']); exit;
+    }
+
+    // Ownership check (Admins can skip if they ever use this API, but typically it's for public)
+    if ($user['role'] !== 'admin' && $bike['user_id'] != $user['id']) {
+        echo json_encode(['success' => false, 'message' => 'Access Denied: You do not own this bicycle']); exit;
+    }
+
+    $newStatus = $data['bike_status'] ?? '';
+    $currentStatus = $bike['status'];
+
+    if ($newStatus === 'stolen' && $currentStatus === 'stolen') {
+        echo json_encode(['success' => false, 'message' => 'This bike is already reported as stolen']); exit;
+    }
+
+    if (($newStatus === 'returned' || $newStatus === 'recovered') && $currentStatus === 'safe') {
+        echo json_encode(['success' => false, 'message' => 'A safe bike cannot be reported as recovered']); exit;
+    }
+
     $id = createReportEntry($pdo, $data);
     logActivity($pdo, 'REPORT_CREATED', 'report', $id, "Report for bike ID " . $data['bicycle_id']);
     echo json_encode(['success' => true, 'message' => 'Report created successfully']);

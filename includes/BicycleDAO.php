@@ -1,8 +1,7 @@
 <?php
-/**
- * includes/BicycleDAO.php
- * Data Access Object for Bicycles
- */
+/*
+  Data Access Object for Bicycles
+  */
 
 function getAllBikes(PDO $pdo): array
 {

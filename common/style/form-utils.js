@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Unified password visibility toggles
-  // Select checkboxes that explicitly opt-in (`.toggle-password`),
-  // any checkbox with a `data-target`, or the legacy `#showPasswordCheck`.
+  // Select checkboxes toggle-password
   const toggleSelector = 'input[type="checkbox"].toggle-password, input[type="checkbox"][data-target], #showPasswordCheck';
   document.querySelectorAll(toggleSelector).forEach(cb => {
     cb.addEventListener('change', () => {
