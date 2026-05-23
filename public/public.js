@@ -45,6 +45,7 @@ async function loadBikes() {
       
       result.data.forEach(bike => {
       const statusClass = bike.status === 'safe' ? 'bg-success' : 'bg-danger';
+      const isStolen = bike.status === 'stolen';
       
       tableBody.innerHTML += `
         <tr>
@@ -56,6 +57,7 @@ async function loadBikes() {
         <td>${new Date(bike.created_at).toLocaleDateString()}</td>
         <td>
           <button class="btn btn-sm btn-outline-primary" onclick="viewBike(${bike.id})">Details</button>
+          ${isStolen ? `<button class="btn btn-sm btn-outline-success ms-1" onclick="reportRecovery(${bike.id})">Report Recovery</button>` : ''}
         </td>
         </tr>
       `;
@@ -66,6 +68,23 @@ async function loadBikes() {
     } catch (error) {
     console.error('Error loading bikes:', error);
     }
+}
+
+window.reportRecovery = function(bikeId) {
+    const statusSelect = document.getElementById('incidentStatusSelect');
+    if (!statusSelect) return;
+    
+    statusSelect.value = 'returned';
+    // Trigger the change event manually to show explanation field and update bike select
+    statusSelect.dispatchEvent(new Event('change'));
+    
+    const bikeSelect = document.getElementById('reportBikeSelect');
+    if (bikeSelect) {
+        bikeSelect.value = bikeId;
+    }
+    
+    // Scroll to the form
+    document.getElementById('reportTheftForm').scrollIntoView({ behavior: 'smooth' });
 }
 
 function updateBikeSelect() {
