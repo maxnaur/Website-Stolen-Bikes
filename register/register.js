@@ -1,7 +1,11 @@
 // Register.js
 document.addEventListener('DOMContentLoaded', function() {
   // Email validation regex
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // Pattern: local-part@domain.extension
+  // Local part: alphanumeric, dots, hyphens, underscores (not starting/ending with dot)
+  // Domain: alphanumeric, dots, hyphens (at least one dot)
+  // Extension: at least 2 alphabetic characters
+  const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]\.[a-zA-Z]{2,}$/;
   
   // Password validation regex
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
@@ -20,27 +24,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Password validation function
   const validatePassword = () => {
-  const password = document.getElementById('password').value.trim();
-  const confirmPassword = document.getElementById('confirmPassword').value.trim();
-  
-  // Check if passwords match
-  if (password !== confirmPassword) {
-  confirmPasswordError.textContent = "Passwords don't match";
-  confirmPasswordError.style.display = 'block';
-  return false;
-  }
-  
-  // Check password requirements
-  if (!passwordRegex.test(password)) {
-  passwordError.textContent = "Password must be 8+ characters with uppercase, lowercase, number and special character";
-  passwordError.style.display = 'block';
-  return false;
-  }
-  
-  // Clear error messages
-  passwordError.style.display = 'none';
-  confirmPasswordError.style.display = 'none';
-  return true;
+    const password = document.getElementById('password').value.trim();
+    const confirmPassword = document.getElementById('confirmPassword').value.trim();
+    
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      confirmPasswordError.textContent = "Passwords don't match";
+      confirmPasswordError.style.display = 'block';
+      return false;
+    }
+    
+    // Check password requirements
+    if (!passwordRegex.test(password)) {
+      passwordError.textContent = "Password must be 8+ characters with uppercase, lowercase, number and special character";
+      passwordError.style.display = 'block';
+      return false;
+    }
+    
+    // Clear error messages
+    passwordError.style.display = 'none';
+    confirmPasswordError.style.display = 'none';
+    return true;
   };
 
   // Initialize password validation
@@ -54,22 +58,22 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Check email format
   if (!emailRegex.test(email)) {
-  emailError.textContent = "Please enter a valid email address";
-  emailError.style.display = 'block';
-  return false;
-  }
-  
-  // Check email match
-  if (email !== confirmEmail) {
-  confirmEmailError.textContent = "Email addresses do not match";
-  confirmEmailError.style.display = 'block';
-  return false;
-  }
-  
-  // Clear error messages
-  emailError.style.display = 'none';
-  confirmEmailError.style.display = 'none';
-  return true;
+      emailError.textContent = "Please enter a valid email address";
+      emailError.style.display = 'block';
+      return false;
+    }
+
+    // Check email match
+    if (S !== confirmEmail) {
+      confirmEmailError.textContent = "Email addresses do not match";
+      confirmEmailError.style.display = 'block';
+      return false;
+    }
+
+    // Clear error messages
+    emailError.style.display = 'none';
+    confirmEmailError.style.display = 'none';
+    return true;
   };
 
   // Initialize email validation
@@ -126,15 +130,15 @@ document.addEventListener('DOMContentLoaded', function() {
   // Validate phone number format
   const phoneRegex = /^[\d\s\-]{7,15}$/;
   if (phone && !phoneRegex.test(phone)) {
-  alert("Please enter a valid phone number");
-  return;
+    alert("Please enter a valid phone number");
+    return;
   }
   
   // Validate DOB format
   const dobRegex = /^\d{4}-\d{2}-\d{2}$/;
   if (!dobRegex.test(DOB)) {
-  alert("Please enter a valid date of birth (YYYY-MM-DD)");
-  return;
+    alert("Please enter a valid date of birth (YYYY-MM-DD)");
+    return;
   }
   
   // Prepare data for submission
@@ -142,16 +146,16 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Submit form to backend
   fetch('../api/auth.php?action=register', {
-  method: 'POST',
-  body: formData
+    method: 'POST',
+    body: formData
   })
   .then(response => response.json())
   .then(data => {
   if (data.success) {
-  alert('Registration successful! Welcome to Bike\'s Safety!');
-  window.location.href = '../login/login.html?success=' + encodeURIComponent(data.message);
+    alert('Registration successful! Welcome to Bike\'s Safety!');
+    window.location.href = '../login/login.html?success=' + encodeURIComponent(data.message);
   } else {
-  alert('Registration failed: ' + data.message);
+   alert('Registration failed: ' + data.message);
   }
   })
   .catch(error => {

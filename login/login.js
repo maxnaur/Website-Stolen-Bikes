@@ -66,26 +66,41 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Email validation for every form
-    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    // Email validation function - checks proper email format
+    function isValidEmail(email) {
+        // Pattern: local-part@domain.extension
+        // Local part: alphanumeric, dots, hyphens, underscores (not starting/ending with dot)
+        // Domain: alphanumeric, dots, hyphens (at least one dot)
+        // Extension: at least 2 alphabetic characters
+        const emailPattern = /^[a-zA-Z0-9]+@[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]\.[a-zA-Z]{2,}$/;
+        return emailPattern.test(email.trim());
+    }
+
+    // Attach email validation to all forms
     document.querySelectorAll('form').forEach(form => {
         form.addEventListener('submit', event => {
-        let valid = true;
-        form.querySelectorAll('input[type="email"]').forEach(input => {
-            const err = input.parentElement.querySelector('.email-error') || input.parentElement.querySelector('.text-danger');
-            if (err) {
-            if (!emailPattern.test(input.value)) {
-                err.style.display = 'block';
-                err.textContent = 'Please enter a valid email address.';
-                valid = false;
-            } else {
-                err.style.display = 'none';
-            }
+            let isFormValid = true;
+            
+            form.querySelectorAll('input[type="email"]').forEach(emailInput => {
+                const errorElement = emailInput.parentElement.querySelector('.email-error') || emailInput.parentElement.querySelector('.text-danger');
+                const emailValue = emailInput.value.trim();
+                
+                if (errorElement) {
+                    if (!isValidEmail(emailValue)) {
+                        errorElement.style.display = 'block';
+                        errorElement.textContent = 'Please enter a valid email address (e.g., user@example.com).';
+                        isFormValid = false;
+                    } else {
+                        errorElement.style.display = 'none';
+                    }
+                }
+            });
+            
+            if (!isFormValid) {
+                event.preventDefault();
             }
         });
-        if (!valid) event.preventDefault();
-        });
-
+    });
 
     // Event Listener for Form Submission
     const loginForm = document.getElementById('loginForm');
