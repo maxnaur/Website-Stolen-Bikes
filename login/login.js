@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // Function to handle displaying errors from URL parameters (e.g., after a redirect failure)
+    // Function to handle displaying errors from URL parameters (often from redirect failure)
     const displayUrlError = () => {
         const params = new URLSearchParams(window.location.search);
         if (params.has('error')) {

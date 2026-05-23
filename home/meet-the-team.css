@@ -4,10 +4,9 @@
 
 /* star pattern layout container*/
 .team-star-pattern {
-  position: relative; /* Key: Establishes the coordinate system */
-  min-height: 350px;  /* Adjusted height for the new + shape */
+  position: relative; /* Establishes the coordinate system */
+  min-height: 350px;  /* hight required for shape */
 }
-
 
 /* each card*/
 .profile-card {
@@ -15,6 +14,7 @@
   cursor: pointer;
 }
 
+/* make the midle catd bigger and up a bit for the top of the star */
 .centered-focus {
   transform: scale(1.05);
   z-index: 20; /* Ensures this member sits visually "above" others */

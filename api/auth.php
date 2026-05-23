@@ -69,24 +69,18 @@ function handleLogin() {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (empty($email) || empty($password)) {
-        // Rate limiting check
-        if (!checkRateLimit($email, 5, 300)) {
-            http_response_code(429);
-            echo json_encode(['success' => false, 'message' => 'Too many login attempts. Please try again later.']);
-            exit;
-        }
-        // Send JSON error for client handling (HTTP 400 Bad Request)
-        header('Content-Type: application/json');
-        http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Please fill in both email and password.']);
-        exit;
-    }
-
     // Rate limiting check
     if (!checkRateLimit($email, 5, 300)) {
         http_response_code(429);
         echo json_encode(['success' => false, 'message' => 'Too many login attempts. Please try again later.']);
+        exit;
+    }
+    
+    if (empty($email) || empty($password)) {    
+        // Send JSON error for client handling (HTTP 400 Bad Request)
+        header('Content-Type: application/json');
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Please fill in both email and password.']);
         exit;
     }
 
