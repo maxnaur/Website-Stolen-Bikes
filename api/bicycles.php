@@ -27,9 +27,11 @@ try {
             echo json_encode(['success' => false, 'message' => 'Method not allowed']);
             break;
     }
-} catch (Exception $e) {
+} catch (Throwable $e) {
+    // Catch all errors (including TypeError) and return JSON for AJAX callers
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    error_log('Unhandled error in api/bicycles.php: ' . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Internal server error: ' . $e->getMessage()]);
 }
 
 function handleGetBikes($user, $action) {
@@ -45,6 +47,12 @@ function handleGetBikes($user, $action) {
 
 function handleAddBike($user) {
     global $pdo;
+    // Ensure user is authenticated and we have a valid user id
+    if (empty($user['id'])) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Authentication required. Please log in and try again.']);
+        return;
+    }
     
     // Validate text inputs for common SQL injection patterns
     $textFields = ['brand', 'model', 'type', 'colour', 'gender', 'age_group', 'mpn'];
@@ -82,9 +90,15 @@ function handleAddBike($user) {
             $imagePath = 'upload/bikes/' . $fileName;
         }
     }
-    $id = addBicycle($pdo, $user['id'], $_POST, $imagePath);
-    logActivity($pdo, 'BIKE_REGISTERED', 'bicycles', $id, "User registered bike: " . ($_POST['brand'] ?? 'Unknown'));
-    echo json_encode(['success' => true, 'id' => $id]);
+    try {
+        $id = addBicycle($pdo, $user['id'], $_POST, $imagePath);
+        logActivity($pdo, 'BIKE_REGISTERED', 'bicycles', $id, "User registered bike: " . ($_POST['brand'] ?? 'Unknown'));
+        echo json_encode(['success' => true, 'id' => $id]);
+    } catch (Throwable $e) {
+        error_log('Error adding bicycle: ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Failed to register bike: ' . $e->getMessage()]);
+    }
 }
 
 function exportBikesToCSV($pdo) {
