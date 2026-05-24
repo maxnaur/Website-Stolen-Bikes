@@ -5,6 +5,7 @@ require_once '../database/config.php';
 require_once '../common/auth-check.php';
 require_once '../includes/ReportDAO.php';
 require_once '../includes/BicycleDAO.php';
+require_once '../common/security.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 $user = getCurrentUser();

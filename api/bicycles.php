@@ -3,6 +3,7 @@
 header('Content-Type: application/json');
 require_once '../database/config.php';
 require_once '../common/auth-check.php';
+require_once '../common/security.php';
 require_once '../includes/BicycleDAO.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
