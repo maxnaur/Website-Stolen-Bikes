@@ -35,7 +35,7 @@ try {
 function handleGetBikes($user, $action) {
     global $pdo;
     if ($action === 'detail') {
-        echo json_encode(['success' => true, 'data' => getBikeDetail($pdo, $_GET['id'])]);
+        echo json_encode(['success' => true, 'data' => getBikeDetail($pdo, (int)$_GET['id'])]);
     } elseif ($user['role'] === 'admin') {
         echo json_encode(['success' => true, 'data' => getAllBikes($pdo)]);
     } else {
@@ -45,6 +45,17 @@ function handleGetBikes($user, $action) {
 
 function handleAddBike($user) {
     global $pdo;
+    
+    // Validate text inputs for common SQL injection patterns
+    $textFields = ['brand', 'model', 'type', 'colour', 'gender', 'age_group', 'mpn'];
+    foreach ($textFields as $field) {
+        if (isset($_POST[$field]) && !validateTextInput($_POST[$field])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Invalid characters detected in ' . $field]);
+            exit;
+        }
+    }
+
     $imagePath = null;
     if (isset($_FILES['bike_image']) && $_FILES['bike_image']['error'] === 0) {
         $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];

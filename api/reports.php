@@ -53,12 +53,16 @@ function handleCreateReport($user) {
     }
     $data = json_decode(file_get_contents("php://input"), true) ?: $_POST;
     
+    if (isset($data['incident_location']) && !validateTextInput($data['incident_location'])) {
+        echo json_encode(['success' => false, 'message' => 'Invalid characters detected in incident location.']); exit;
+    }
+
     // Validation
     if (empty($data['bicycle_id'])) {
         echo json_encode(['success' => false, 'message' => 'Bicycle ID is required']); exit;
     }
 
-    $bike = getBikeDetail($pdo, $data['bicycle_id']);
+    $bike = getBikeDetail($pdo, (int)$data['bicycle_id']);
     if (!$bike) {
         echo json_encode(['success' => false, 'message' => 'Bicycle not found']); exit;
     }
@@ -87,8 +91,15 @@ function handleCreateReport($user) {
 function handleUpdateReport($user) {
     global $pdo;
     checkRole('police');
-    $reportId = $_GET['id'] ?? 0;
+    $reportId = (int)($_GET['id'] ?? 0);
     $data = json_decode(file_get_contents("php://input"), true);
+
+    if (isset($data['investigation_notes']) && !validateTextInput($data['investigation_notes'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid characters detected in investigation notes.']);
+        return;
+    }
+
     updateReportEntry($pdo, $reportId, $data);
     logActivity($pdo, 'REPORT_UPDATED', 'report', $reportId, "Status updated by " . $user['username']);
     echo json_encode(['success' => true, 'message' => 'Report updated successfully']);

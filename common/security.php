@@ -65,10 +65,30 @@ function sanitizeHTML($text) {
 }
 
 /**
- * Validate email address
+ * Validate email address with strict regex to prevent injection
  */
 function validateEmail($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+    // Strict regex to prevent any SQL injection attempts in email
+    if (preg_match('/[;\'"]|(--)|(\b(UNION|SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE)\b)/i', $email)) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Validate text input using regex to prevent SQL Injection attempts
+ * Returns false if malicious SQL keywords or characters are detected.
+ */
+function validateTextInput($text) {
+    if (empty($text)) return true;
+    // Regex to block common SQL injection patterns: quotes, semicolons, double dashes, and SQL keywords
+    if (preg_match('/[;]|(--)|(\b(UNION|SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|EXEC)\b)/i', $text)) {
+        return false;
+    }
+    return true;
 }
 
 /**

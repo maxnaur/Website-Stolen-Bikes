@@ -37,7 +37,7 @@ function handleGet($currentUser, $action) {
         echo json_encode(['success' => true, 'data' => listUsers($pdo)]);
     } elseif ($action === 'detail') {
         checkRole('admin');
-        echo json_encode(['success' => true, 'data' => getUserDetail($pdo, $_GET['id'])]);
+        echo json_encode(['success' => true, 'data' => getUserDetail($pdo, (int)$_GET['id'])]);
     } elseif ($action === 'profile') {
         echo json_encode(['success' => true, 'data' => getUserDetail($pdo, $currentUser['id'])]);
     } elseif ($action === 'export') {
@@ -62,6 +62,22 @@ function handlePost($currentUser) {
         return;
     }
 
+    if (!validateEmail($data['email'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid email format or malicious characters detected']);
+        return;
+    }
+
+    // Validate text inputs
+    $textFields = ['first_name', 'last_name', 'address_line1', 'address_line2', 'city', 'county', 'postcode'];
+    foreach ($textFields as $field) {
+        if (isset($data[$field]) && !validateTextInput($data[$field])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Invalid characters detected in ' . $field]);
+            return;
+        }
+    }
+
     $id = createUser($pdo, $data);
     logActivity($pdo, 'USER_CREATED', 'users', $id, "Admin created user: " . $data['email']);
     echo json_encode(['success' => true, 'id' => $id]);
@@ -69,8 +85,24 @@ function handlePost($currentUser) {
 
 function handlePut($currentUser, $action) {
     global $pdo;
+    $data = json_decode(file_get_contents("php://input"), true);
+    
+    if (isset($data['email']) && !validateEmail($data['email'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid email format or malicious characters detected']);
+        return;
+    }
+
+    $textFields = ['first_name', 'last_name', 'address_line1', 'address_line2', 'city', 'county', 'postcode', 'phone'];
+    foreach ($textFields as $field) {
+        if (isset($data[$field]) && !validateTextInput($data[$field])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Invalid characters detected in ' . $field]);
+            return;
+        }
+    }
+
     if ($action === 'update_profile') {
-        $data = json_decode(file_get_contents("php://input"), true);
         updateUserProfile($pdo, $currentUser['id'], $data);
         logActivity($pdo, 'PROFILE_UPDATED', 'users', $currentUser['id'], "User updated their own profile");
         echo json_encode(['success' => true]);

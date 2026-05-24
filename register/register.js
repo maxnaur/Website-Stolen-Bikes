@@ -53,18 +53,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Email validation function
   const validateEmail = () => {
-  const email = document.getElementById('email').value.trim();
-  const confirmEmail = document.getElementById('confirmEmail').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const confirmEmail = document.getElementById('confirmEmail').value.trim();
   
-  // Check email format
-  if (!emailRegex.test(email)) {
+    // Check email format
+    if (!emailRegex.test(email)) {
       emailError.textContent = "Please enter a valid email address";
       emailError.style.display = 'block';
       return false;
     }
 
     // Check email match
-    if (S !== confirmEmail) {
+    if (email !== confirmEmail) {
       confirmEmailError.textContent = "Email addresses do not match";
       confirmEmailError.style.display = 'block';
       return false;

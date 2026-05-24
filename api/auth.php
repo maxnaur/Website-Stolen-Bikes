@@ -69,6 +69,13 @@ function handleLogin() {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
+    if (!validateEmail($email) || !validateTextInput($email)) {
+        header('Content-Type: application/json');
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid email format or malicious characters detected']);
+        exit;
+    }
+
     // Rate limiting check
     if (!checkRateLimit($email, 5, 300)) {
         http_response_code(429);
@@ -188,6 +195,14 @@ function handleRegister() {
         exit;
     }
     
+    if (!validateEmail($email) || !validateTextInput($firstName) || !validateTextInput($lastName) || 
+        !validateTextInput($addressLine1) || !validateTextInput($addressLine2) || 
+        !validateTextInput($postcode) || !validateTextInput($county) || !validateTextInput($city)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => "Invalid characters or SQL keywords detected in input."]);
+        exit;
+    }
+
     if ($email !== $confirmEmail) {
         http_response_code(400);
         echo json_encode(['success' => false, 'message' => "Email addresses do not match"]);
