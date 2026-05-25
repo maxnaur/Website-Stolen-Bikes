@@ -74,6 +74,9 @@ function sqlInjectionPrevention($item) {
   Validate email address with strict regex to prevent injection
   */
 function validateEmail($email) {
+    if (strlen($email) > 100) {
+        return false;
+    }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return false;
     }
@@ -85,9 +88,13 @@ function validateEmail($email) {
   Validate text input using regex to prevent SQL Injection attempts
   Returns false if malicious SQL keywords or characters are detected.
   */
-function validateTextInput($text) {
+function validateTextInput($text, $maxLength = 100) {
     if (empty($text)) {
         return true;
+    }
+    
+    if (strlen($text) > $maxLength) {
+        return false;
     }
 
     return sqlInjectionPrevention($text);

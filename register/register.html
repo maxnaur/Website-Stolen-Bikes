@@ -46,13 +46,13 @@
                   <!-- First Name -->
                   <div class="mb-3">
                     <label for="firstName" class="form-label fw-bold">First Name <span aria-label="required">*</span></label>
-                    <input type="text" name="firstName" class="form-control" id="firstName" placeholder="John" required aria-required="true">
+                    <input type="text" name="firstName" class="form-control" id="firstName" placeholder="John" required aria-required="true" maxlength="100">
                   </div>
                   
                   <!-- Last Name -->
                   <div class="mb-3">
                     <label for="lastName" class="form-label fw-bold">Last Name <span aria-label="required">*</span></label>
-                    <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Smith" required aria-required="true">
+                    <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Smith" required aria-required="true" maxlength="100">
                   </div>
 
                   <!-- Date of Birth -->
@@ -69,21 +69,21 @@
                   <!-- Email -->
                   <div class="mb-3">
                     <label for="email" class="form-label fw-bold">Email <span aria-label="required">*</span></label>
-                    <input type="email" name="email" class="form-control" id="email" placeholder="user@example.com" required aria-required="true">
+                    <input type="email" name="email" class="form-control" id="email" placeholder="user@example.com" required aria-required="true" maxlength="100">
                     <div id="emailError" class="text-danger small mt-1" style="display:none;"></div>
                   </div>
 
                   <!-- Confirm Email -->
                   <div class="mb-3">
                     <label for="confirmEmail" class="form-label fw-bold">Confirm Email <span aria-label="required">*</span></label>
-                    <input type="email" name="confirmEmail" class="form-control" id="confirmEmail" placeholder="user@example.com" required aria-required="true">
+                    <input type="email" name="confirmEmail" class="form-control" id="confirmEmail" placeholder="user@example.com" required aria-required="true" maxlength="100">
                     <div id="confirmEmailError" class="text-danger small mt-1" style="display:none;"></div>
                   </div>
 
                   <!-- Phone Number -->
                   <div class="mb-3">
                     <label for="phone" class="form-label fw-bold">Phone Number</label>
-                    <input type="tel" name="phone" class="form-control" id="phone" placeholder="+44 (0) 1234 567890">
+                    <input type="tel" name="phone" class="form-control" id="phone" placeholder="+44 (0) 1234 567890" maxlength="100">
                   </div>
                 </div>
 
@@ -94,31 +94,31 @@
                   <!-- Address Line 1 -->
                   <div class="mb-3">
                     <label for="addressLine1" class="form-label fw-bold">Address Line 1 <span aria-label="required">*</span></label>
-                    <input type="text" name="addressLine1" class="form-control" id="addressLine1" placeholder="Street address, building number, etc." required aria-required="true">
+                    <input type="text" name="addressLine1" class="form-control" id="addressLine1" placeholder="Street address, building number, etc." required aria-required="true" maxlength="100">
                   </div>
 
                   <!-- Address Line 2 -->
                   <div class="mb-3">
                     <label for="addressLine2" class="form-label">Address Line 2</label>
-                    <input type="text" name="addressLine2" class="form-control" id="addressLine2" placeholder="Apartment, suite, etc.">
+                    <input type="text" name="addressLine2" class="form-control" id="addressLine2" placeholder="Apartment, suite, etc." maxlength="100">
                   </div>
 
                   <!-- Postcode -->
                   <div class="mb-3">
                     <label for="postcode" class="form-label fw-bold">Postcode <span aria-label="required">*</span></label>
-                    <input type="text" name="postcode" class="form-control" id="postcode" placeholder="SW1A 1AA" required aria-required="true">
+                    <input type="text" name="postcode" class="form-control" id="postcode" placeholder="SW1A 1AA" required aria-required="true" maxlength="100">
                   </div>
 
                   <!-- County -->
                   <div class="mb-3">
                     <label for="county" class="form-label fw-bold">County <span aria-label="required">*</span></label>
-                    <input type="text" name="county" class="form-control" id="county" placeholder="County" required aria-required="true">
+                    <input type="text" name="county" class="form-control" id="county" placeholder="County" required aria-required="true" maxlength="100">
                   </div>
 
                   <!-- City -->
                   <div class="mb-3">
                     <label for="city" class="form-label fw-bold">Town/City <span aria-label="required">*</span></label>
-                    <input type="text" name="city" class="form-control" id="city" placeholder="Town/City" required aria-required="true">
+                    <input type="text" name="city" class="form-control" id="city" placeholder="Town/City" required aria-required="true" maxlength="100">
                   </div>
                 </div>
 
@@ -129,7 +129,7 @@
                   <!-- Password -->
                   <div class="mb-3">
                     <label for="password" class="form-label fw-bold">Password*</label>
-                    <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                    <input type="password" name="password" class="form-control" id="password" placeholder="Password" required maxlength="100">
                     <div id="passwordError" class="text-danger small mt-1" style="display:none;"></div>
                     <label class="form-check-label mt-2">
                       <input type="checkbox" class="toggle-password form-check-input" data-target="#password">
@@ -140,7 +140,7 @@
                   <!-- Confirm Password -->
                   <div class="mb-3">
                     <label for="confirmPassword" class="form-label fw-bold">Confirm Password*</label>
-                    <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
+                    <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" placeholder="Confirm Password" required maxlength="100">
                     <div id="confirmPasswordError" class="text-danger small mt-1" style="display:none;"></div>
                     <label class="form-check-label mt-2">
                       <input type="checkbox" class="toggle-password form-check-input" data-target="#confirmPassword">

@@ -54,8 +54,16 @@ function handleCreateReport($user) {
     }
     $data = json_decode(file_get_contents("php://input"), true) ?: $_POST;
     
-    if (isset($data['incident_location']) && !validateTextInput($data['incident_location'])) {
+    if (isset($data['incident_location']) && !validateTextInput($data['incident_location']), 200) {
         echo json_encode(['success' => false, 'message' => 'Invalid characters detected in incident location.']); exit;
+    }
+
+    if (isset($data['recovery_explanation']) && !validateTextInput($data['recovery_explanation'], 200)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid characters or too long recovery explanation.']); exit;
+    }
+
+    if (isset($data['investigation_notes']) && !validateTextInput($data['investigation_notes'], 200)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid characters or too long notes.']); exit;
     }
 
     // Validation
@@ -95,9 +103,9 @@ function handleUpdateReport($user) {
     $reportId = (int)($_GET['id'] ?? 0);
     $data = json_decode(file_get_contents("php://input"), true);
 
-    if (isset($data['investigation_notes']) && !validateTextInput($data['investigation_notes'])) {
+    if (isset($data['investigation_notes']) && !validateTextInput($data['investigation_notes'], 2000)) {
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Invalid characters detected in investigation notes.']);
+        echo json_encode(['success' => false, 'message' => 'Invalid characters detected or notes too long.']);
         return;
     }
 

@@ -71,11 +71,11 @@
         <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label fw-bold small">Brand *</label>
-          <input type="text" class="form-control" name="brand" placeholder="e.g. Trek" required>
+          <input type="text" class="form-control" name="brand" placeholder="e.g. Trek" required maxlength="100">
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label fw-bold small">Model *</label>
-          <input type="text" class="form-control" name="model" placeholder="e.g. FX 3" required>
+          <input type="text" class="form-control" name="model" placeholder="e.g. FX 3" required maxlength="100">
         </div>
         </div>
         <div class="row">
@@ -91,7 +91,7 @@
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label fw-bold small">Colour *</label>
-          <input type="text" class="form-control" name="colour" placeholder="e.g. Blue" required>
+          <input type="text" class="form-control" name="colour" placeholder="e.g. Blue" required maxlength="100">
         </div>
         </div>
 
@@ -147,7 +147,7 @@
 
         <div class="mb-3">
         <label class="form-label fw-bold small">Serial Number / MPN</label>
-        <input type="text" class="form-control" name="mpn" placeholder="Optional but recommended">
+        <input type="text" class="form-control" name="mpn" placeholder="Optional but recommended" maxlength="100">
         </div>
         <div class="mb-3">
         <label class="form-label fw-bold small">Bike Image</label>
@@ -180,18 +180,20 @@
         <div id="recoveredExplanationSection" style="display:none;">
           <div class="mb-3">
           <label class="form-label fw-bold small">Recovery Explanation *</label>
-          <textarea class="form-control" name="recovery_explanation" id="recoveryExplanation" rows="2" placeholder="Where and how was it found?"></textarea>
+          <textarea class="form-control" name="recovery_explanation" id="recoveryExplanation" rows="2" placeholder="Where and how was it found?" maxlength="200"></textarea>
+          <small class="text-muted">Maximum 200 characters.</small>
           </div>
         </div>
         <div class="mb-3">
         <label class="form-label fw-bold small">Incident Location *</label>
-        <input type="text" class="form-control" name="incident_location" id="incidentLocationInput" placeholder="e.g. Central London Station, then drag map pin" required>
+        <input type="text" class="form-control" name="incident_location" id="incidentLocationInput" placeholder="e.g. Central London Station, then drag map pin" required maxlength="200">
         <small class="text-muted" id="dragHint" style="display: none;">You can drag the marker on the map to pinpoint the exact location.</small>
         <div id="reportFormMap" style="height: 200px; width: 100%; display: none; border-radius: 8px;" class="mt-2 shadow-sm border"></div>
         </div>
         <div class="mb-3">
         <label class="form-label fw-bold small">Additional Notes</label>
-        <textarea class="form-control" name="investigation_notes" rows="2" placeholder="Any other details?"></textarea>
+        <textarea class="form-control" name="investigation_notes" rows="2" placeholder="Any other details?" maxlength="200"></textarea>
+        <small class="text-muted">Maximum 200 characters.</small>
         </div>
         <button type="submit" class="btn btn-danger w-100">Submit Police Report</button>
       </form>
@@ -250,41 +252,41 @@
         <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label fw-bold small text-primary">Email Address (Editable)</label>
-          <input type="email" name="email" class="form-control" id="profile_email" required>
+          <input type="email" name="email" class="form-control" id="profile_email" required maxlength="100">
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label fw-bold small text-primary">New Password (Leave blank to keep current)</label>
-          <input type="password" name="password" class="form-control" id="profile_password" placeholder="********">
+          <input type="password" name="password" class="form-control" id="profile_password" placeholder="********" maxlength="100">
         </div>
         </div>
         <hr>
         <div class="mb-3">
         <label class="form-label fw-bold small text-primary">Phone Number (Editable)</label>
-        <input type="text" class="form-control" name="phone" id="profile_phone" placeholder="Enter phone number">
+        <input type="text" class="form-control" name="phone" id="profile_phone" placeholder="Enter phone number" maxlength="100">
         <div class="text-muted small mt-1">Format: numbers, spaces, and +() symbols.</div>
         </div>
         <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label fw-bold small text-primary">Address Line 1 (Editable)</label>
-          <input type="text" class="form-control" name="address_line1" id="profile_address_line1">
+          <input type="text" class="form-control" name="address_line1" id="profile_address_line1" maxlength="100">
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label fw-bold small text-primary">Address Line 2 (Editable)</label>
-          <input type="text" class="form-control" name="address_line2" id="profile_address_line2">
+          <input type="text" class="form-control" name="address_line2" id="profile_address_line2" maxlength="100">
         </div>
         </div>
         <div class="row">
         <div class="col-md-4 mb-3">
           <label class="form-label fw-bold small text-primary">City (Editable)</label>
-          <input type="text" class="form-control" name="city" id="profile_city">
+          <input type="text" class="form-control" name="city" id="profile_city" maxlength="100">
         </div>
         <div class="col-md-4 mb-3">
           <label class="form-label fw-bold small text-primary">County (Editable)</label>
-          <input type="text" class="form-control" name="county" id="profile_county">
+          <input type="text" class="form-control" name="county" id="profile_county" maxlength="100">
         </div>
         <div class="col-md-4 mb-3">
           <label class="form-label fw-bold small text-primary">Postcode (Editable)</label>
-          <input type="text" class="form-control" name="postcode" id="profile_postcode">
+          <input type="text" class="form-control" name="postcode" id="profile_postcode" maxlength="100">
         </div>
         </div>
         <button type="submit" class="btn btn-primary w-100">Update Profile Details</button>
