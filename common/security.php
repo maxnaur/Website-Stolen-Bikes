@@ -1,12 +1,11 @@
 <?php
-/**
- * common/security.php
- * Security utilities: CSRF tokens, security headers, input validation
- */
+/*
+  This document covers CSRF tokens, security headers, input validation
+  */
 
-/**
- * Generate CSRF token
- */
+/*
+  Generate CSRF token
+  */
 if (!function_exists('generateCSRFToken')) {
     function generateCSRFToken() {
         if (session_status() === PHP_SESSION_NONE) {
@@ -21,9 +20,9 @@ if (!function_exists('generateCSRFToken')) {
     }
 }
 
-/**
- * Verify CSRF token
- */
+/*
+  Verify CSRF token
+  */
 if (!function_exists('verifyCSRFToken')) {
     function verifyCSRFToken($token) {
         if (session_status() === PHP_SESSION_NONE) {
@@ -34,9 +33,9 @@ if (!function_exists('verifyCSRFToken')) {
     }
 }
 
-/**
- * Set security headers for all responses
- */
+/*
+  Set security headers for all responses
+  */
 function setSecurityHeaders() {
     // Prevent clickjacking
     header('X-Frame-Options: SAMEORIGIN');
@@ -57,57 +56,60 @@ function setSecurityHeaders() {
     header('Permissions-Policy: geolocation=(self), microphone=(), camera=()');
 }
 
-/**
- * Sanitize HTML output to prevent XSS
- */
+/*
+  Sanitize HTML output to prevent Cross-Site Scripting
+  */
 function sanitizeHTML($text) {
     return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
 }
 
-/**
- * Validate email address with strict regex to prevent injection
- */
+// SQL keyword injection prevention
+function sqlInjectionPrevention($item) {
+    $forbiddenPattern = '/[;*_]|--|\b(?:UNION|SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|EXEC|AUX|CLOCK|COM[1-8]|CON|CONFIG|LPT[1-8]|NUL|PRN)\b/i';
+
+    return !preg_match($forbiddenPattern, $item);
+}
+
+/*
+  Validate email address with strict regex to prevent injection
+  */
 function validateEmail($email) {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return false;
     }
-    // Strict regex to prevent any SQL injection attempts in email
-    if (preg_match('/[;\'"]|(--)|(\b(UNION|SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE)\b)/i', $email)) {
-        return false;
-    }
-    return true;
+
+    return sqlInjectionPrevention($email);
 }
 
-/**
- * Validate text input using regex to prevent SQL Injection attempts
- * Returns false if malicious SQL keywords or characters are detected.
- */
+/*
+  Validate text input using regex to prevent SQL Injection attempts
+  Returns false if malicious SQL keywords or characters are detected.
+  */
 function validateTextInput($text) {
-    if (empty($text)) return true;
-    // Regex to block common SQL injection patterns: quotes, semicolons, double dashes, and SQL keywords
-    if (preg_match('/[;]|(--)|(\b(UNION|SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|EXEC)\b)/i', $text)) {
-        return false;
+    if (empty($text)) {
+        return true;
     }
-    return true;
+
+    return sqlInjectionPrevention($text);
 }
 
-/**
- * Validate phone number (basic validation)
- */
+/*
+  Validate phone number (basic validation)
+  */
 function validatePhone($phone) {
     return preg_match('/^[\d\s\-\+\(\)]{10,}$/', $phone);
 }
 
-/**
- * Validate URL
- */
+/*
+  Validate URL
+  */
 function validateURL($url) {
     return filter_var($url, FILTER_VALIDATE_URL) !== false;
 }
 
-/**
- * Sanitize file name to prevent directory traversal
- */
+/*
+  Sanitize file name to prevent directory traversal
+  */
 function sanitizeFileName($filename) {
     // Remove any path components
     $filename = basename($filename);
@@ -116,9 +118,9 @@ function sanitizeFileName($filename) {
     return $filename;
 }
 
-/**
- * Rate limiting helper
- */
+/*
+  Rate limiting helper
+  */
 function checkRateLimit($identifier, $maxAttempts = 5, $timeWindow = 300) {
     $cacheKey = 'rate_limit_' . md5($identifier);
 
