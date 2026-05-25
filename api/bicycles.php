@@ -65,6 +65,22 @@ function handleAddBike($user) {
         }
     }
 
+    if (isset($_POST['wheel_size']) && $_POST['wheel_size'] !== '') {
+        if ((float)$_POST['wheel_size'] > 999 || (float)$_POST['wheel_size'] < 0) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Wheel size must be between 0 and 999']);
+            exit;
+        }
+    }
+
+    if (isset($_POST['gears']) && $_POST['gears'] !== '') {
+        if ((int)$_POST['gears'] > 999 || (int)$_POST['gears'] < 0) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Number of gears must be between 0 and 999']);
+            exit;
+        }
+    }
+
     $imagePath = null;
     if (isset($_FILES['bike_image']) && $_FILES['bike_image']['error'] === 0) {
         $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
