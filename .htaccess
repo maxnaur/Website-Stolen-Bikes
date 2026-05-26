@@ -21,10 +21,9 @@ Options -Indexes
     <FilesMatch "\.php$">
         Header set X-Robots-Tag "noindex, nofollow"
     </FilesMatch>
-<<<<<<< HEAD
     
-    # Cookie Integration: Force HttpOnly, Secure, and SameSite=Strict on all Set-Cookie headers emitted by the server
-    Header edit Set-Cookie ^(.*)$ "$1; HttpOnly; Secure; SameSite=Strict"
+    # Cookie Integration: Force HttpOnly and SameSite=Strict on all Set-Cookie headers emitted by the server
+    Header edit Set-Cookie ^(.*)$ "$1; HttpOnly; SameSite=Strict"
 </IfModule>
 
 # Token Integration: Ensure custom headers (like CSRF tokens or Authorization) are passed to PHP environments
@@ -40,10 +39,7 @@ Options -Indexes
 # Session Cookie Hardening for PHP (if mod_php is used)
 <IfModule mod_php.c>
     php_flag session.cookie_httponly on
-    php_flag session.cookie_secure on
     php_value session.cookie_samesite Strict
     php_value session.use_strict_mode 1
     php_flag session.use_only_cookies on
-=======
->>>>>>> ae056a7eab6edd9bb298c3edc2ceb348ba890ff0
 </IfModule>
