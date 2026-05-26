@@ -7,12 +7,18 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 function isApiRequest() {
-  $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
+  $uri = $_SERVER['REQUEST_URI'] ?? '';
+  $accept = strtolower($_SERVER['HTTP_ACCEPT'] ?? '');
   $xhr = strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '');
-  $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-  return str_contains($accept, 'application/json')
+  $contentType = strtolower($_SERVER['CONTENT_TYPE'] ?? '');
+
+  return str_contains($uri, '/api/')
+      || str_contains($accept, 'application/json')
+      || str_contains($accept, 'text/json')
       || $xhr === 'xmlhttprequest'
-      || str_contains($contentType, 'application/json');
+      || str_contains($contentType, 'application/json')
+      || str_contains($contentType, 'multipart/form-data')
+      || str_contains($contentType, 'application/x-www-form-urlencoded');
 }
 
 function sendJsonAuthError($code = 401) {
