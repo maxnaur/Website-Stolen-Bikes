@@ -4,22 +4,11 @@
 
 let csrfToken = '';
 
-async function fetchCsrfToken() {
-    try {
-      const response = await fetch('../api/auth.php?action=csrf');
-      const result = await response.json();
-      if (result.success) {
-        csrfToken = result.csrf_token;
-      }
-    } catch (error) {
-      console.error('Failed to fetch CSRF token:', error);
-    }
-}
-
 document.addEventListener('DOMContentLoaded', async () => {
     const session = await verifySession('public');
     if (session) {
-      await fetchCsrfToken();
+      const response = await fetch('../api/reports.php');
+      const result = await response.json();
       await loadBikes();
     }
 });

@@ -6,33 +6,9 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
-function isApiRequest() {
-  $uri = $_SERVER['REQUEST_URI'] ?? '';
-  $accept = strtolower($_SERVER['HTTP_ACCEPT'] ?? '');
-  $xhr = strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '');
-  $contentType = strtolower($_SERVER['CONTENT_TYPE'] ?? '');
-
-  return str_contains($uri, '/api/')
-      || str_contains($accept, 'application/json')
-      || str_contains($accept, 'text/json')
-      || $xhr === 'xmlhttprequest'
-      || str_contains($contentType, 'application/json')
-      || str_contains($contentType, 'multipart/form-data')
-      || str_contains($contentType, 'application/x-www-form-urlencoded');
-}
-
-function sendJsonAuthError($code = 401) {
-  http_response_code($code);
-  header('Content-Type: application/json');
-  echo json_encode(['success' => false, 'message' => 'Authentication required. Please log in.']);
-  exit;
-}
-
-// Global check: if not logged in, return JSON for API requests
+// Global check: if not logged in, redirect to login page if not loged in
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-  if (isApiRequest()) {
-    sendJsonAuthError(401);
-  }
+  // Determine the path to Login.html based on current file location
   header('Location: ../login/login.html');
   exit;
 }
