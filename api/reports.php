@@ -54,7 +54,7 @@ function handleCreateReport($user) {
     }
     $data = json_decode(file_get_contents("php://input"), true) ?: $_POST;
     
-    if (isset($data['incident_location']) && !validateTextInput($data['incident_location']), 200) {
+    if (isset($data['incident_location']) && !validateTextInput($data['incident_location'], 200)) {
         echo json_encode(['success' => false, 'message' => 'Invalid characters detected in incident location.']); exit;
     }
 
