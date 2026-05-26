@@ -1,15 +1,6 @@
 # Disable directory browsing (prevent URL server surfing)
 Options -Indexes
 
-# Deny access to sensitive files
-<FilesMatch "^\.">
-    Require all denied
-</FilesMatch>
-
-<FilesMatch "^(glaz env\.txt|session\.txt|database_setup\.sql|\.env)$">
-    Require all denied
-</FilesMatch>
-
 # Enforce robots.txt rules by sending X-Robots-Tag header
 <IfModule mod_headers.c>
     # Prevent indexing of restricted directories
