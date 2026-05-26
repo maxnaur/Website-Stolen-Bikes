@@ -21,6 +21,7 @@ Options -Indexes
     <FilesMatch "\.php$">
         Header set X-Robots-Tag "noindex, nofollow"
     </FilesMatch>
+<<<<<<< HEAD
     
     # Cookie Integration: Force HttpOnly, Secure, and SameSite=Strict on all Set-Cookie headers emitted by the server
     Header edit Set-Cookie ^(.*)$ "$1; HttpOnly; Secure; SameSite=Strict"
@@ -43,4 +44,6 @@ Options -Indexes
     php_value session.cookie_samesite Strict
     php_value session.use_strict_mode 1
     php_flag session.use_only_cookies on
+=======
+>>>>>>> ae056a7eab6edd9bb298c3edc2ceb348ba890ff0
 </IfModule>
