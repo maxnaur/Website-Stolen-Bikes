@@ -13,6 +13,8 @@ define('BOOTSTRAP_INCLUDED', true);
 // Secure session configuration
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
+ini_set('session.cookie_lifetime', 3600); // 1 hour
+ini_set('session.gc_maxlifetime', 3600); // 1 hour
 // ini_set('session.cookie_secure', 1); // Enable if using HTTPS
 
 if (session_status() === PHP_SESSION_NONE) {

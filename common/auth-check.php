@@ -6,9 +6,27 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
-// Global check: if not logged in, redirect to login page (relative path)
+function isApiRequest() {
+  $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
+  $xhr = strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '');
+  $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+  return str_contains($accept, 'application/json')
+      || $xhr === 'xmlhttprequest'
+      || str_contains($contentType, 'application/json');
+}
+
+function sendJsonAuthError($code = 401) {
+  http_response_code($code);
+  header('Content-Type: application/json');
+  echo json_encode(['success' => false, 'message' => 'Authentication required. Please log in.']);
+  exit;
+}
+
+// Global check: if not logged in, return JSON for API requests
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-  // Determine the path to Login.html based on current file location
+  if (isApiRequest()) {
+    sendJsonAuthError(401);
+  }
   header('Location: ../login/login.html');
   exit;
 }

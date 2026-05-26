@@ -108,10 +108,27 @@ async function refreshOverviewMap() {
     }
 }
 
+async function fetchJson(url, options = {}) {
+  const response = await fetch(url, options);
+  const contentType = response.headers.get('content-type') || '';
+  const bodyText = await response.text();
+
+  if (!response.ok) {
+    console.error(`API request failed for ${url}:`, response.status, bodyText);
+    throw new Error(`API request failed with status ${response.status}`);
+  }
+
+  if (!contentType.includes('application/json')) {
+    console.error(`Invalid API response content-type for ${url}:`, contentType, bodyText);
+    throw new Error('Invalid JSON response from server');
+  }
+
+  return JSON.parse(bodyText);
+}
+
 async function loadReports() {
     try {
-    const response = await fetch('../api/reports.php');
-    const result = await response.json();
+    const result = await fetchJson('../api/reports.php');
     if (result.success) {
       allReports = result.data;
       renderReports();
@@ -307,13 +324,10 @@ function editInvestigation(id) {
 
 async function loadStats() {
     try {
-    const [reportsRes, bikesRes] = await Promise.all([
-      fetch('../api/reports.php'),
-      fetch('../api/bicycles.php?action=list')
+    const [reports, bikes] = await Promise.all([
+      fetchJson('../api/reports.php'),
+      fetchJson('../api/bicycles.php?action=list')
     ]);
-    
-    const reports = await reportsRes.json();
-    const bikes = await bikesRes.json();
     
     if (reports.success && bikes.success) {
       const active = reports.data.filter(r => r.investigation_status === 'open').length;
