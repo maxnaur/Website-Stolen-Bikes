@@ -1,4 +1,0 @@
-# Prevent direct access to common folder except for required static assets
-<FilesMatch "\.php$">
-    Require all denied
-</FilesMatch>
